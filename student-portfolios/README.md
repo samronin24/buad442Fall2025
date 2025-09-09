@@ -15,6 +15,7 @@ This README is automatically generated and updated when changes are made to stud
 | AndrewS | Andrew Szrom | Giants fan.<br>From New Jersey. | [View Portfolio](AndrewS/README.md) | <img src="AndrewS/IMG_5831.jpg" alt="Giants Fan" title="Giants Fan" width="150"> |
 | AryanP | Aryan | I love to listen to music<br>I like going to the gym. | [View Portfolio](AryanP/README.md) | <img src="AryanP/favcar.jpg" alt="Favorite Car" title="Favorite Car" width="150"><img src="AryanP/PP.jpeg" alt="Personal Picture" title="Personal Picture" width="150"> |
 | AvaM | Ava | I studied abroad in Rome last semester!<br>I have two cats. | [View Portfolio](AvaM/README.md) | <img src="AvaM/CIMG4845.jpeg" alt="This is me in Rome!" title="This is me in Rome!" width="150"><img src="AvaM/bubba.png" alt="This is one of my cats! His name is Bubba" title="This is one of my cats! His name is Bubba" width="150"> |
+| CameronG | Cameron | Born on leap year (Feb. 29) and I like to travel<br>I like to play golf and have a hole in 1 | [View Portfolio](CameronG/README.md) | <img src="CameronG/IMG_7912.jpg" alt="France photo" title="France photo" width="150"><img src="CameronG/IMG_6658.jpg" alt="My hole in one" title="My hole in one" width="150"> |
 | ChanceD | Chance | I am a member of the Men's Ice Hockey Team.<br>I like going to the beach and traveling the world. | [View Portfolio](ChanceD/README.md) | <img src="ChanceD/XO0A9083.jpg" alt="Game_Picture" title="Game_Picture" width="150"><img src="ChanceD/Cancun_Beach.jpg" alt="Favorite Vacation Spot in Cancun" title="Favorite Vacation Spot in Cancun" width="150"> |
 | ChristianCampos | Christian | My favorite sport is soccer.<br>I can bench press 315 lbs. | [View Portfolio](ChristianCampos/README.md) | <img src="ChristianCampos/0D42380A-3CF5-4D43-A5D7-604623B312E8.jpeg" alt="Picture of me playing soccer" title="Picture of me playing soccer" width="150"><img src="ChristianCampos/images.jpg" alt="Bench Press Picture" title="Bench Press Picture" width="150"> |
 | DavidH | David | I enjoy traveling with my family<br>I enjoy spending time with my pets | [View Portfolio](DavidH/README.md) | <img src="DavidH/IMG_5813.jpg" alt="Me at New River Valley Gorge" title="Me at New River Valley Gorge" width="150"><img src="DavidH/IMG_3827.jpg" alt="My dog Benson" title="My dog Benson" width="150"> |
@@ -75,4 +76,4 @@ This README is automatically generated and updated when changes are made to stud
 This README is automatically updated via GitHub Actions whenever any `README.md` file in the student-portfolios folder (or its subfolders) is modified.
 
 ---
-*Last updated: %Y->- b1e70f6124f584f10d6e7ffd528b606e4352fe42:%M:HEAD*
+*Last updated: %Y->- (HEAD -> main, origin/main) 095227c72563b8d6c665b5aff83b1de8c1865d80:%M:HEAD*
