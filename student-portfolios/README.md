@@ -33,7 +33,7 @@ This README is automatically generated and updated when changes are made to stud
 | NickTang | Nick | I love to snowboard<br>I've been to Korea, Japan, China, and Vietnam | [View Portfolio](NickTang/README.md) | <img src="NickTang/Background.jpeg" alt="Blue Mountain" title="Blue Mountain" width="150"><img src="NickTang/Snowboard.jpeg" alt="Korea" title="Korea" width="150"> |
 | OwenT | Owen | I have a pet beta fish.<br>I own a large ceramic cheeseburger. | [View Portfolio](OwenT/README.md) | <img src="OwenT/IMG_0822.jpg" alt="My pet" title="My pet" width="150"><img src="OwenT/IMG_2398.jpg" alt="Me purchasing my large ceramic cheeseburger" title="Me purchasing my large ceramic cheeseburger" width="150"> |
 | PatrickG | Patrick | I have three siblings<br>I have never broken a bone | [View Portfolio](PatrickG/README.md) | No images |
-| RyanF | Ryan | I have been to 25 out of 30 ballparks.<br>I am ambidextrous. | [View Portfolio](RyanF/README.md) | No images |
+| RyanF | Ryan | I have been to 25 out of 30 ballparks.<br>I am ambidextrous. | [View Portfolio](RyanF/README.md) | <img src="RyanF/baseball.jpg" alt="This is a ball park" title="This is a ball park" width="150"><img src="RyanF/ambi.jpg" alt="This is both hands that I can use" title="This is both hands that I can use" width="150"> |
 | SamA | Sam | I have a chocolate lab named Chance.<br>I like to spend me ffreetime in the outdoors. | [View Portfolio](SamA/README.md) | <img src="SamA/boating.jpg" alt="On the boat with friends" title="On the boat with friends" width="150"><img src="SamA/dog.jpg" alt="My dog on the laptop" title="My dog on the laptop" width="150"> |
 | SamR | Sam | I have climbed Mt Kilimanjaro<br>I speak Russian | [View Portfolio](SamR/README.md) | <img src="SamR/IMG_00633_resized.jpg" alt="Climbing Mt Kilimanjaro" title="Climbing Mt Kilimanjaro" width="150"><img src="SamR/IMG_2206_resized.jpg" alt="Monkey in Bali" title="Monkey in Bali" width="150"> |
 | SylasC | Sylas | I've gone skydiving!<br>I'm working on becoming a better cook this semeste... | [View Portfolio](SylasC/README.md) | <img src="SylasC/skydiving.jpeg" alt="Skydiving" title="Skydiving" width="150"><img src="SylasC/uluru.jpeg" alt="Hiking" title="Hiking" width="150"> |
@@ -75,4 +75,4 @@ This README is automatically generated and updated when changes are made to stud
 This README is automatically updated via GitHub Actions whenever any `README.md` file in the student-portfolios folder (or its subfolders) is modified.
 
 ---
-*Last updated: %Y->- (HEAD -> main, origin/main) ce062d63e554458ba5bdaae6df94d77204835122:%M:HEAD*
+*Last updated: %Y->- (HEAD -> main, origin/main) a56c0f854f7e0545e39d6f35bd6fdde88c1ce8f9:%M:HEAD*
