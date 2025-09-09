@@ -14,9 +14,9 @@
 
 ## 🖼️ Portfolio Images
 
-### 
-This is a ball park (basebal;,jpg)
+### Ballpark
+![This is a ball park](baseball.jpg)
 
 ### Personal Photo
-This is both hands that I can use (ambi.jpg)
+![This is both hands that I can use](ambi.jpg)
 
