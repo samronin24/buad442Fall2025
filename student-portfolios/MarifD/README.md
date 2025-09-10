@@ -14,9 +14,9 @@
 ## 🖼️ Portfolio Images
 
 ### My interest
-![Me watching a football match](student-portfolios/MarifD/16E4F5C4-87A5-4069-8D0A-D5771FBC1140_1_105_c.jpeg)
+![Me watching a football match](16E4F5C4-87A5-4069-8D0A-D5771FBC1140_1_105_c.jpeg)
 
 ### Personal Photo
-![Me at buckingham palace in London](student-portfolios/MarifD/7FDEB1CB-45AC-498D-B76C-2CD08E4D4142_1_105_c.jpeg)
+![Me at buckingham palace in London](7FDEB1CB-45AC-498D-B76C-2CD08E4D4142_1_105_c.jpeg)
 
 
