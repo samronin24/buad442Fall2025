@@ -1,0 +1,12 @@
+---
+title: "My First Quarto Document"
+format: html 
+---
+
+# Hello World! 
+
+This is my first Quarto document. My nick name is Cameron.
+
+## My Passion for Golf
+
+One of my greatest interests and passions is golf. I've been playing golf for several years and have been incredibly fortunate to achieve one of the sport's most prestigious accomplishments - a hole in one! This amazing moment happened during a round with friends, and it's something I'll treasure forever. What I love most about golf is the combination of strategy and mental focus required, the beautiful courses I get to experience, and the wonderful friendships that develop through the sport. Whether I'm playing a casual round with friends or practicing at the driving range, golf provides me with both relaxation and challenge. The sport has taught me valuable life skills like patience, concentration, and the importance of practice and perseverance - qualities that serve me well in both my academic studies and future career goals. 
