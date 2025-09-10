@@ -1,0 +1,13 @@
+---
+title: "My First Quarto Document"
+format: html
+---
+
+# Hello World! 👋
+
+This is my first Quarto document. My nick name is Marif.
+
+# My Interest in Traveling
+
+I’m passionate about traveling and have visited over 20 countries. I love exploring new cultures, trying local foods, and capturing moments through photography—especially at football matches and historic landmarks.
+
