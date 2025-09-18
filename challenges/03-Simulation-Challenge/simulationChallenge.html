@@ -113,6 +113,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="exm-ErgodicityEconomicsExample" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1</strong></span> Imagine you are offered the following game and given a $1,000 budget in a special account to play the game: I will flip a coin, and if it comes up heads, we increase your account’s balance by 50%; if it comes up tails, we reduce your account’s balance by 40%. We are not only doing this once, but we will do it once per year until you turn 55. When you turn 55, you will receive the balance in your account.</p>
 </div>
+</section>
+<section id="generative-dag-model-for-the-investment-game" class="level3">
+<h3 class="anchored" data-anchor-id="generative-dag-model-for-the-investment-game">Generative DAG Model for the Investment Game</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-investment-dag" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-investment-dag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="simulationChallenge_files/figure-html/fig-investment-dag-1.png" class="img-fluid figure-img" width="604">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-investment-dag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Generative DAG model for the investment game showing how wealth evolves over time through coin flips
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -131,8 +148,106 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="essential-simulation-concepts" class="level2">
-<h2 class="anchored" data-anchor-id="essential-simulation-concepts">Essential Simulation Concepts 🎯</h2>
+<section id="challenge-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="challenge-requirements">Challenge Requirements 📋</h2>
+<section id="minimum-requirements-for-any-points-on-challenge" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-requirements-for-any-points-on-challenge">Minimum Requirements for Any Points on Challenge</h3>
+<ol type="1">
+<li><p><strong>Create a Quarto Document:</strong> Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your simulations.</p></li>
+<li><p><strong>Render to HTML:</strong> You must render the quarto markdown file to HTML.</p></li>
+<li><p><strong>GitHub Repository:</strong> The rendered HTML must be uploaded to a new GitHub repository called “simulationChallenge” in your Github account.</p></li>
+<li><p><strong>GitHub Pages Setup:</strong> The repository should be made the source of your github pages:</p>
+<ul>
+<li>Go to your repository settings (click the “Settings” tab in your GitHub repository)</li>
+<li>Scroll down to the “Pages” section in the left sidebar</li>
+<li>Under “Source”, select “Deploy from a branch”</li>
+<li>Choose “main” branch and “/ (root)” folder</li>
+<li>Click “Save”</li>
+<li>Your site will be available at: <code>https://[your-username].github.io/simulationChallenge/</code></li>
+<li><strong>Note:</strong> It may take a few minutes for the site to become available after enabling Pages</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="grading-rubric" class="level2">
+<h2 class="anchored" data-anchor-id="grading-rubric">Grading Rubric 🎓</h2>
+<section id="questions-to-answer-for-75-grade-on-challenge" class="level3">
+<h3 class="anchored" data-anchor-id="questions-to-answer-for-75-grade-on-challenge">Questions to Answer for 75% Grade on Challenge</h3>
+<ol type="1">
+<li><p><strong>Expected Value Analysis:</strong> What is the “expected value” of your account balance after 1 coin flip for the original game?</p></li>
+<li><p><strong>Expectation vs.&nbsp;Reality:</strong> Is the expected value positive or negative? Do you expect your account to be worth more or less than $1,000 based on this result?</p></li>
+<li><p><strong>Single Simulation:</strong> Run one simulation showing the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing your simulated account balance over time (i.e.&nbsp;as you age). Comment on the results, are you happy?</p></li>
+</ol>
+</section>
+<section id="questions-to-answer-for-85-grade-on-challenge" class="level3">
+<h3 class="anchored" data-anchor-id="questions-to-answer-for-85-grade-on-challenge">Questions to Answer for 85% Grade on Challenge</h3>
+<ol start="4" type="1">
+<li><strong>Multiple Simulations:</strong> Run 100 simulations showing the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing a probability distribution of account balance at age 55. Comment on the results, are you happy? Why or why not?</li>
+</ol>
+</section>
+<section id="questions-to-answer-for-95-grade-on-challenge" class="level3">
+<h3 class="anchored" data-anchor-id="questions-to-answer-for-95-grade-on-challenge">Questions to Answer for 95% Grade on Challenge</h3>
+<ol start="5" type="1">
+<li><strong>Probability Analysis:</strong> Based on the 100 simulations above, what is the probability that your account balance will be greater than $1,000 at age 55?</li>
+</ol>
+</section>
+<section id="questions-to-answer-for-100-grade-on-challenge" class="level3">
+<h3 class="anchored" data-anchor-id="questions-to-answer-for-100-grade-on-challenge">Questions to Answer for 100% Grade on Challenge</h3>
+<ol start="6" type="1">
+<li><strong>Strategy Comparison:</strong> Run 100 simulations for the modified game strategy shown below in <a href="#exm-ErgodicityEconomicsExampleModified" class="quarto-xref">Example&nbsp;2</a>. What is the probability that your account balance will be greater than $10,000 at age 55? Is this probability higher or lower than the probability in the original game?</li>
+</ol>
+</section>
+<section id="modified-game-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="modified-game-strategy">Modified Game Strategy</h3>
+<div id="exm-ErgodicityEconomicsExampleModified" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2</strong></span> Imagine you are offered the following game and given a $1,000 budget in a special account to play the game: I will flip a coin, and if it comes up heads, we increase your bet by 50%; if it comes up tails, we reduce your bet by 40%. You must bet exactly 50% of your current account balance on each flip, and this 50% is locked in for each round. We are not only doing this once, but we will do it once per year until you turn 55. When you turn 55, you will receive the balance in your account.</p>
+</div>
+</section>
+</section>
+<section id="technical-implementation-preferences" class="level2">
+<h2 class="anchored" data-anchor-id="technical-implementation-preferences">Technical Implementation Preferences 💡</h2>
+<section id="setting-up-your-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="setting-up-your-analysis">Setting Up Your Analysis</h3>
+<p><strong>For R Users:</strong> - Use <code>tidyverse</code> for data manipulation - Use <code>ggplot2</code> for visualizations - Use <code>set.seed()</code> for reproducible results</p>
+<p><strong>For Python Users:</strong> - Use <code>numpy</code> for numerical operations - Use <code>pandas</code> for data manipulation - Use <code>matplotlib</code> (object-oriented) - Use <code>np.random.seed()</code> for reproducible results</p>
+</section>
+<section id="visualization-preferences" class="level3">
+<h3 class="anchored" data-anchor-id="visualization-preferences">Visualization Preferences</h3>
+<ul>
+<li><strong>Professional Styling:</strong> Use consistent colors, clear labels, readable fonts, and informative titles</li>
+</ul>
+</section>
+</section>
+<section id="submission-checklist" class="level2">
+<h2 class="anchored" data-anchor-id="submission-checklist">Submission Checklist ✅</h2>
+<p><strong>Minimum Requirements (Required for Any Points):</strong> - [ ] Quarto document created with clear narrative - [ ] Document rendered to HTML successfully - [ ] Repository “simulationChallenge” created - [ ] HTML files uploaded to repository - [ ] GitHub Pages enabled and working - [ ] Site accessible at <code>https://[your-username].github.io/simulationChallenge/</code></p>
+<p><strong>75% Grade Requirements:</strong> - [ ] Expected value calculations shown (Question 1) - [ ] Expectation vs.&nbsp;reality analysis (Question 2) - [ ] Single simulation with time series plot (Question 3) - [ ] Clear interpretation of single simulation results</p>
+<p><strong>85% Grade Requirements:</strong> - [ ] 100 simulations with distribution analysis (Question 4) - [ ] Probability distribution plot of final account balances - [ ] Clear interpretation of multiple simulation results</p>
+<p><strong>95% Grade Requirements:</strong> - [ ] Probability calculations for original strategy (Question 5) - [ ] Analysis of probability that balance &gt; $1,000 at age 55</p>
+<p><strong>100% Grade Requirements:</strong> - [ ] 100 simulations for modified strategy (Question 6) - [ ] Probability calculations for modified strategy - [ ] Comparative analysis between both strategies - [ ] Analysis of probability that balance &gt; $10,000 at age 55</p>
+<p><strong>Code Quality (All Grades):</strong> - [ ] Reproducible results (seeds set) - [ ] Clean, well-commented code - [ ] Appropriate use of functions and loops - [ ] Professional visualization styling</p>
+<section id="resources" class="level3">
+<h3 class="anchored" data-anchor-id="resources">Resources</h3>
+<ul>
+<li><strong>Quarto Documentation:</strong> <a href="https://quarto.org/docs">quarto.org/docs</a></li>
+<li><strong>R for Data Science:</strong> <a href="https://r4ds.had.co.nz">r4ds.had.co.nz</a></li>
+<li><strong>Python Data Science Handbook:</strong> <a href="https://jakevdp.github.io/PythonDataScienceHandbook">jakevdp.github.io/PythonDataScienceHandbook</a></li>
+</ul>
+</section>
+<section id="getting-started-tips" class="level3">
+<h3 class="anchored" data-anchor-id="getting-started-tips">Getting Started Tips</h3>
+<ul>
+<li><strong>Browse <a href="#sec-simulation-concepts" class="quarto-xref">Section&nbsp;1.7</a>:</strong> This section will give you a good understanding of the concepts you need to know to complete the challenge.</li>
+<li><strong>Start Simple:</strong> Begin with a single simulation to understand the mechanics</li>
+<li><strong>Document Everything:</strong> Explain your reasoning and interpret your results</li>
+<li><strong>Forgetting to Set Seeds:</strong> Always set random seeds for reproducible results</li>
+<li><strong>Total time to complete:</strong> ~3-4 hours for the 100% grade ⏱️</li>
+<li><strong>Good luck, and remember simulation will steer you right even when intuition will steer you wrong!</strong> 🎲</li>
+</ul>
+</section>
+</section>
+<section id="sec-simulation-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="sec-simulation-concepts">Essential Simulation Concepts 🎯</h2>
 <p>Before diving into the challenge, let’s review the key simulation concepts you’ll need. These examples will prepare you for the investment game analysis.</p>
 <section id="simple-simulation-coin-flip-game" class="level3">
 <h3 class="anchored" data-anchor-id="simple-simulation-coin-flip-game">1. Simple Simulation: Coin Flip Game</h3>
@@ -568,114 +683,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="key-takeaways-for-the-challenge" class="level2">
-<h2 class="anchored" data-anchor-id="key-takeaways-for-the-challenge">Key Takeaways for the Challenge 🎯</h2>
-<p>From these examples, you’ve learned:</p>
-<ol type="1">
-<li><strong>Simple Simulation</strong>: How to simulate random events and compute deterministic outcomes</li>
-<li><strong>Time-Series Analysis</strong>: How to track variables over multiple periods</li>
-<li><strong>Distribution Analysis</strong>: How to understand the range of possible outcomes</li>
-<li><strong>Monte Carlo Methods</strong>: How to use many simulations to understand probability distributions</li>
-</ol>
-<p>These concepts will be essential for analyzing the investment game in the challenge below!</p>
-</section>
-<section id="challenge-requirements" class="level2">
-<h2 class="anchored" data-anchor-id="challenge-requirements">Challenge Requirements 📋</h2>
-<section id="minimum-requirements-for-any-points-on-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="minimum-requirements-for-any-points-on-challenge">Minimum Requirements for Any Points on Challenge</h3>
-<ol type="1">
-<li><p><strong>Create a Quarto Document:</strong> Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your simulations.</p></li>
-<li><p><strong>Render to HTML:</strong> You must render the quarto markdown file to HTML.</p></li>
-<li><p><strong>GitHub Repository:</strong> The rendered HTML must be uploaded to a new GitHub repository called “simulationChallenge” in your Github account.</p></li>
-<li><p><strong>GitHub Pages Setup:</strong> The repository should be made the source of your github pages:</p>
-<ul>
-<li>Go to your repository settings (click the “Settings” tab in your GitHub repository)</li>
-<li>Scroll down to the “Pages” section in the left sidebar</li>
-<li>Under “Source”, select “Deploy from a branch”</li>
-<li>Choose “main” branch and “/ (root)” folder</li>
-<li>Click “Save”</li>
-<li>Your site will be available at: <code>https://[your-username].github.io/simulationChallenge/</code></li>
-<li><strong>Note:</strong> It may take a few minutes for the site to become available after enabling Pages</li>
-</ul></li>
-</ol>
-</section>
-</section>
-<section id="grading-rubric" class="level2">
-<h2 class="anchored" data-anchor-id="grading-rubric">Grading Rubric 🎓</h2>
-<section id="questions-to-answer-for-75-grade-on-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="questions-to-answer-for-75-grade-on-challenge">Questions to Answer for 75% Grade on Challenge</h3>
-<ol type="1">
-<li><p><strong>Expected Value Analysis:</strong> What is the “expected value” of your account balance after 1 coin flip for the original game?</p></li>
-<li><p><strong>Expectation vs.&nbsp;Reality:</strong> Is the expected value positive or negative? Do you expect your account to be worth more or less than $1,000 based on this result?</p></li>
-<li><p><strong>Single Simulation:</strong> Run one simulation showing the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing your simulated account balance over time (i.e.&nbsp;as you age). Comment on the results, are you happy?</p></li>
-</ol>
-</section>
-<section id="questions-to-answer-for-85-grade-on-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="questions-to-answer-for-85-grade-on-challenge">Questions to Answer for 85% Grade on Challenge</h3>
-<ol start="4" type="1">
-<li><strong>Multiple Simulations:</strong> Run 100 simulations showing the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing a probability distribution of account balance at age 55. Comment on the results, are you happy? Why or why not?</li>
-</ol>
-</section>
-<section id="questions-to-answer-for-95-grade-on-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="questions-to-answer-for-95-grade-on-challenge">Questions to Answer for 95% Grade on Challenge</h3>
-<ol start="5" type="1">
-<li><strong>Probability Analysis:</strong> Based on the 100 simulations above, what is the probability that your account balance will be greater than $1,000 at age 55?</li>
-</ol>
-</section>
-<section id="questions-to-answer-for-100-grade-on-challenge" class="level3">
-<h3 class="anchored" data-anchor-id="questions-to-answer-for-100-grade-on-challenge">Questions to Answer for 100% Grade on Challenge</h3>
-<ol start="6" type="1">
-<li><strong>Strategy Comparison:</strong> Run 100 simulations for the modified game strategy shown below in <a href="#exm-ErgodicityEconomicsExampleModified" class="quarto-xref">Example&nbsp;2</a>. What is the probability that your account balance will be greater than $10,000 at age 55? Is this probability higher or lower than the probability in the original game?</li>
-</ol>
-</section>
-<section id="modified-game-strategy" class="level3">
-<h3 class="anchored" data-anchor-id="modified-game-strategy">Modified Game Strategy</h3>
-<div id="exm-ErgodicityEconomicsExampleModified" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2</strong></span> Imagine you are offered the following game and given a $1,000 budget in a special account to play the game: I will flip a coin, and if it comes up heads, we increase your bet by 50%; if it comes up tails, we reduce your bet by 40%. You must bet exactly 50% of your current account balance on each flip, and this 50% is locked in for each round. We are not only doing this once, but we will do it once per year until you turn 55. When you turn 55, you will receive the balance in your account.</p>
-</div>
-</section>
-</section>
-<section id="technical-implementation-preferences" class="level2">
-<h2 class="anchored" data-anchor-id="technical-implementation-preferences">Technical Implementation Preferences 💡</h2>
-<section id="setting-up-your-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="setting-up-your-analysis">Setting Up Your Analysis</h3>
-<p><strong>For R Users:</strong> - Use <code>tidyverse</code> for data manipulation - Use <code>ggplot2</code> for visualizations - Use <code>set.seed()</code> for reproducible results</p>
-<p><strong>For Python Users:</strong> - Use <code>numpy</code> for numerical operations - Use <code>pandas</code> for data manipulation - Use <code>matplotlib</code> (object-oriented) - Use <code>np.random.seed()</code> for reproducible results</p>
-</section>
-<section id="visualization-preferences" class="level3">
-<h3 class="anchored" data-anchor-id="visualization-preferences">Visualization Preferences</h3>
-<ul>
-<li><strong>Professional Styling:</strong> Use consistent colors, clear labels, readable fonts, and informative titles</li>
-</ul>
-</section>
-</section>
-<section id="submission-checklist" class="level2">
-<h2 class="anchored" data-anchor-id="submission-checklist">Submission Checklist ✅</h2>
-<p><strong>Minimum Requirements (Required for Any Points):</strong> - [ ] Quarto document created with clear narrative - [ ] Document rendered to HTML successfully - [ ] Repository “simulationChallenge” created - [ ] HTML files uploaded to repository - [ ] GitHub Pages enabled and working - [ ] Site accessible at <code>https://[your-username].github.io/simulationChallenge/</code></p>
-<p><strong>75% Grade Requirements:</strong> - [ ] Expected value calculations shown (Question 1) - [ ] Expectation vs.&nbsp;reality analysis (Question 2) - [ ] Single simulation with time series plot (Question 3) - [ ] Clear interpretation of single simulation results</p>
-<p><strong>85% Grade Requirements:</strong> - [ ] 100 simulations with distribution analysis (Question 4) - [ ] Probability distribution plot of final account balances - [ ] Clear interpretation of multiple simulation results</p>
-<p><strong>95% Grade Requirements:</strong> - [ ] Probability calculations for original strategy (Question 5) - [ ] Analysis of probability that balance &gt; $1,000 at age 55</p>
-<p><strong>100% Grade Requirements:</strong> - [ ] 100 simulations for modified strategy (Question 6) - [ ] Probability calculations for modified strategy - [ ] Comparative analysis between both strategies - [ ] Analysis of probability that balance &gt; $10,000 at age 55</p>
-<p><strong>Code Quality (All Grades):</strong> - [ ] Reproducible results (seeds set) - [ ] Clean, well-commented code - [ ] Appropriate use of functions and loops - [ ] Professional visualization styling</p>
-<section id="resources" class="level3">
-<h3 class="anchored" data-anchor-id="resources">Resources</h3>
-<ul>
-<li><strong>Quarto Documentation:</strong> <a href="https://quarto.org/docs">quarto.org/docs</a></li>
-<li><strong>R for Data Science:</strong> <a href="https://r4ds.had.co.nz">r4ds.had.co.nz</a></li>
-<li><strong>Python Data Science Handbook:</strong> <a href="https://jakevdp.github.io/PythonDataScienceHandbook">jakevdp.github.io/PythonDataScienceHandbook</a></li>
-</ul>
-</section>
-<section id="getting-started-tips" class="level3">
-<h3 class="anchored" data-anchor-id="getting-started-tips">Getting Started Tips</h3>
-<ul>
-<li><strong>Start Simple:</strong> Begin with a single simulation to understand the mechanics</li>
-<li><strong>Document Everything:</strong> Explain your reasoning and interpret your results</li>
-<li><strong>Forgetting to Set Seeds:</strong> Always set random seeds for reproducible results</li>
-<li><strong>Total time to complete:</strong> ~3-4 hours for the 100% grade ⏱️</li>
-<li><strong>Good luck, and remember simulation will steer you right even when intuition will steer you wrong!</strong> 🎲</li>
-</ul>
 </section>
 </section>
 </section>

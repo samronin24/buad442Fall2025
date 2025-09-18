@@ -23,6 +23,42 @@ execute:
 Imagine you are offered the following game and given a $1,000 budget in a special account to play the game: I will flip a coin, and if it comes up heads, we increase your account's balance by 50%; if it comes up tails, we reduce your account's balance by 40%. We are not only doing this once, but we will do it once per year until you turn 55. When you turn 55, you will receive the balance in your account.
 :::
 
+### Generative DAG Model for the Investment Game
+
+```{python}
+#| echo: false
+#| include: false
+#| cache: true
+import daft
+
+# Create the DAG directly without custom class
+investmentDAG = daft.PGM(dpi=150, alternate_style="outer")
+
+# Initial wealth (deterministic)
+investmentDAG.add_node("W0", "Initial Wealth\n$W_0 = 1000$", x=4, y=2.5, aspect=5.4, 
+                      alternate=True, plot_params={'facecolor': 'aliceblue'})
+
+# Time t nodes  
+investmentDAG.add_node("Ct", "Coin Flip t\n$C_t \\sim \\text{Bernoulli}(0.5)$", x=0, y=1, aspect=4, scale = 1.6,
+                      plot_params={'facecolor': 'aliceblue'})
+investmentDAG.add_node("Wt", "\nWealth t\n$W_t = 1.5 \\times W_{t-1}$ if $C_t = 1$\n$W_t = 0.6 \\times W_{t-1}$ if $C_t = 0$\n", x=4, y=1, scale = 1.6, aspect=4,
+                      alternate=True, plot_params={'facecolor': 'aliceblue'})
+
+# Add edges showing the relationships
+investmentDAG.add_edge("W0", "Wt")
+investmentDAG.add_edge("Ct", "Wt")
+
+# Add plate around time-dependent nodes
+investmentDAG.add_plate([-2, 0.5, 7.8, 1.0], label="t = 1, ..., N", shift=-0.1)
+```
+
+```{python}
+#| label: fig-investment-dag
+#| fig-cap: Generative DAG model for the investment game showing how wealth evolves over time through coin flips
+#| echo: false
+investmentDAG.show()
+```
+
 
 
 ::: {.callout-warning}
