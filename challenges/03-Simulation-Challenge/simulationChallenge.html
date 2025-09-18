@@ -130,22 +130,6 @@ Figure&nbsp;1: Generative DAG model for the investment game showing how wealth e
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-💾 Important: Save Your Work Frequently!
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Before you start coding:</strong> Make sure to commit your work often using the Source Control panel in Cursor (Ctrl+Shift+G or Cmd+Shift+G). This prevents the AI from overwriting your progress and ensures you don’t lose your work.</p>
-<p><strong>Commit after each major step:</strong> - After completing each simulation example - After finishing each challenge question - Before asking the AI for help with new code</p>
-<p><strong>How to commit:</strong> 1. Open Source Control panel (Ctrl+Shift+G) 2. Stage your changes (+ button) 3. Write a descriptive commit message 4. Click the checkmark to commit</p>
-<p><em>Remember: Frequent commits are your safety net!</em></p>
-</div>
-</div>
 </section>
 </section>
 <section id="challenge-requirements" class="level2">
@@ -208,8 +192,19 @@ Figure&nbsp;1: Generative DAG model for the investment game showing how wealth e
 <h2 class="anchored" data-anchor-id="technical-implementation-preferences">Technical Implementation Preferences 💡</h2>
 <section id="setting-up-your-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-your-analysis">Setting Up Your Analysis</h3>
-<p><strong>For R Users:</strong> - Use <code>tidyverse</code> for data manipulation - Use <code>ggplot2</code> for visualizations - Use <code>set.seed()</code> for reproducible results</p>
-<p><strong>For Python Users:</strong> - Use <code>numpy</code> for numerical operations - Use <code>pandas</code> for data manipulation - Use <code>matplotlib</code> (object-oriented) - Use <code>np.random.seed()</code> for reproducible results</p>
+<p><strong>For R Users:</strong></p>
+<ul>
+<li>Use <code>tidyverse</code> for data manipulation</li>
+<li>Use <code>ggplot2</code> for visualizations</li>
+<li>Use <code>set.seed()</code> for reproducible results</li>
+</ul>
+<p><strong>For Python Users:</strong></p>
+<ul>
+<li>Use <code>numpy</code> for numerical operations</li>
+<li>Use <code>pandas</code> for data manipulation</li>
+<li>Use <code>matplotlib</code> (object-oriented)</li>
+<li>Use <code>np.random.seed()</code> for reproducible results</li>
+</ul>
 </section>
 <section id="visualization-preferences" class="level3">
 <h3 class="anchored" data-anchor-id="visualization-preferences">Visualization Preferences</h3>
@@ -220,15 +215,51 @@ Figure&nbsp;1: Generative DAG model for the investment game showing how wealth e
 </section>
 <section id="submission-checklist" class="level2">
 <h2 class="anchored" data-anchor-id="submission-checklist">Submission Checklist ✅</h2>
-<p><strong>Minimum Requirements (Required for Any Points):</strong> - [ ] Quarto document created with clear narrative - [ ] Document rendered to HTML successfully - [ ] Repository “simulationChallenge” created - [ ] HTML files uploaded to repository - [ ] GitHub Pages enabled and working - [ ] Site accessible at <code>https://[your-username].github.io/simulationChallenge/</code></p>
-<p><strong>75% Grade Requirements:</strong> - [ ] Expected value calculations shown (Question 1) - [ ] Expectation vs.&nbsp;reality analysis (Question 2) - [ ] Single simulation with time series plot (Question 3) - [ ] Clear interpretation of single simulation results</p>
-<p><strong>85% Grade Requirements:</strong> - [ ] 100 simulations with distribution analysis (Question 4) - [ ] Probability distribution plot of final account balances - [ ] Clear interpretation of multiple simulation results</p>
-<p><strong>95% Grade Requirements:</strong> - [ ] Probability calculations for original strategy (Question 5) - [ ] Analysis of probability that balance &gt; $1,000 at age 55</p>
-<p><strong>100% Grade Requirements:</strong> - [ ] 100 simulations for modified strategy (Question 6) - [ ] Probability calculations for modified strategy - [ ] Comparative analysis between both strategies - [ ] Analysis of probability that balance &gt; $10,000 at age 55</p>
-<p><strong>Code Quality (All Grades):</strong> - [ ] Reproducible results (seeds set) - [ ] Clean, well-commented code - [ ] Appropriate use of functions and loops - [ ] Professional visualization styling</p>
+<p><strong>Minimum Requirements (Required for Any Points):</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Quarto document created with clear narrative</label></li>
+<li><label><input type="checkbox">Document rendered to HTML successfully</label></li>
+<li><label><input type="checkbox">Repository “simulationChallenge” created</label></li>
+<li><label><input type="checkbox">HTML files uploaded to repository</label></li>
+<li><label><input type="checkbox">GitHub Pages enabled and working</label></li>
+<li><label><input type="checkbox">Site accessible at <code>https://[your-username].github.io/simulationChallenge/</code></label></li>
+</ul>
+<p><strong>75% Grade Requirements:</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Expected value calculations shown (Question 1)</label></li>
+<li><label><input type="checkbox">Expectation vs.&nbsp;reality analysis (Question 2)</label></li>
+<li><label><input type="checkbox">Single simulation with time series plot (Question 3)</label></li>
+<li><label><input type="checkbox">Clear interpretation of single simulation results</label></li>
+</ul>
+<p><strong>85% Grade Requirements:</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">100 simulations with distribution analysis (Question 4)</label></li>
+<li><label><input type="checkbox">Probability distribution plot of final account balances</label></li>
+<li><label><input type="checkbox">Clear interpretation of multiple simulation results</label></li>
+</ul>
+<p><strong>95% Grade Requirements:</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Probability calculations for original strategy (Question 5)</label></li>
+<li><label><input type="checkbox">Analysis of probability that balance &gt; $1,000 at age 55</label></li>
+</ul>
+<p><strong>100% Grade Requirements:</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">100 simulations for modified strategy (Question 6)</label></li>
+<li><label><input type="checkbox">Probability calculations for modified strategy</label></li>
+<li><label><input type="checkbox">Comparative analysis between both strategies</label></li>
+<li><label><input type="checkbox">Analysis of probability that balance &gt; $10,000 at age 55</label></li>
+</ul>
+<p><strong>Code Quality (All Grades):</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Reproducible results (seeds set)</label></li>
+<li><label><input type="checkbox">Clean, well-commented code</label></li>
+<li><label><input type="checkbox">Appropriate use of functions and loops</label></li>
+<li><label><input type="checkbox">Professional visualization styling</label></li>
+</ul>
 <section id="resources" class="level3">
 <h3 class="anchored" data-anchor-id="resources">Resources</h3>
 <ul>
+<li><strong>Quarto Markdown:</strong> <a href="https://quarto.org/docs/authoring/markdown-basics.html">quarto.org/docs/authoring/markdown-basics.html</a></li>
 <li><strong>Quarto Documentation:</strong> <a href="https://quarto.org/docs">quarto.org/docs</a></li>
 <li><strong>R for Data Science:</strong> <a href="https://r4ds.had.co.nz">r4ds.had.co.nz</a></li>
 <li><strong>Python Data Science Handbook:</strong> <a href="https://jakevdp.github.io/PythonDataScienceHandbook">jakevdp.github.io/PythonDataScienceHandbook</a></li>
@@ -236,14 +267,57 @@ Figure&nbsp;1: Generative DAG model for the investment game showing how wealth e
 </section>
 <section id="getting-started-tips" class="level3">
 <h3 class="anchored" data-anchor-id="getting-started-tips">Getting Started Tips</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🎯 Navy SEALs Motto
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<blockquote class="blockquote">
+<p>“Slow is Smooth and Smooth is Fast”</p>
+</blockquote>
+<p><em>Take your time to understand the simulation mechanics, plan your approach carefully, and execute with precision. Rushing through this challenge will only lead to errors and confusion.</em></p>
+</div>
+</div>
 <ul>
-<li><strong>Browse <a href="#sec-simulation-concepts" class="quarto-xref">Section&nbsp;1.7</a>:</strong> This section will give you a good understanding of the concepts you need to know to complete the challenge.</li>
+<li><strong>Browse <a href="@sec-simulation-concepts">Essential Simulation Concepts</a>:</strong> This section will give you a good understanding of the concepts you need to know to complete the challenge.</li>
 <li><strong>Start Simple:</strong> Begin with a single simulation to understand the mechanics</li>
 <li><strong>Document Everything:</strong> Explain your reasoning and interpret your results</li>
 <li><strong>Forgetting to Set Seeds:</strong> Always set random seeds for reproducible results</li>
 <li><strong>Total time to complete:</strong> ~3-4 hours for the 100% grade ⏱️</li>
 <li><strong>Good luck, and remember simulation will steer you right even when intuition will steer you wrong!</strong> 🎲</li>
 </ul>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+💾 Important: Save Your Work Frequently!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Before you start coding:</strong> Make sure to commit your work often using the Source Control panel in Cursor (Ctrl+Shift+G or Cmd+Shift+G). This prevents the AI from overwriting your progress and ensures you don’t lose your work.</p>
+<p><strong>Commit after each major step:</strong></p>
+<ul>
+<li>After completing each simulation example</li>
+<li>After finishing each challenge question</li>
+<li>Before asking the AI for help with new code</li>
+</ul>
+<p><strong>How to commit:</strong></p>
+<ol type="1">
+<li>Open Source Control panel (Ctrl+Shift+G)</li>
+<li>Stage your changes (+ button)</li>
+<li>Write a descriptive commit message</li>
+<li>Click the checkmark to commit</li>
+</ol>
+<p><em>Remember: Frequent commits are your safety net!</em></p>
+</div>
+</div>
 </section>
 </section>
 <section id="sec-simulation-concepts" class="level2">

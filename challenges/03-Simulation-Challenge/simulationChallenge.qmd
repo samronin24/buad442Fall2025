@@ -15,6 +15,7 @@ execute:
 
 **Your Mission (along with your Cursor AI partner):** Create a comprehensive Quarto document that simulates an investment strategy (or possibly two strategies), analyzes the simulation results, and presents your ability to simulate a scenario and present counter-intuitve results in a compelling way.
 
+
 ## The Investment Game 🎯
 
 ### Original Game Strategy
@@ -28,7 +29,6 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 ```{python}
 #| echo: false
 #| include: false
-#| cache: true
 import daft
 
 # Create the DAG directly without custom class
@@ -61,24 +61,6 @@ investmentDAG.show()
 
 
 
-::: {.callout-warning}
-## 💾 Important: Save Your Work Frequently!
-
-**Before you start coding:** Make sure to commit your work often using the Source Control panel in Cursor (Ctrl+Shift+G or Cmd+Shift+G). This prevents the AI from overwriting your progress and ensures you don't lose your work.
-
-**Commit after each major step:**
-- After completing each simulation example
-- After finishing each challenge question
-- Before asking the AI for help with new code
-
-**How to commit:**
-1. Open Source Control panel (Ctrl+Shift+G)
-2. Stage your changes (+ button)
-3. Write a descriptive commit message
-4. Click the checkmark to commit
-
-*Remember: Frequent commits are your safety net!*
-:::
 
 ## Challenge Requirements 📋
 
@@ -91,6 +73,7 @@ investmentDAG.show()
 3. **GitHub Repository:** The rendered HTML must be uploaded to a new GitHub repository called "simulationChallenge" in your Github account.
 
 4. **GitHub Pages Setup:** The repository should be made the source of your github pages:
+
    - Go to your repository settings (click the "Settings" tab in your GitHub repository)
    - Scroll down to the "Pages" section in the left sidebar
    - Under "Source", select "Deploy from a branch"
@@ -132,11 +115,13 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 ### Setting Up Your Analysis
 
 **For R Users:**
+
 - Use `tidyverse` for data manipulation
 - Use `ggplot2` for visualizations
 - Use `set.seed()` for reproducible results
 
 **For Python Users:**
+
 - Use `numpy` for numerical operations
 - Use `pandas` for data manipulation
 - Use `matplotlib` (object-oriented)
@@ -149,6 +134,7 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 ## Submission Checklist ✅
 
 **Minimum Requirements (Required for Any Points):**
+
 - [ ] Quarto document created with clear narrative
 - [ ] Document rendered to HTML successfully
 - [ ] Repository "simulationChallenge" created
@@ -157,27 +143,32 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 - [ ] Site accessible at `https://[your-username].github.io/simulationChallenge/`
 
 **75% Grade Requirements:**
+
 - [ ] Expected value calculations shown (Question 1)
 - [ ] Expectation vs. reality analysis (Question 2)
 - [ ] Single simulation with time series plot (Question 3)
 - [ ] Clear interpretation of single simulation results
 
 **85% Grade Requirements:**
+
 - [ ] 100 simulations with distribution analysis (Question 4)
 - [ ] Probability distribution plot of final account balances
 - [ ] Clear interpretation of multiple simulation results
 
 **95% Grade Requirements:**
+
 - [ ] Probability calculations for original strategy (Question 5)
 - [ ] Analysis of probability that balance > $1,000 at age 55
 
 **100% Grade Requirements:**
+
 - [ ] 100 simulations for modified strategy (Question 6)
 - [ ] Probability calculations for modified strategy
 - [ ] Comparative analysis between both strategies
 - [ ] Analysis of probability that balance > $10,000 at age 55
 
 **Code Quality (All Grades):**
+
 - [ ] Reproducible results (seeds set)
 - [ ] Clean, well-commented code
 - [ ] Appropriate use of functions and loops
@@ -185,18 +176,48 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 
 ### Resources
 
+- **Quarto Markdown:** [quarto.org/docs/authoring/markdown-basics.html](https://quarto.org/docs/authoring/markdown-basics.html)
 - **Quarto Documentation:** [quarto.org/docs](https://quarto.org/docs)
 - **R for Data Science:** [r4ds.had.co.nz](https://r4ds.had.co.nz)
 - **Python Data Science Handbook:** [jakevdp.github.io/PythonDataScienceHandbook](https://jakevdp.github.io/PythonDataScienceHandbook)
 
 ### Getting Started Tips
 
-- **Browse @sec-simulation-concepts:** This section will give you a good understanding of the concepts you need to know to complete the challenge.
+::: {.callout-note}
+## 🎯 Navy SEALs Motto
+
+> "Slow is Smooth and Smooth is Fast"
+
+*Take your time to understand the simulation mechanics, plan your approach carefully, and execute with precision. Rushing through this challenge will only lead to errors and confusion.*
+:::
+
+- **Browse [Essential Simulation Concepts](@sec-simulation-concepts):** This section will give you a good understanding of the concepts you need to know to complete the challenge.
 - **Start Simple:** Begin with a single simulation to understand the mechanics
 - **Document Everything:** Explain your reasoning and interpret your results
 - **Forgetting to Set Seeds:** Always set random seeds for reproducible results
 - **Total time to complete:** ~3-4 hours for the 100% grade ⏱️
 - **Good luck, and remember simulation will steer you right even when intuition will steer you wrong!** 🎲
+
+::: {.callout-warning}
+## 💾 Important: Save Your Work Frequently!
+
+**Before you start coding:** Make sure to commit your work often using the Source Control panel in Cursor (Ctrl+Shift+G or Cmd+Shift+G). This prevents the AI from overwriting your progress and ensures you don't lose your work.
+
+**Commit after each major step:**
+
+- After completing each simulation example
+- After finishing each challenge question
+- Before asking the AI for help with new code
+
+**How to commit:**
+
+1. Open Source Control panel (Ctrl+Shift+G)
+2. Stage your changes (+ button)
+3. Write a descriptive commit message
+4. Click the checkmark to commit
+
+*Remember: Frequent commits are your safety net!*
+:::
 
 ## Essential Simulation Concepts 🎯 {#sec-simulation-concepts}
 
