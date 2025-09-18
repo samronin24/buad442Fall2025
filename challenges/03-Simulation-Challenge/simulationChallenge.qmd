@@ -13,8 +13,15 @@ execute:
 
 ## Challenge Overview
 
-**Your Mission (along with your Cursor AI partner):** Create a comprehensive Quarto document that simulates an investment strategy (or possibly two strategies), analyzes the simulation results, and presents your ability to simulate a scenario and present counter-intuitve results in a compelling way.
+**Your Mission:** Create a comprehensive Quarto document that simulates one or two investment strategies, analyzes the results, and demonstrates your ability to present counter-intuitive findings compellingly. Then render the document to HTML and deploy it via GitHub Pages from a new repository called "simulationChallenge."
 
+::: {.callout-warning}
+## ⚠️ AI Partnership Required
+
+This challenge pushes boundaries intentionally. You'll tackle problems that normally require weeks of study, but with Cursor AI as your partner (and your brain keeping it honest), you can accomplish more than you thought possible.
+
+**The new reality:** The four stages of competence are Ignorance → Awareness → Learning → Mastery. AI lets us produce Mastery-level work while operating primarily in the Awareness stage. I focus on awareness training, you leverage AI for execution, and together we create outputs that used to require years of dedicated study.
+:::
 
 ## The Investment Game 🎯
 
@@ -60,8 +67,6 @@ investmentDAG.show()
 ```
 
 
-
-
 ## Challenge Requirements 📋
 
 ### Minimum Requirements for Any Points on Challenge
@@ -94,7 +99,7 @@ investmentDAG.show()
 
 ### Questions to Answer for 85% Grade on Challenge
 
-4. **Multiple Simulations:** Run 100 simulations showing the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing a probability distribution of account balance at age 55. Comment on the results, are you happy? Why or why not?
+4. **Multiple Simulations:** Run 100 simulations modelling the dynamics of your account balance over time. Make an object-oriented matplotlib OR ggplot2 plot showing a probability distribution of the 100 simulatedaccount balance at age 55. Comment on the results, are you happy? Why or why not?
 
 ### Questions to Answer for 95% Grade on Challenge
 
