@@ -73,6 +73,16 @@ investmentDAG.show()
 
 1. **Create a Quarto Document:** Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your simulations.
 
+   ::: {.callout-tip}
+   ## 💡 Pro Tip: Source File Reference
+   
+   **Need help with Quarto syntax or DAFT diagrams?** You can find the complete source `.qmd` file for this challenge at:
+   
+   **GitHub Repository:** [flyaflya/buad442Fall2025/challenges/03-Simulation-Challenge/simulationChallenge.qmd](https://github.com/flyaflya/buad442Fall2025/blob/main/challenges/03-Simulation-Challenge/simulationChallenge.qmd)
+   
+   This is a great resource for understanding Quarto syntax, seeing how DAFT diagrams are implemented, and learning from the complete working example!
+   :::
+
 2. **Render to HTML:** You must render the quarto markdown file to HTML.
 
 3. **GitHub Repository:** The rendered HTML must be uploaded to a new GitHub repository called "simulationChallenge" in your Github account.
