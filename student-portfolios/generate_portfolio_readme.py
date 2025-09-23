@@ -11,6 +11,7 @@ Usage: python generate_portfolio_readme.py
 
 import os
 import re
+import json
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -85,6 +86,39 @@ def extract_student_info(readme_path: Path) -> Dict[str, str]:
 # Removed thumbnail generation function - using simple HTML sizing instead
 
 
+def load_github_mappings(portfolio_dir: Path) -> Dict[str, str]:
+    """
+    Load GitHub username mappings from the JSON file.
+    
+    Args:
+        portfolio_dir: Path to the student-portfolios directory
+        
+    Returns:
+        Dictionary mapping folder names to GitHub usernames
+    """
+    mapping_file = portfolio_dir / 'student_github_mapping.json'
+    github_mappings = {}
+    
+    try:
+        with open(mapping_file, 'r', encoding='utf-8') as f:
+            mappings = json.load(f)
+        
+        for mapping in mappings:
+            folder_name = mapping.get('folder_name')
+            github_username = mapping.get('github_username')
+            if folder_name and github_username and github_username != 'MANUAL_MAPPING_NEEDED':
+                github_mappings[folder_name] = github_username
+                
+    except FileNotFoundError:
+        print(f"Warning: GitHub mapping file not found at {mapping_file}")
+    except json.JSONDecodeError as e:
+        print(f"Warning: Error parsing GitHub mapping file: {e}")
+    except Exception as e:
+        print(f"Warning: Error loading GitHub mappings: {e}")
+    
+    return github_mappings
+
+
 def generate_portfolio_readme(portfolio_dir: Path) -> str:
     """
     Generate the main portfolio README.md content.
@@ -96,6 +130,9 @@ def generate_portfolio_readme(portfolio_dir: Path) -> str:
         String content for the README.md file
     """
     students = []
+    
+    # Load GitHub mappings
+    github_mappings = load_github_mappings(portfolio_dir)
     
     # Scan for student directories
     for item in portfolio_dir.iterdir():
@@ -118,8 +155,8 @@ This README is automatically generated and updated when changes are made to stud
 
 ## 📊 Current Students
 
-| Student | Nickname | Interesting Facts | Portfolio | Thumbnails |
-|---------|----------|-------------------|-----------|------------|
+| Student | Nickname | Interesting Facts | Portfolio | GitHub | Thumbnails |
+|---------|----------|-------------------|-----------|--------|------------|
 """
     
     for student in students:
@@ -134,6 +171,13 @@ This README is automatically generated and updated when changes are made to stud
         
         # Combine facts for display
         facts_display = f"{fact1_short}<br>{fact2_short}"
+        
+        # Generate GitHub link
+        github_username = github_mappings.get(folder_name)
+        if github_username:
+            github_link = f"[@{github_username}](https://github.com/{github_username})"
+        else:
+            github_link = "N/A"
         
         # Generate thumbnail HTML
         thumbnails_html = ""
@@ -151,7 +195,7 @@ This README is automatically generated and updated when changes are made to stud
         if not thumbnails_html:
             thumbnails_html = "No images"
         
-        content += f"| {folder_name} | {nickname} | {facts_display} | [View Portfolio]({folder_name}/README.md) | {thumbnails_html} |\n"
+        content += f"| {folder_name} | {nickname} | {facts_display} | [View Portfolio]({folder_name}/README.md) | {github_link} | {thumbnails_html} |\n"
     
     content += f"""
 ## 🆕 How to Add Your Portfolio
