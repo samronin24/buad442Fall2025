@@ -1,0 +1,220 @@
+{
+  "matches": [
+    {
+      "folder_name": "AnastasiaL",
+      "nickname": "Anastasia",
+      "github_username": "anastasialynch",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "AryanP",
+      "nickname": "Aryan",
+      "github_username": "aryanp333",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "CameronG",
+      "nickname": "Cameron",
+      "github_username": "cgraber29",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "ChanceD",
+      "nickname": "Chance",
+      "github_username": "cdebolt25",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "ChristianCampos",
+      "nickname": "Christian",
+      "github_username": "camposcm-ops",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "DavidH",
+      "nickname": "David",
+      "github_username": "jwsgw-756",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "EeshaS",
+      "nickname": "Eesha",
+      "github_username": "eeshahi",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "EricC",
+      "nickname": "Eric",
+      "github_username": "Echern914",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "HaileyP",
+      "nickname": "Hailey",
+      "github_username": "haileypease",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "IbdytaC",
+      "nickname": "Ibdyta.",
+      "github_username": "Ibdyta",
+      "confidence": 0.9230769230769231
+    },
+    {
+      "folder_name": "JamesW",
+      "nickname": "James",
+      "github_username": "jisaiahw",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "JaredW",
+      "nickname": "Jared",
+      "github_username": "jwsgw-756",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "MackC",
+      "nickname": "Mack",
+      "github_username": "Mack-Capodano",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "MarifD",
+      "nickname": "Marif",
+      "github_username": "marifdur-oss",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "MichaelP",
+      "nickname": "Michael",
+      "github_username": "mjsu1128",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "MichaelS",
+      "nickname": "Michael",
+      "github_username": "mjsu1128",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "NickTag",
+      "nickname": "Nick Tag",
+      "github_username": "nicholas-tang7",
+      "confidence": 0.5714285714285714
+    },
+    {
+      "folder_name": "NickTang",
+      "nickname": "Nick",
+      "github_username": "nicholas-tang7",
+      "confidence": 0.6363636363636364
+    },
+    {
+      "folder_name": "OwenT",
+      "nickname": "Owen",
+      "github_username": "OwenTat7",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "PatrickG",
+      "nickname": "Patrick",
+      "github_username": "mpoulakos4",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "RyanF",
+      "nickname": "Ryan",
+      "github_username": "aryanp333",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "SamA",
+      "nickname": "Sam",
+      "github_username": "samronin24",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "SamR",
+      "nickname": "Sam",
+      "github_username": "samronin24",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "SylasC",
+      "nickname": "Sylas",
+      "github_username": "sylaschacko",
+      "confidence": 0.95
+    },
+    {
+      "folder_name": "WillC",
+      "nickname": "Will",
+      "github_username": "vissa273",
+      "confidence": 0.9
+    },
+    {
+      "folder_name": "ZubairA",
+      "nickname": "Zubair",
+      "github_username": "Ibro06",
+      "confidence": 0.9
+    }
+  ],
+  "unmatched": [
+    {
+      "folder_name": "AdamF",
+      "nickname": "Adam"
+    },
+    {
+      "folder_name": "AidanK",
+      "nickname": "Aidan"
+    },
+    {
+      "folder_name": "AndrewS",
+      "nickname": "Andrew Szrom"
+    },
+    {
+      "folder_name": "AvaM",
+      "nickname": "Ava"
+    },
+    {
+      "folder_name": "IanS",
+      "nickname": "Ian"
+    },
+    {
+      "folder_name": "Ibrahimw",
+      "nickname": "Ibrahim"
+    },
+    {
+      "folder_name": "NickA",
+      "nickname": ""
+    },
+    {
+      "folder_name": "ValerieI",
+      "nickname": "Valerie"
+    }
+  ],
+  "available_github_usernames": [
+    "anastasialynch",
+    "aryanp333",
+    "camposcm-ops",
+    "cdebolt25",
+    "cgraber29",
+    "Echern914",
+    "eeshahi",
+    "haileypease",
+    "Ibdyta",
+    "Ibro06",
+    "jisaiahw",
+    "jwsgw-756",
+    "Mack-Capodano",
+    "marifdur-oss",
+    "mjsu1128",
+    "mpoulakos4",
+    "nicholas-tang7",
+    "OwenTat7",
+    "ryanjfr-web",
+    "samronin24",
+    "sasplen",
+    "scotti-ai",
+    "sylaschacko",
+    "vissa273"
+  ]
+}
