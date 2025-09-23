@@ -1,0 +1,80 @@
+---
+title: "Additional Clarity on Simulation Challenge and Quiz"
+subtitle: "What You're Really Being Graded On"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+  eval: false
+---
+
+# 🎯 Simulation Challenge - Grading Clarity TLDR
+
+## The Bottom Line
+
+**This is an investigative report, not a coding exercise.** You're analyzing one or two investment strategies and reporting your findings like a professional analyst would. Think of this as a brief you'd write for a client or manager.
+
+## What Makes a Great Report
+
+**Target:** A report that someone could read in less than 2 minutes and understand your findings.
+
+### Key Elements
+- **Clear narrative:** Tell the story of what you discovered
+- **Focus on insights:** Risk profiles, practical implications, and counter-intuitive results
+- **Professional style:** No AI babble, concise analysis, clean presentation
+- **Human interpretation:** What the numbers actually mean for real decision-making
+
+### What to Investigate
+- **Risk vs. Reward:** Which strategy offers better upside potential? Which is safer?
+- **Practical implications:** If advising a 25-year-old, how should they think about this?
+- **The counter-intuitive result:** Maximizing expected value may not maximize long-term account balance
+
+**Pro tip:** Use `echo: false` in Quarto to hide code and focus on insights.
+
+## The Real Challenge
+
+The technical simulation is just the tool. The real challenge is interpreting what the results mean and communicating those insights clearly and compellingly to someone.
+
+**Remember:** Simulation will steer you right even when intuition will steer you wrong! 🎲
+
+---
+
+# 📚 Thursday Quiz Preparation
+
+## The Core Question: "Do You Know What You Did With AI's Help?"
+
+**Quiz Format:** 20 minutes designed, 40 minutes allowed | Pen and paper only | No devices, calculators, or breaks
+
+**Multiple Versions:** There will be multiple versions of the quiz with subtle, but undetectable changes. Cheating off your neighbor will likely result in the wrong answer.
+
+## What You Need to Master
+
+### 1. Challenge Content Understanding
+
+- **Simulation Challenge:** Can you explain the simulation results of the main simulation and why your professor chose this example?
+- **Data Viz Challenge:** Do you understand Simpson's paradox and why it occurs?  What change was made to the visualization that revealed the paradox?
+- **Tech Setup Challenge:** Do you understand how and why we are using git, github, and cursor?  What is the right order of things to go from my github to your local computer and then back to my github, i.e. a professional collaboration workflow?
+
+### 2. Tech Stack Mastery
+
+- **How components interact:** Quarto → HTML → GitHub → GitHub Pages
+- **Why each step matters:** What happens if you skip rendering? Why can't you just upload .qmd files?
+- **Git/GitHub workflow:** Commits, pushes, repository management, Pages deployment
+
+### 3. Quarto Fundamentals
+
+- **Markdown vs. Code chunks:** When and why do you use each?
+- **Why `quarto render` is essential:** What does it do that browsers can't?
+- **The rendering process:** From .qmd to .html to live website
+
+### 4. Poll Everywhere Review
+
+- **All questions and concepts the questions are based on are fair game:** Review every poll from the semester
+- **Focus on concepts:** Not just answers, but the reasoning behind them
+- **Connect to challenges:** How do poll concepts apply to your actual work?
+
+## 🎯 The Secret to Success
+
+**Approach with curiosity, not just grade-seeking.** Students who engage authentically with the material: asking questions, experimenting, understanding the "why" are the ones who tend to excel without *any* studying.
+

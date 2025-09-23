@@ -99,6 +99,21 @@ investmentDAG.show()
 
 ## Grading Rubric 🎓
 
+::: {.callout-important}
+## 📊 What You're Really Being Graded On
+
+**This is an investigative report, not a coding exercise.** You're analyzing two investment strategies and reporting your findings like a professional analyst would. Think of this as a brief you'd write for a client or manager.
+
+**What makes a great report:**
+- **Clear narrative:** Tell the story of what you discovered
+- **Insightful analysis:** Focus on the most interesting differences between strategies
+- **Professional presentation:** Clean, readable, and engaging
+- **Concise conclusions:** No AI babble or unnecessary technical jargon
+- **Human insights:** Your interpretation of what the numbers actually mean
+
+**What we're looking for:** A report that someone could read in 5-10 minutes and understand both strategies, their risks, and which one might be better for different types of investors.
+:::
+
 ### Questions to Answer for 75% Grade on Challenge
 
 1. **Expected Value Analysis:** What is the "expected value" of your account balance after 1 coin flip for the original game?
@@ -118,6 +133,20 @@ investmentDAG.show()
 ### Questions to Answer for 100% Grade on Challenge
 
 6. **Strategy Comparison:** Run 100 simulations for the modified game strategy shown below in @exm-ErgodicityEconomicsExampleModified. What is the probability that your account balance will be greater than $10,000 at age 55? Is this probability higher or lower than the probability in the original game?
+
+::: {.callout-tip}
+## 🎯 For 100% Grade: Focus on What's Most Interesting
+
+**The key insight:** These two strategies have dramatically different risk profiles, and that's what makes this analysis fascinating. Don't just report numbers—explain what they mean.
+
+**What to investigate:**
+- **Risk vs. Reward:** Which strategy offers better upside potential? Which is safer?
+- **The "Ergodicity Problem":** Why does the math say one thing but reality shows another?
+- **Practical implications:** If you were advising a 25-year-old, which strategy would you recommend and why?
+- **The counter-intuitive result:** The strategy that seems "safer" (betting only 50%) might actually be riskier in the long run
+
+**Write like a financial analyst:** Your report should help someone understand not just what happened, but why it happened and what it means for real-world decision making.
+:::
 
 ### Modified Game Strategy
 
@@ -189,6 +218,15 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 - [ ] Appropriate use of functions and loops
 - [ ] Professional visualization styling
 
+**Report Quality (Critical for Higher Grades):**
+
+- [ ] Clear, engaging narrative that tells a story
+- [ ] Focus on the most interesting findings, not just technical details
+- [ ] Professional writing style (no AI-generated fluff)
+- [ ] Concise analysis that gets to the point
+- [ ] Practical insights that would help a real investor
+- [ ] Visualizations that support your narrative, not overwhelm it
+
 ### Resources
 
 - **Quarto Markdown:** [quarto.org/docs/authoring/markdown-basics.html](https://quarto.org/docs/authoring/markdown-basics.html)
@@ -208,7 +246,9 @@ Imagine you are offered the following game and given a $1,000 budget in a specia
 
 - **Browse [Essential Simulation Concepts](@sec-simulation-concepts):** This section will give you a good understanding of the concepts you need to know to complete the challenge.
 - **Start Simple:** Begin with a single simulation to understand the mechanics
-- **Document Everything:** Explain your reasoning and interpret your results
+- **Think Like an Analyst:** Document your findings as if you're writing a brief for a client, not just completing homework
+- **Focus on Insights:** The most interesting part is how these strategies differ in their risk profiles—that's your story
+- **Keep It Concise:** Professional reports are brief and to the point. Avoid unnecessary technical jargon
 - **Forgetting to Set Seeds:** Always set random seeds for reproducible results
 - **Total time to complete:** ~3-4 hours for the 100% grade ⏱️
 - **Good luck, and remember simulation will steer you right even when intuition will steer you wrong!** 🎲
