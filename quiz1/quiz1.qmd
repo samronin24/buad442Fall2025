@@ -1,0 +1,695 @@
+---
+title: "Quiz 1: Name: __________________________________"
+subtitle: "Verifying Understanding of Course Content"
+format:
+  html: default
+execute:
+  echo: false
+  eval: true
+  warning: false
+  error: false
+  message: false
+editor:
+  render-on-save: true
+---
+
+<style>
+/* Page break styles for printing */
+@media print {
+  .page-break {
+    page-break-before: always;
+  }
+  
+  /* Ensure questions start on new pages */
+  h2 {
+    page-break-before: always;
+  }
+  
+  /* Override: Don't break before elements with no-page-break class */
+  h2.no-page-break {
+    page-break-before: auto;
+  }
+  
+  /* Don't break questions across pages */
+  h2 + * {
+    page-break-inside: avoid;
+  }
+  
+  /* Keep tables together */
+  table {
+    page-break-inside: avoid;
+  }
+  
+  /* Keep code blocks together */
+  pre {
+    page-break-inside: avoid;
+  }
+}
+
+/* Table styling for better space utilization */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+/* Make statement column wider and True/False columns narrower */
+table th:nth-child(1),
+table td:nth-child(1) {
+  width: 70%;
+}
+
+table th:nth-child(2),
+table td:nth-child(2),
+table th:nth-child(3),
+table td:nth-child(3) {
+  width: 15%;
+  text-align: center;
+}
+
+/* Reduce padding for more compact tables */
+table th,
+table td {
+  padding: 8px 6px;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+/* Make True/False text smaller to save space */
+table td:nth-child(2) em,
+table td:nth-child(3) em {
+  font-size: 16px;
+}
+</style>
+
+## Question 1 (*1 point*){.no-page-break}
+
+The number of month, $X$, the average Amazon warehouse employee works until they quit or get fired follows a Weibull distribution with shape parameter $\alpha = 1$ and scale parameter $\beta = 10$.
+
+```{r}
+#| label: weibull-pdf-plot
+#| fig-cap: "Probability density function of Weibull(1,10) distribution with shaded area for X ≤ 12"
+#| fig-height: 2.7
+#| eval: true
+
+library(ggplot2)
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Create x values for the plot
+x_values <- seq(0, 30, length.out = 1000)
+
+# Calculate Weibull PDF values
+# For Weibull(shape=1, scale=10), this is equivalent to Exponential(rate=1/10)
+pdf_values <- dweibull(x_values, shape = 1, scale = 10)
+
+# Create data frame
+weibull_data <- data.frame(
+  x = x_values,
+  pdf = pdf_values
+)
+
+# Calculate P(X ≤ 12)
+prob_less_than_12 <- pweibull(12, shape = 1, scale = 10)
+
+# Create shaded area data for X ≤ 12
+shaded_data <- weibull_data[weibull_data$x <= 12, ]
+
+# Create the plot with specified colors and large fonts
+ggplot(weibull_data, aes(x = x, y = pdf)) +
+  # Full area under curve (light)
+  geom_area(fill = "aliceblue", alpha = 0.3) +
+  # Shaded area for X ≤ 12 (darker)
+  geom_area(data = shaded_data, fill = "thistle", alpha = 0.8) +
+  # Main line
+  geom_line(color = "cadetblue", linewidth = 2) +
+  # Vertical line at x = 12
+  geom_vline(xintercept = 12, color = "cadetblue", linetype = "dashed", linewidth = 1.5) +
+  # Add probability label
+  annotate("text", x = 6, y = 0.02, 
+           label = paste("P(X ≤ 12) =", round(prob_less_than_12, 3)), 
+           size = 6, color = "cadetblue", fontface = "bold",
+           bg = "white", alpha = 0.9) +
+  labs(
+    title = "Weibull(1,10) Probability Density Function",
+    subtitle = "Distribution of months until Amazon warehouse employee quits or gets fired",
+    x = "Months (X)",
+    y = "Probability Density f(x)",
+    caption = "Shape parameter α = 1, Scale parameter β = 10"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 18, face = "bold", color = "cadetblue"),
+    plot.subtitle = element_text(size = 14, color = "thistle"),
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 14),
+    plot.caption = element_text(size = 12, color = "gray50"),
+    panel.grid.major = element_line(color = "aliceblue", linewidth = 0.5),
+    panel.grid.minor = element_line(color = "aliceblue", linewidth = 0.3),
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white")
+  ) +
+  scale_x_continuous(breaks = seq(0, 30, 5)) +
+  scale_y_continuous(breaks = seq(0, 0.1, 0.02))
+```
+
+**Instructions:** Circle TRUE or FALSE for each statement. All answers must be correct to receive the full point for this question; no partial credit.
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background-color: #f0f8ff; border-bottom: 2px solid #5f9ea0;">
+<th style="padding: 12px; text-align: left; font-weight: bold; color: #5f9ea0;">Statement</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">TRUE</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">FALSE</th>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">The probability an Amazon warehouse employee works more than 1-year is roughly 30%.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">The probability that X ≤ 12 months is approximately 0.699.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">The probability that a worker works exactly ZERO days is approximately 10%.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">There is a greater than 50% chance that a worker works more than 1 year.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr>
+<td style="padding: 15px; vertical-align: top;">The random variable X can only take values between 0 and 10 with value 1 being the most likely.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+</table>
+
+---
+
+## Question 2 (*1 point*)
+
+The Palmer Penguins dataset contains measurements of penguin species from Palmer Station, Antarctica. The plot below shows the relationship between bill length and bill depth for three penguin species (Adelie, Chinstrap, and Gentoo), demonstrating Simpson's paradox.
+
+```{r}
+#| label: penguins-simpsons-paradox
+#| fig-cap: "Bill length vs. bill depth for three penguin species showing Simpson's paradox"
+#| fig-height: 2.75
+#| eval: true
+
+library(palmerpenguins)
+library(ggplot2)
+
+# Create the plot showing Simpson's paradox
+bill_len_dep <- ggplot(data = penguins,
+                         aes(x = bill_length_mm,
+                             y = bill_depth_mm,
+                             group = species)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin Bill Dimensions: Simpson's Paradox",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 18, face = "bold", color = "cadetblue"),
+    plot.subtitle = element_text(size = 14, color = "thistle"),
+    axis.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 14),
+    legend.position = c(0.85, 0.15),
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 11),
+    plot.title.position = "plot",
+    plot.caption = element_text(hjust = 0, face= "italic"),
+    plot.caption.position = "plot",
+    panel.grid.major = element_line(color = "aliceblue", linewidth = 0.5),
+    panel.grid.minor = element_line(color = "aliceblue", linewidth = 0.3),
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white")
+  )
+
+bill_len_dep
+```
+
+**Instructions:** Circle TRUE or FALSE for each statement. All answers must be correct to receive the full point for this question; no partial credit.
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background-color: #f0f8ff; border-bottom: 2px solid #5f9ea0;">
+<th style="padding: 12px; text-align: left; font-weight: bold; color: #5f9ea0;">Statement</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">TRUE</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">FALSE</th>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">Within each species, a linear regression would show a positive slope between bill length and bill depth.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">When all species are combined, a linear regression would show a negative slope between bill length and bill depth.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">Adelie penguins have the largest average bill length among the three species.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">This is an example of Simpson's paradox because the slope of the linear regression coefficient changes from negative (when all species are combined) to positive (when individual species are considered separately).</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+</table>
+
+---
+
+## Question 3 (*1 point*)
+
+The following diagram shows the workflow for how students work with Quarto files in this course, from the professor's GitHub repository to student submissions via pull requests.
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#5f9ea0', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#4a7c7e', 'lineColor': '#5f9ea0', 'secondaryColor': '#f0f8ff', 'tertiaryColor': '#ffffff'}}}%%
+graph LR
+    A["🏫 Professor's<br/>GitHub"] -->|"fork (sometimes)"| B["📋 Student's<br/>GitHub"]
+    B -->|clone| C["💻 Student's<br/>Local Computer"]
+    C -->|push| B
+    B -->|"pull request (sometimes)"| A
+    
+    style A fill:#5f9ea0,stroke:#4a7c7e,stroke-width:3px,color:#ffffff
+    style B fill:#f0f8ff,stroke:#5f9ea0,stroke-width:2px
+    style C fill:#f0f8ff,stroke:#5f9ea0,stroke-width:2px
+```
+
+**Instructions:** Circle TRUE or FALSE for each statement. All answers must be correct to receive the full point for this question; no partial credit.
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background-color: #f0f8ff; border-bottom: 2px solid #5f9ea0;">
+<th style="padding: 12px; text-align: left; font-weight: bold; color: #5f9ea0;">Statement</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">TRUE</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">FALSE</th>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">Forking the professor's repository will create a copy of the repository on both your github and your local computer.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">HTML files can be generated from Quarto (.qmd) files using the command `quarto render <filename>.qmd`.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">Committing a .qmd file locally will also automatically sync the generated HTML files to your GitHub repository.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">Pull requests allow the professor to review student work before it gets merged into the main repository.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+</table>
+
+---
+
+## Question 4 (*1 point*)
+
+The following diagram shows a generative model for a Bernoulli random variable representing whether a day is sunny or not. The model includes a parameter $p=0.7$ that controls the probability of a sunny day.
+
+```{python}
+#| label: bernoulli-dag
+#| fig-cap: "Generative DAG for Bernoulli distribution modeling sunny days"
+#| eval: true
+
+import daft
+from functools import partialmethod
+
+class DAG(daft.PGM):
+    def __init__(self, *args, **kwargs):
+        daft.PGM.__init__(self, *args, **kwargs)
+        self.truth = "The most compelling analysts unify narrative, math, and code."
+
+    latentNode = partialmethod(daft.PGM.add_node, aspect = 4, fontsize = 9.25, plot_params = {'facecolor': 'aliceblue'})
+    observedNode = partialmethod(daft.PGM.add_node, aspect = 4, fontsize = 9.25, plot_params = {'facecolor': 'thistle'})
+    deterministicNode = partialmethod(daft.PGM.add_node, aspect = 5.4, fontsize = 9.25, alternate = True, plot_params = {'facecolor': 'aliceblue'})
+
+# Create the DAG for Bernoulli random variable
+bernoulliDAG = DAG(dpi = 150, alternate_style="outer")
+bernoulliDAG.latentNode("X","Sunny Day\n"+r"$X \sim \text{Bernoulli}(0.7)$",x = 1, y = 1)
+bernoulliDAG.show()
+```
+
+**Instructions:** Circle TRUE or FALSE for each statement. All answers must be correct to receive the full point for this question; no partial credit.
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background-color: #f0f8ff; border-bottom: 2px solid #5f9ea0;">
+<th style="padding: 12px; text-align: left; font-weight: bold; color: #5f9ea0;">Statement</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">TRUE</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">FALSE</th>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">The random variable X can only take values 0 or 1.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">The $P(X = 1) = 0.7$ and $P(X = 0) = 0.3$.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">It is more likely to be sunny than not sunny.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">The $P(X \leq 0.8)$ is greater than 50%.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">The $P(X \leq 0.99)$ is greater than 50%.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+</table>
+
+---
+
+## Question 5 (*1 point*) 
+
+The following simulation shows the distribution of outcomes for 100 simulations of the investment game from the simulation challenge. In this game, you start with $1,000 and each year flip a coin: heads increases your balance by 50%, tails reduces it by 40%. This continues for 30 years (from age 25 to 55).
+
+```{python}
+#| label: investment-simulation
+#| fig-cap: "Distribution of final account balances after 100 simulations of the investment game over 30 years"
+#| fig-height: 3
+#| eval: true
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Set seed for reproducibility
+np.random.seed(42)
+
+# Parameters
+initial_balance = 1000
+n_years = 30  # From age 25 to 55
+n_sims = 100
+
+def simulate_investment_game(initial, years):
+    """
+    Simulate the investment game for a given number of years.
+    Each year: heads (50% gain) or tails (40% loss)
+    """
+    balance = initial
+    for year in range(years):
+        coin_flip = np.random.binomial(1, 0.5)  # 0.5 probability for heads
+        if coin_flip == 1:  # Heads: 50% gain
+            balance = balance * 1.5
+        else:  # Tails: 40% loss
+            balance = balance * 0.6
+    return balance
+
+# Run 100 simulations
+final_balances = [simulate_investment_game(initial_balance, n_years) for _ in range(n_sims)]
+
+# Create data frame
+simulation_data = pd.DataFrame({
+    'simulation': range(1, n_sims + 1),
+    'final_balance': final_balances
+})
+
+# Create the distribution plot
+fig, ax = plt.subplots(figsize=(16, 4))
+
+# Define custom bins for better visualization
+# More granular buckets for values under $1,000, larger buckets for higher values
+bins = [0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 
+        2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000]
+
+# Create custom x-axis labels for the bins
+bin_labels = ['$0-50', '$50-100', '$100-200', '$200-300', '$300-400', '$400-500', 
+              '$500-600', '$600-700', '$700-800', '$800-900', '$900-1K', '$1K-2K',
+              '$2K-5K', '$5K-10K', '$10K-20K', '$20K-50K', '$50K-100K', '$100K-200K', 
+              '$200K-500K', '$500K-1M']
+
+# Count values in each bin manually for discrete plotting
+bin_counts = []
+for i in range(len(bins)-1):
+    count = ((simulation_data['final_balance'] >= bins[i]) & 
+             (simulation_data['final_balance'] < bins[i+1])).sum()
+    bin_counts.append(count)
+
+# Create bar plot with discrete x-axis
+x_positions = range(len(bin_labels))
+bars = ax.bar(x_positions, bin_counts, color='thistle', alpha=0.8, edgecolor='black')
+
+# Add vertical lines for key statistics (approximate positions)
+mean_balance = simulation_data['final_balance'].mean()
+median_balance = simulation_data['final_balance'].median()
+initial_line = initial_balance
+
+# Find which bin the statistics fall into
+def find_bin_position(value, bins):
+    for i in range(len(bins)-1):
+        if bins[i] <= value < bins[i+1]:
+            return i + 0.5  # Center of the bin
+    return len(bins) - 1 + 0.5  # Last bin
+
+mean_pos = find_bin_position(mean_balance, bins)
+median_pos = find_bin_position(median_balance, bins)
+initial_pos = find_bin_position(initial_line, bins)
+
+ax.axvline(mean_pos, color='cadetblue', linestyle='-', linewidth=3, 
+           label=f'Mean: ${mean_balance:,.0f}')
+ax.axvline(median_pos, color='darkorange', linestyle='--', linewidth=2, 
+           label=f'Median: ${median_balance:,.0f}')
+ax.axvline(initial_pos, color='red', linestyle=':', linewidth=2, 
+           label=f'Initial: ${initial_line:,.0f}')
+
+# Calculate probability of ending above initial balance
+prob_above_initial = (simulation_data['final_balance'] > initial_balance).mean()
+
+# Set x-axis labels
+ax.set_xticks(x_positions)
+ax.set_xticklabels(bin_labels, rotation=45, ha='right', fontsize=10)
+
+# Formatting
+ax.set_title('Distribution of Final Account Balances\n100 Simulations of Investment Game (30 Years)', 
+             fontsize=16, fontweight='bold', color='cadetblue')
+ax.set_xlabel('Final Balance Range', fontsize=14, fontweight='bold')
+ax.set_ylabel('Frequency', fontsize=14, fontweight='bold')
+ax.legend(fontsize=12)
+ax.grid(True, alpha=0.3, axis='y')
+
+# # Add text box with key statistics
+# stats_text = f'''Key Statistics:
+# • Mean: ${mean_balance:,.0f}
+# • Median: ${median_balance:,.0f}
+# • Probability > $1,000: {prob_above_initial:.1%}
+# • Min: ${simulation_data["final_balance"].min():,.0f}
+# • Max: ${simulation_data["final_balance"].max():,.0f}'''
+
+# ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=11,
+#         verticalalignment='top', bbox=dict(boxstyle='round', facecolor='aliceblue', alpha=0.8))
+
+plt.tight_layout()
+plt.show()
+
+# # Print summary statistics
+# print("Investment Game Simulation Results:")
+# print("=" * 50)
+# print(f"Initial balance: ${initial_balance:,}")
+# print(f"Number of years: {n_years}")
+# print(f"Number of simulations: {n_sims}")
+# print(f"Mean final balance: ${mean_balance:,.2f}")
+# print(f"Median final balance: ${median_balance:,.2f}")
+# print(f"Probability of ending above $1,000: {prob_above_initial:.1%}")
+# print(f"Minimum final balance: ${simulation_data['final_balance'].min():,.2f}")
+# print(f"Maximum final balance: ${simulation_data['final_balance'].max():,.2f}")
+# print(f"Standard deviation: ${simulation_data['final_balance'].std():,.2f}")
+```
+
+**Instructions:** Circle TRUE or FALSE for each statement. All answers must be correct to receive the full point for this question; no partial credit.
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background-color: #f0f8ff; border-bottom: 2px solid #5f9ea0;">
+<th style="padding: 12px; text-align: left; font-weight: bold; color: #5f9ea0;">Statement</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">TRUE</th>
+<th style="padding: 12px; text-align: center; font-weight: bold; color: #5f9ea0; width: 200px;">FALSE</th>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">The expected value of the account balance after the first coin flipis greater than the initial $1,000.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd; background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">Most simulations result in final balances below the initial $1,000.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 15px; vertical-align: top;">Since the mean account balance is greater than the initial $1,000, that will guarantee that most simulations result in final balances above the initial $1,000.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 15px; vertical-align: top;">As long as the expected value of each flip (i.e. each year) is positive, there is greater than 50% probability that the final account balance will be greater than the initial $1,000.</td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>true</em></td>
+<td style="padding: 15px; text-align: center; vertical-align: top; font-size: 18px;"><em>false</em></td>
+</tr>
+</table>
+
+---
+
+## Question 6 (*1 point*)
+
+**Instructions:** Circle the code snippet that correctly simulates the investment game (50% gain on heads, 40% loss on tails, 30 years, 100 simulations).
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>A)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 0.6, 0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>B)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 1.5, 0.6)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>C)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 0.5, 0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>D)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 0.5, -0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>E)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 1.5, -0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>F)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 1.4, 0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>G)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 0.6, 0.5)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+<div style="border: 1px solid #ddd; padding: 8px; border-radius: 3px;">
+<strong>H)</strong>
+<pre style="background-color: #f8f9fa; padding: 5px; border-radius: 2px; font-size: 10px; margin: 5px 0; line-height: 1.2;">
+set.seed(42)
+balances <- c()
+for(i in 1:100) {
+  balance <- 1000
+  for(year in 1:30) {
+    coin <- rbinom(1, 1, 0.5)
+    balance <- balance * ifelse(coin == 1, 1.5, 0.4)
+  }
+  balances <- c(balances, balance)
+}
+</pre>
+</div>
+
+</div>
+
+---
+
