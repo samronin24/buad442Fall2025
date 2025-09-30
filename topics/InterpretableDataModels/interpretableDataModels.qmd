@@ -329,7 +329,7 @@ $$
 \mu_i = 58.91 + 0.1114 \times x_i
 $$
 
-The model suggests, assuming its assumptions are justified, that BuildIt can anticipate being able to sell additional square footage for about \$111 per square foot (i.e. $1000* \beta$ because price is in 000's).  This would not earn them acceptable profit as it is less than $120 per square foot.  However, with only `6` data points, there is obviously going to be tremendous uncertainty in this estimate.  A Bayesian model, like we will use below, helps to capture this uncertainty.
+The model suggests, assuming its assumptions are justified, that BuildIt can anticipate being able to sell additional square footage for about \$111 per square foot (i.e. $1000* \beta$ because price is in 000's).  This would not earn them acceptable profit as it is less than $120 per square foot.  However, with only `6` data points, there is obviously going to be tremendous uncertainty in this estimate.  
 
 ## Visualizing the Linear Model as a Generative DAG
 
@@ -350,7 +350,7 @@ x_i &\equiv \textrm{The value of an explanatory variable for the } i^{th} \textr
 \end{aligned}
 $$
 
-Using a generative DAG, @fig-lineDag presents the Bayesian version of simple linear regression.
+Using a generative DAG, @fig-lineDag presents a graphical version of simple linear regression.
 
 ```{python}
 #| echo: false
@@ -374,13 +374,13 @@ class dag(daft.PGM):
     detNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.25, fontsize = 9, alternate = True, plot_params = {'facecolor': 'aliceblue'})
     latNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.2, fontsize = 9, plot_params = {'facecolor': 'aliceblue'})
     
-pgm = dag(dpi = 150, alternate_style="outer")
+pgm = dag(dpi = 100, alternate_style="outer")
 pgm.latNode("y","Sales Price\n"+r"$y \sim Normal(\mu,\sigma)$",1,1)
-pgm.detNode("mu","Expected Sales Price\n"+r"$\mu = \alpha + \beta \times x$",1,2)
+pgm.detNode("mu","Exp. Sales Price\n"+r"$\mu = \alpha + \beta \times x$",1,2)
 pgm.obsNode("x","Square Footage\n"+r"$x$",1,3, aspect = 2.7)
 pgm.latNode("alpha","Intercept Term\n"+r"$\alpha = 58.91$", -1.5, 3)
 pgm.latNode("beta","Slope Coeff " + r"$(\$ / ft^{2})$" + "\n"+r"$\beta = 0.1114$", 3.5, 3)
-pgm.latNode("sigma","Std.Dev of Observed Price" + "\n"+r"$\sigma = 24.8$", 3.5, 2)
+pgm.latNode("sigma","Sales $ Std.Dev" + "\n"+r"$\sigma = 24.8$", 3.5, 2)
 pgm.add_edge("mu","y")
 pgm.add_edge("x","mu")
 pgm.add_edge("alpha","mu")
@@ -392,10 +392,9 @@ pgm.add_plate([-0.2, 0.2, 2.4, 3.25], label = "Observation:\n" + r"$i = 1, 2, \l
 
 ```{python}
 #| echo: false
-#| results: hide
 #| label: fig-lineDag
-#| fig-cap: Generative DAG model using Bayesian linear regression.
-#| out-width: 95%
+#| fig-cap: Generative DAG model for linear regression.
+#| out-width: 85%
 pgm.show()
 ```
 

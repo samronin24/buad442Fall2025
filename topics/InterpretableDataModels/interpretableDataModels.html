@@ -419,7 +419,7 @@ In Short
 <h2 class="anchored" data-anchor-id="linear-regression-as-canonical-interpretable-model-example">Linear Regression as Canonical Interpretable Model Example</h2>
 <p>BuildIt Inc.&nbsp;flips houses - they buy houses to quickly renovate and then sell. Their specialty is building additions on to existing houses in established neighborhoods and then selling the home at prices above their total investment. BuildIt’s decision to move into a neighborhood is based on how sales price fluctuates with square footage. If sales price seems to increase by more than $120 per additional square foot, then they consider that neighborhood to be a good candidate for buying houses. BuildIt is eyeing a new neighborhood and records the square footage and prices of some recent sales transactions.</p>
 <p>Here is the <code>python</code> code that creates a dataframe with BuildIt’s data (note: <code>salesPrice</code> is in thousands of dollars):</p>
-<div id="0214de8c" class="cell" data-execution_count="1">
+<div id="b729dd69" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## make two data arrays representing observations</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">## of six home sales</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>salesPrice <span class="op">=</span> [<span class="dv">160</span>, <span class="dv">220</span>, <span class="dv">190</span>, <span class="dv">250</span>, <span class="dv">290</span>, <span class="dv">240</span>]</span>
@@ -453,7 +453,7 @@ y_i \equiv &amp;\textrm{ The observed sales price, in 000's, for the } i^{th} \t
 \end{aligned}
 \]</span></p>
 <p>the linear regression output can be extracted code in <code>R</code> or <code>python</code>. We will not worry about the coding details here. In the below code output, the first element of the returned array is <span class="math inline">\(\beta\)</span>, the slope coefficient for how price changes per square foot and the second element of the array is <span class="math inline">\(\alpha\)</span> typically referred to as the y-intercept.</p>
-<div id="e64a3a97" class="cell" data-execution_count="3">
+<div id="fb918abe" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>np.polyfit(x <span class="op">=</span> sqFootage, y <span class="op">=</span> salesPrice, deg <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
@@ -464,7 +464,7 @@ y_i \equiv &amp;\textrm{ The observed sales price, in 000's, for the } i^{th} \t
 <p><span class="math display">\[
 \mu_i = 58.91 + 0.1114 \times x_i
 \]</span></p>
-<p>The model suggests, assuming its assumptions are justified, that BuildIt can anticipate being able to sell additional square footage for about $111 per square foot (i.e.&nbsp;<span class="math inline">\(1000* \beta\)</span> because price is in 000’s). This would not earn them acceptable profit as it is less than $120 per square foot. However, with only <code>6</code> data points, there is obviously going to be tremendous uncertainty in this estimate. A Bayesian model, like we will use below, helps to capture this uncertainty.</p>
+<p>The model suggests, assuming its assumptions are justified, that BuildIt can anticipate being able to sell additional square footage for about $111 per square foot (i.e.&nbsp;<span class="math inline">\(1000* \beta\)</span> because price is in 000’s). This would not earn them acceptable profit as it is less than $120 per square foot. However, with only <code>6</code> data points, there is obviously going to be tremendous uncertainty in this estimate.</p>
 </section>
 <section id="visualizing-the-linear-model-as-a-generative-dag" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-linear-model-as-a-generative-dag">Visualizing the Linear Model as a Generative DAG</h2>
@@ -481,16 +481,16 @@ x_i &amp;\equiv \textrm{The value of an explanatory variable for the } i^{th} \t
 \mu_i &amp;\equiv \textrm{ The expected value (or mean) for the } i^{th} \textrm{ observation.}
 \end{aligned}
 \]</span></p>
-<p>Using a generative DAG, <strong>?@fig-lineDag</strong> presents the Bayesian version of simple linear regression.</p>
-<div id="cell-fig-lineDag" class="cell" data-results="hide" data-execution_count="5">
+<p>Using a generative DAG, <strong>?@fig-lineDag</strong> presents a graphical version of simple linear regression.</p>
+<div id="cell-fig-lineDag" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div id="fig-linedag" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-linedag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="interpretableDataModels_files/figure-html/fig-linedag-output-1.png" width="847" height="437" class="figure-img">
+<img src="interpretableDataModels_files/figure-html/fig-linedag-output-1.png" width="565" height="291" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-linedag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Generative DAG model using Bayesian linear regression.
+Figure&nbsp;2: Generative DAG model for linear regression.
 </figcaption>
 </figure>
 </div>
