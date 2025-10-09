@@ -411,6 +411,91 @@ For a nice companion guide to interpretable machine learning methods and techniq
 
 **Molnar, C. (2023). Interpretable Machine Learning: A Guide for Making Black Box Models Explainable.** Available at: https://christophm.github.io/interpretable-ml-book/
 
+# EXAMPLES
+
+## HRT Therapy and Cardiac Disease Example
+
+This example demonstrates how interpretable data models can help us understand complex relationships in medical data, particularly around hormone replacement therapy (HRT) and cardiac disease outcomes.
+
+### The Scenario
+
+Consider a study examining the relationship between hormone replacement therapy (HRT) and cardiac disease in women. A key challenge in this type of analysis is understanding the causal pathways and potential confounding variables.
+
+### The DAG Model
+
+The following DAG illustrates the relationships between wealthy/healthy women, HRT therapy, and cardiac disease outcomes:
+
+```{python}
+#| echo: false
+#| include: false
+#| results: hide
+import matplotlib.pyplot as plt
+import pandas as pd
+from functools import partial, partialmethod
+import daft
+from numpy.random import default_rng
+import numpy as np
+
+class dag(daft.PGM):
+    def __init__(self, *args, **kwargs):
+        daft.PGM.__init__(self, *args, **kwargs)
+    
+    obsNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3, fontsize = 9, plot_params = {'facecolor': 'cadetblue'})
+    decNode = partialmethod(daft.PGM.add_node, aspect = 2.2, fontsize = 9, shape = "rectangle", plot_params = {'facecolor': 'thistle'})
+    detNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3, fontsize = 8.5, alternate = True, plot_params = {'facecolor': 'aliceblue'})
+    latNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3.45, fontsize = 8.5, plot_params = {'facecolor': 'aliceblue'})
+    detNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.25, fontsize = 9, alternate = True, plot_params = {'facecolor': 'aliceblue'})
+    latNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.2, fontsize = 9, plot_params = {'facecolor': 'aliceblue'})
+    
+pgm_hrt = dag(dpi = 100, alternate_style="outer")
+pgm_hrt.latNode("wealthy_healthy", "Wealthy/Healthy\nWomen", 0, 2)
+pgm_hrt.latNode("hrt_therapy", "HRT Therapy", -1, 1)
+pgm_hrt.latNode("cardiac_disease", "Cardiac Disease\nOutcome", 1, 1)
+
+# Add edges
+pgm_hrt.add_edge("wealthy_healthy", "hrt_therapy")
+pgm_hrt.add_edge("wealthy_healthy", "cardiac_disease")
+```
+
+```{python}
+#| echo: false
+#| label: fig-hrtDag
+#| fig-cap: DAG showing relationships between wealthy/healthy women, HRT therapy, and cardiac disease outcomes.
+#| out-width: 70%
+pgm_hrt.show()
+```
+
+### Interpreting the DAG
+
+The DAG in @fig-hrtDag shows two important relationships:
+
+1. **Wealthy/Healthy Women → HRT Therapy**: Women who are wealthy and healthy are more likely to receive HRT therapy. This could be due to:
+   - Better access to healthcare
+   - More proactive health management
+   - Ability to afford treatments
+
+2. **Wealthy/Healthy Women → Lower Cardiac Disease**: Women who are wealthy and healthy have lower rates of cardiac disease. This relationship exists independently of HRT therapy and could be due to:
+   - Better overall health status
+   - Access to preventive care
+   - Healthier lifestyle factors
+   - Socioeconomic advantages
+
+### Why This Matters for Interpretability
+
+This example illustrates a classic confounding scenario where:
+
+- **Correlation ≠ Causation**: Simply observing that HRT users have lower cardiac disease rates doesn't mean HRT causes the reduction
+- **Confounding Variable**: Wealthy/healthy status is a confounder that affects both HRT usage and cardiac outcomes
+- **Interpretable Models Help**: By explicitly modeling these relationships in a DAG, we can:
+  - Identify potential confounding variables
+  - Design studies that control for these factors
+  - Make more accurate causal inferences
+  - Avoid spurious conclusions
+
+### Key Takeaway
+
+Interpretable models like DAGs help us move beyond simple correlations to understand the underlying causal structure of complex relationships. This is essential for making sound medical and policy decisions based on data analysis.
+
 
 ---
 

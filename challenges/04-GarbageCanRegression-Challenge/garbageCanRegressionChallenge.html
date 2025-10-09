@@ -209,8 +209,13 @@ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon
 <p><strong>In Our Case:</strong> <span class="math display">\[
 Anxiety = \beta_0 + \beta_1 \times Stress + \beta_2 \times Time + \epsilon
 \]</span></p>
-<p><strong>The True Coefficients (what we “know”):</strong> - <span class="math inline">\(\beta_0 = 0\)</span> (intercept is zero) - <span class="math inline">\(\beta_1 = 1\)</span> (coefficient on Stress is 1)<br>
-- <span class="math inline">\(\beta_2 = 0.1\)</span> (coefficient on Time is 0.1)</p>
+<p><strong>The True Coefficients (what we “know”):</strong></p>
+<ul>
+<li><span class="math inline">\(\beta_0 = 0\)</span> (intercept is zero)</li>
+<li><span class="math inline">\(\beta_1 = 1\)</span> (coefficient on Stress is 1)<br>
+</li>
+<li><span class="math inline">\(\beta_2 = 0.1\)</span> (coefficient on Time is 0.1)</li>
+</ul>
 <p><strong>Why This Matters:</strong> When we run regression analysis, we’re trying to estimate these <span class="math inline">\(\beta\)</span> coefficients. If our regression gives us coefficients that are very different from these true values, we know our model is wrong—even if it has good statistical fit!</p>
 </div>
 </div>
@@ -296,7 +301,7 @@ Figure&nbsp;1: StressSurvey as a proxy for actual Stress levels
 <section id="minimum-requirements-for-any-points-on-challenge" class="level3">
 <h3 class="anchored" data-anchor-id="minimum-requirements-for-any-points-on-challenge">Minimum Requirements for Any Points on Challenge</h3>
 <ol type="1">
-<li><p><strong>Create a Quarto Document:</strong> Use the starter repository (see Repository Setup section above) to begin with a working template. Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your regression analyses. The required narrative should answer the questions from the grading rubric section below.</p></li>
+<li><p><strong>Create a Quarto Document:</strong> Use the starter repository (see Repository Setup section below) to begin with a working template. Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your regression analyses. The required narrative should answer the questions from the grading rubric section below.</p></li>
 <li><p><strong>Render to HTML:</strong> You must render the quarto markdown file to HTML.</p></li>
 <li><p><strong>GitHub Repository:</strong> Use your forked repository (from the starter repository) named “garbageCanRegressionChallenge” in your GitHub account. Upload your rendered HTML files to this repository.</p></li>
 <li><p><strong>GitHub Pages Setup:</strong> The repository should be made the source of your github pages:</p>
@@ -324,7 +329,7 @@ Figure&nbsp;1: StressSurvey as a proxy for actual Stress levels
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Step 1:</strong> Fork the starter repository to your github accountat <a href="https://github.com/flyaflya/garbageCanRegressionChallenge.git">https://github.com/flyaflya/garbageCanRegressionChallenge.git</a></p>
+<p><strong>Step 1:</strong> Fork the starter repository to your github account at <a href="https://github.com/flyaflya/garbageCanRegressionChallenge.git">https://github.com/flyaflya/garbageCanRegressionChallenge.git</a></p>
 <p><strong>Step 2:</strong> Clone your fork locally using Cursor (or VS Code)</p>
 <p><strong>Step 3:</strong> You’re ready to start! The repository includes pre-loaded data and a working template.</p>
 </div>
@@ -339,7 +344,13 @@ Figure&nbsp;1: StressSurvey as a proxy for actual Stress levels
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Benefits:</strong> - <strong>Pre-loaded data:</strong> All required data (<code>observDF</code> with Stress, StressSurvey, Time, Anxiety) is included - <strong>Working template:</strong> Basic Quarto structure (<code>index.qmd</code>) is ready - <strong>No setup errors:</strong> Avoid common data loading issues - <strong>Focus on analysis:</strong> Spend time on regression analysis, not data preparation</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li><strong>Pre-loaded data:</strong> All required data (<code>observDF</code> with Stress, StressSurvey, Time, Anxiety) is included</li>
+<li><strong>Working template:</strong> Basic Quarto structure (<code>index.qmd</code>) is ready</li>
+<li><strong>No setup errors:</strong> Avoid common data loading issues</li>
+<li><strong>Focus on analysis:</strong> Spend time on regression analysis, not data preparation</li>
+</ul>
 </div>
 </div>
 <section id="getting-started-tips" class="level3">
@@ -410,6 +421,7 @@ Figure&nbsp;1: StressSurvey as a proxy for actual Stress levels
 <li><strong>Professional presentation:</strong> Clean, readable, and engaging</li>
 <li><strong>Concise conclusions:</strong> No AI babble or unnecessary technical jargon</li>
 <li><strong>Human insights:</strong> Your interpretation of what the regression coefficients actually mean (or don’t mean)</li>
+<li><strong>Use convention of dependent variable on the vertical axis:</strong> When plotting, put the dependent variable (i.e., Anxiety) on the vertical axis. Independent variables (i.e., StressSurvey, Stress, and Time) should be on the horizontal axis.</li>
 </ul>
 <p><strong>What we’re looking for:</strong> A compelling 4-8 minute read that demonstrates both the power of linear models for interpretation and the critical pitfalls of over-relying on statistical significance in regression analysis.</p>
 </div>
@@ -1910,243 +1922,6 @@ document.querySelectorAll('.fa-regular.fa-copy').forEach(function(element) {
 </div>
 </div>
 </div>
-</section>
-<section id="extracting-coefficients-and-p-values-for-narrative-reporting" class="level3">
-<h3 class="anchored" data-anchor-id="extracting-coefficients-and-p-values-for-narrative-reporting">3. Extracting Coefficients and P-values for Narrative Reporting</h3>
-<p>When writing about regression results, you need to extract and format the key statistics properly. Here’s how to do it in both languages:</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(broom))</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Using our multiple regression model from above</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>coef_summary <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model_multi)</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Format for narrative reporting</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>coef_summary <span class="sc">%&gt;%</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Format numbers to 3 decimal places</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">coef_formatted =</span> <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, estimate),</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_formatted =</span> <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, p.value),</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check significance at 5% level</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_significant =</span> p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>,</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create narrative text</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">narrative =</span> <span class="fu">paste0</span>(term, <span class="st">": "</span>, coef_formatted, </span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>                      <span class="st">" (p = "</span>, p_formatted, </span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">ifelse</span>(is_significant, <span class="st">", significant)"</span>, <span class="st">", not significant)"</span>))</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, coef_formatted, p_formatted, is_significant, narrative)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 5
-  term        coef_formatted p_formatted is_significant narrative               
-  &lt;chr&gt;       &lt;chr&gt;          &lt;chr&gt;       &lt;lgl&gt;          &lt;chr&gt;                   
-1 (Intercept) 2.585          0.027       TRUE           (Intercept): 2.585 (p =…
-2 x1          1.889          0.000       TRUE           x1: 1.889 (p = 0.000, s…
-3 x2          0.754          0.000       TRUE           x2: 0.754 (p = 0.000, s…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print simple summary</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Regression Results:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Regression Results:</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"==================</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>==================</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(coef_summary)) {</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(coef_summary<span class="sc">$</span>narrative[i], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Unknown or uninitialised column: `narrative`.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Unknown or uninitialised column: `narrative`.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Unknown or uninitialised column: `narrative`.</code></pre>
-</div>
-</div>
-</div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Using our multiple regression model from above</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Get coefficients</span></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> [<span class="st">'x1'</span>, <span class="st">'x2'</span>]</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>coefficients <span class="op">=</span> model_multi.coef_</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> model_multi.intercept_</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create simple summary (with mock p-values for demonstration)</span></span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>coef_data <span class="op">=</span> []</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (name, coef) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>([<span class="st">'intercept'</span>] <span class="op">+</span> feature_names, [intercept] <span class="op">+</span> <span class="bu">list</span>(coefficients))):</span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mock p-value (in practice, use statsmodels for real p-values)</span></span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    p_val <span class="op">=</span> np.random.uniform(<span class="fl">0.01</span>, <span class="fl">0.1</span>)</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    coef_data.append({</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'term'</span>: name,</span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'coefficient'</span>: <span class="ss">f"</span><span class="sc">{</span>coef<span class="sc">:.3f}</span><span class="ss">"</span>,</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">'p_value'</span>: <span class="ss">f"</span><span class="sc">{</span>p_val<span class="sc">:.3f}</span><span class="ss">"</span>,</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'is_significant'</span>: p_val <span class="op">&lt;</span> <span class="fl">0.05</span></span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>coef_df <span class="op">=</span> pd.DataFrame(coef_data)</span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Regression Results:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Regression Results:</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=================="</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>==================</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> coef_df.iterrows():</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">"significant"</span> <span class="cf">if</span> row[<span class="st">'is_significant'</span>] <span class="cf">else</span> <span class="st">"not significant"</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'term'</span>]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>row[<span class="st">'coefficient'</span>]<span class="sc">}</span><span class="ss"> (p = </span><span class="sc">{</span>row[<span class="st">'p_value'</span>]<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>status<span class="sc">}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>intercept: 4.969 (p = 0.015, significant)
-x1: 1.964 (p = 0.046, significant)
-x2: 0.216 (p = 0.092, not significant)</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="writing-narrative-paragraphs-with-results" class="level3">
-<h3 class="anchored" data-anchor-id="writing-narrative-paragraphs-with-results">4. Writing Narrative Paragraphs with Results</h3>
-<p>Once you’ve extracted the coefficients and p-values, here’s how to incorporate them into narrative text:</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Python</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(broom))</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract results</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model_multi)</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1: Individual coefficient</span></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>x1_result <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span> <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"x1"</span>)</span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>narrative_1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"The coefficient for x1 is "</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, x1_result<span class="sc">$</span>estimate), </span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>                     <span class="st">" with a p-value of "</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, x1_result<span class="sc">$</span>p.value), </span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">ifelse</span>(x1_result<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">" (statistically significant)."</span>, <span class="st">" (not statistically significant)."</span>))</span>
-<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: Multiple coefficients in context</span></span>
-<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>narrative_2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Our regression analysis shows that x1 has a positive effect (β = "</span>, </span>
-<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, results<span class="sc">$</span>estimate[results<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"x1"</span>]), </span>
-<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", p = "</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, results<span class="sc">$</span>p.value[results<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"x1"</span>]), </span>
-<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>                     <span class="st">") while x2 shows a smaller effect (β = "</span>, </span>
-<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, results<span class="sc">$</span>estimate[results<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"x2"</span>]), </span>
-<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>                     <span class="st">", p = "</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, results<span class="sc">$</span>p.value[results<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"x2"</span>]), <span class="st">")."</span>)</span>
-<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 3: Conditional interpretation</span></span>
-<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>significant_vars <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span> <span class="fu">filter</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>)</span>
-<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">nrow</span>(significant_vars) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>  sig_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Only "</span>, <span class="fu">nrow</span>(significant_vars), <span class="st">" variable(s) were statistically significant: "</span>)</span>
-<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(significant_vars)) {</span>
-<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    sig_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(sig_text, significant_vars<span class="sc">$</span>term[i], <span class="st">" (β = "</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, significant_vars<span class="sc">$</span>estimate[i]), <span class="st">")"</span>)</span>
-<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">&lt;</span> <span class="fu">nrow</span>(significant_vars)) sig_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(sig_text, <span class="st">", "</span>)</span>
-<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a>  sig_text <span class="ot">&lt;-</span> <span class="fu">paste0</span>(sig_text, <span class="st">"."</span>)</span>
-<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>  narrative_3 <span class="ot">&lt;-</span> sig_text</span>
-<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>  narrative_3 <span class="ot">&lt;-</span> <span class="st">"No variables were statistically significant at the 5% level."</span></span>
-<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
-<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>narrative_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "The coefficient for x1 is 1.889 with a p-value of 0.000 (statistically significant)."</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>narrative_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Our regression analysis shows that x1 has a positive effect (β = 1.889, p = 0.000) while x2 shows a smaller effect (β = 0.754, p = 0.000)."</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>narrative_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Only 2 variable(s) were statistically significant: x1 (β = 1.889), x2 (β = 0.754)."</code></pre>
-</div>
-</div>
-</div>
-<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get results (using our model from above)</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> [<span class="st">'x1'</span>, <span class="st">'x2'</span>]</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>coefficients <span class="op">=</span> model_multi.coef_</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> model_multi.intercept_</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create results dataframe</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>results_data <span class="op">=</span> []</span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (name, coef) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>([<span class="st">'intercept'</span>] <span class="op">+</span> feature_names, [intercept] <span class="op">+</span> <span class="bu">list</span>(coefficients))):</span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    p_val <span class="op">=</span> np.random.uniform(<span class="fl">0.01</span>, <span class="fl">0.1</span>)  <span class="co"># Mock p-value</span></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    results_data.append({</span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'term'</span>: name,</span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'coefficient'</span>: coef,</span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'p_value'</span>: p_val,</span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'is_significant'</span>: p_val <span class="op">&lt;</span> <span class="fl">0.05</span></span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame(results_data)</span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 1: Individual coefficient</span></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>x1_result <span class="op">=</span> results_df[results_df[<span class="st">'term'</span>] <span class="op">==</span> <span class="st">'x1'</span>].iloc[<span class="dv">0</span>]</span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>narrative_1 <span class="op">=</span> <span class="ss">f"The coefficient for x1 is </span><span class="sc">{</span>x1_result[<span class="st">'coefficient'</span>]<span class="sc">:.3f}</span><span class="ss"> with a p-value of </span><span class="sc">{</span>x1_result[<span class="st">'p_value'</span>]<span class="sc">:.3f}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'(statistically significant).'</span> <span class="cf">if</span> x1_result[<span class="st">'is_significant'</span>] <span class="cf">else</span> <span class="st">'(not statistically significant).'</span><span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 2: Multiple coefficients in context</span></span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>x1_coef <span class="op">=</span> results_df[results_df[<span class="st">'term'</span>] <span class="op">==</span> <span class="st">'x1'</span>][<span class="st">'coefficient'</span>].iloc[<span class="dv">0</span>]</span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>x1_p <span class="op">=</span> results_df[results_df[<span class="st">'term'</span>] <span class="op">==</span> <span class="st">'x1'</span>][<span class="st">'p_value'</span>].iloc[<span class="dv">0</span>]</span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>x2_coef <span class="op">=</span> results_df[results_df[<span class="st">'term'</span>] <span class="op">==</span> <span class="st">'x2'</span>][<span class="st">'coefficient'</span>].iloc[<span class="dv">0</span>]</span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>x2_p <span class="op">=</span> results_df[results_df[<span class="st">'term'</span>] <span class="op">==</span> <span class="st">'x2'</span>][<span class="st">'p_value'</span>].iloc[<span class="dv">0</span>]</span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>narrative_2 <span class="op">=</span> <span class="ss">f"Our regression analysis shows that x1 has a positive effect (β = </span><span class="sc">{</span>x1_coef<span class="sc">:.3f}</span><span class="ss">, p = </span><span class="sc">{</span>x1_p<span class="sc">:.3f}</span><span class="ss">) while x2 shows a smaller effect (β = </span><span class="sc">{</span>x2_coef<span class="sc">:.3f}</span><span class="ss">, p = </span><span class="sc">{</span>x2_p<span class="sc">:.3f}</span><span class="ss">)."</span></span>
-<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Example 3: Conditional interpretation</span></span>
-<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a>significant_vars <span class="op">=</span> results_df[(results_df[<span class="st">'p_value'</span>] <span class="op">&lt;</span> <span class="fl">0.05</span>) <span class="op">&amp;</span> (results_df[<span class="st">'term'</span>] <span class="op">!=</span> <span class="st">'intercept'</span>)]</span>
-<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(significant_vars) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a>    sig_vars_text <span class="op">=</span> <span class="st">", "</span>.join([<span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'term'</span>]<span class="sc">}</span><span class="ss"> (β = </span><span class="sc">{</span>row[<span class="st">'coefficient'</span>]<span class="sc">:.3f}</span><span class="ss">)"</span> <span class="cf">for</span> _, row <span class="kw">in</span> significant_vars.iterrows()])</span>
-<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a>    narrative_3 <span class="op">=</span> <span class="ss">f"Only </span><span class="sc">{</span><span class="bu">len</span>(significant_vars)<span class="sc">}</span><span class="ss"> variable(s) were statistically significant: </span><span class="sc">{</span>sig_vars_text<span class="sc">}</span><span class="ss">."</span></span>
-<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a>    narrative_3 <span class="op">=</span> <span class="st">"No variables were statistically significant at the 5</span><span class="sc">% le</span><span class="st">vel."</span></span>
-<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Display results</span></span>
-<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>narrative_1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'The coefficient for x1 is 1.964 with a p-value of 0.016 (statistically significant).'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>narrative_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'Our regression analysis shows that x1 has a positive effect (β = 1.964, p = 0.016) while x2 shows a smaller effect (β = 0.216, p = 0.100).'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>narrative_3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'Only 1 variable(s) were statistically significant: x1 (β = 1.964).'</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="key-writing-tips" class="level3">
-<h3 class="anchored" data-anchor-id="key-writing-tips">Key Writing Tips:</h3>
-<ol type="1">
-<li><strong>Always include the coefficient value</strong> and p-value together</li>
-<li><strong>Use “β =” or “coefficient =”</strong> to be clear about what the number represents</li>
-<li><strong>State significance clearly</strong> - don’t assume readers know what p &lt; 0.05 means</li>
-<li><strong>Use conditional language</strong> - “if significant” vs “if not significant”</li>
-<li><strong>Round appropriately</strong> - 3 decimal places for coefficients, 3 decimal places for p-values</li>
-<li><strong>Provide context</strong> - explain what the coefficient means in practical terms</li>
-</ol>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2162,7 +1937,18 @@ Statistical Significance at 5% Level
 <li><strong>p &lt; 0.05</strong>: Statistically significant</li>
 <li><strong>p ≥ 0.05</strong>: Not statistically significant</li>
 </ul>
+<section id="understanding-scientific-notation-in-p-values" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-scientific-notation-in-p-values">Understanding Scientific Notation in P-values</h3>
+<p>Sometimes you’ll see p-values written in scientific notation like <code>7.89e-4</code>. Don’t panic! This is just a way to write very small numbers:</p>
+<ul>
+<li><strong>7.89e-4</strong> means 7.89 × 10⁻⁴ = 0.000789</li>
+<li><strong>2.34e-6</strong> means 2.34 × 10⁻⁶ = 0.00000234</li>
+<li><strong>1.23e-2</strong> means 1.23 × 10⁻² = 0.0123</li>
+</ul>
+<p><strong>The key rule:</strong> If you see “e-” in a p-value, it’s always a very small number (less than 1). The number after “e-” tells you how many zeros come before the first non-zero digit.</p>
+<p><strong>Examples:</strong> - 7.89e-4 = 0.000789 (less than 0.05, so significant!) - 2.34e-6 = 0.00000234 (way less than 0.05, so very significant!) - 1.23e-2 = 0.0123 (less than 0.05, so significant!)</p>
 <p><strong>Remember:</strong> Statistical significance doesn’t mean the effect is large or important - it just means we’re confident the effect isn’t zero.</p>
+</section>
 </div>
 </div>
 </section>

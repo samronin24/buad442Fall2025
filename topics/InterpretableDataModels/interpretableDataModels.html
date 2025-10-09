@@ -106,7 +106,7 @@ window.Quarto = {
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="..\..\interpretableDataModels.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="interpretableDataModels.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -419,7 +419,7 @@ In Short
 <h2 class="anchored" data-anchor-id="linear-regression-as-canonical-interpretable-model-example">Linear Regression as Canonical Interpretable Model Example</h2>
 <p>BuildIt Inc.&nbsp;flips houses - they buy houses to quickly renovate and then sell. Their specialty is building additions on to existing houses in established neighborhoods and then selling the home at prices above their total investment. BuildIt’s decision to move into a neighborhood is based on how sales price fluctuates with square footage. If sales price seems to increase by more than $120 per additional square foot, then they consider that neighborhood to be a good candidate for buying houses. BuildIt is eyeing a new neighborhood and records the square footage and prices of some recent sales transactions.</p>
 <p>Here is the <code>python</code> code that creates a dataframe with BuildIt’s data (note: <code>salesPrice</code> is in thousands of dollars):</p>
-<div id="b729dd69" class="cell" data-execution_count="1">
+<div id="172569c7" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## make two data arrays representing observations</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">## of six home sales</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>salesPrice <span class="op">=</span> [<span class="dv">160</span>, <span class="dv">220</span>, <span class="dv">190</span>, <span class="dv">250</span>, <span class="dv">290</span>, <span class="dv">240</span>]</span>
@@ -453,7 +453,7 @@ y_i \equiv &amp;\textrm{ The observed sales price, in 000's, for the } i^{th} \t
 \end{aligned}
 \]</span></p>
 <p>the linear regression output can be extracted code in <code>R</code> or <code>python</code>. We will not worry about the coding details here. In the below code output, the first element of the returned array is <span class="math inline">\(\beta\)</span>, the slope coefficient for how price changes per square foot and the second element of the array is <span class="math inline">\(\alpha\)</span> typically referred to as the y-intercept.</p>
-<div id="fb918abe" class="cell" data-execution_count="3">
+<div id="939b1a9d" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>np.polyfit(x <span class="op">=</span> sqFootage, y <span class="op">=</span> salesPrice, deg <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
@@ -509,8 +509,75 @@ Figure&nbsp;2: Generative DAG model for linear regression.
 <h2 class="anchored" data-anchor-id="further-reading-optional">Further Reading (optional)</h2>
 <p>For a nice companion guide to interpretable machine learning methods and techniques, see:</p>
 <p><strong>Molnar, C. (2023). Interpretable Machine Learning: A Guide for Making Black Box Models Explainable.</strong> Available at: https://christophm.github.io/interpretable-ml-book/</p>
+</section>
+</section>
+<section id="examples-1" class="level1">
+<h1>EXAMPLES</h1>
+<section id="hrt-therapy-and-cardiac-disease-example" class="level2">
+<h2 class="anchored" data-anchor-id="hrt-therapy-and-cardiac-disease-example">HRT Therapy and Cardiac Disease Example</h2>
+<p>This example demonstrates how interpretable data models can help us understand complex relationships in medical data, particularly around hormone replacement therapy (HRT) and cardiac disease outcomes.</p>
+<section id="the-scenario" class="level3">
+<h3 class="anchored" data-anchor-id="the-scenario">The Scenario</h3>
+<p>Consider a study examining the relationship between hormone replacement therapy (HRT) and cardiac disease in women. A key challenge in this type of analysis is understanding the causal pathways and potential confounding variables.</p>
+</section>
+<section id="the-dag-model" class="level3">
+<h3 class="anchored" data-anchor-id="the-dag-model">The DAG Model</h3>
+<p>The following DAG illustrates the relationships between wealthy/healthy women, HRT therapy, and cardiac disease outcomes:</p>
+<div id="cell-fig-hrtDag" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div id="fig-hrtdag" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hrtdag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="interpretableDataModels_files/figure-html/fig-hrtdag-output-1.png" width="329" height="153" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hrtdag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: DAG showing relationships between wealthy/healthy women, HRT therapy, and cardiac disease outcomes.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpreting-the-dag" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-dag">Interpreting the DAG</h3>
+<p>The DAG in <strong>?@fig-hrtDag</strong> shows two important relationships:</p>
+<ol type="1">
+<li><strong>Wealthy/Healthy Women → HRT Therapy</strong>: Women who are wealthy and healthy are more likely to receive HRT therapy. This could be due to:
+<ul>
+<li>Better access to healthcare</li>
+<li>More proactive health management</li>
+<li>Ability to afford treatments</li>
+</ul></li>
+<li><strong>Wealthy/Healthy Women → Lower Cardiac Disease</strong>: Women who are wealthy and healthy have lower rates of cardiac disease. This relationship exists independently of HRT therapy and could be due to:
+<ul>
+<li>Better overall health status</li>
+<li>Access to preventive care</li>
+<li>Healthier lifestyle factors</li>
+<li>Socioeconomic advantages</li>
+</ul></li>
+</ol>
+</section>
+<section id="why-this-matters-for-interpretability" class="level3">
+<h3 class="anchored" data-anchor-id="why-this-matters-for-interpretability">Why This Matters for Interpretability</h3>
+<p>This example illustrates a classic confounding scenario where:</p>
+<ul>
+<li><strong>Correlation ≠ Causation</strong>: Simply observing that HRT users have lower cardiac disease rates doesn’t mean HRT causes the reduction</li>
+<li><strong>Confounding Variable</strong>: Wealthy/healthy status is a confounder that affects both HRT usage and cardiac outcomes</li>
+<li><strong>Interpretable Models Help</strong>: By explicitly modeling these relationships in a DAG, we can:
+<ul>
+<li>Identify potential confounding variables</li>
+<li>Design studies that control for these factors</li>
+<li>Make more accurate causal inferences</li>
+<li>Avoid spurious conclusions</li>
+</ul></li>
+</ul>
+</section>
+<section id="key-takeaway" class="level3">
+<h3 class="anchored" data-anchor-id="key-takeaway">Key Takeaway</h3>
+<p>Interpretable models like DAGs help us move beyond simple correlations to understand the underlying causal structure of complex relationships. This is essential for making sound medical and policy decisions based on data analysis.</p>
 <hr>
 <p><em>“The most compelling analysts unify narrative, math, and code.”</em></p>
+</section>
 </section>
 </section>
 

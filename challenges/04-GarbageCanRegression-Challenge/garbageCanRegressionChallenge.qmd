@@ -86,6 +86,7 @@ Anxiety = \beta_0 + \beta_1 \times Stress + \beta_2 \times Time + \epsilon
 $$
 
 **The True Coefficients (what we "know"):**
+
 - $\beta_0 = 0$ (intercept is zero)
 - $\beta_1 = 1$ (coefficient on Stress is 1)  
 - $\beta_2 = 0.1$ (coefficient on Time is 0.1)
@@ -161,7 +162,7 @@ observDF %>%
 
 ### Minimum Requirements for Any Points on Challenge
 
-1. **Create a Quarto Document:** Use the starter repository (see Repository Setup section above) to begin with a working template. Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your regression analyses. The required narrative should answer the questions from the grading rubric section below.
+1. **Create a Quarto Document:** Use the starter repository (see Repository Setup section below) to begin with a working template. Write a concise quarto markdown file that includes a narrative of what you are doing along with the requested code, results, and visualizations of your regression analyses. The required narrative should answer the questions from the grading rubric section below.
 
 2. **Render to HTML:** You must render the quarto markdown file to HTML.
 
@@ -182,7 +183,7 @@ observDF %>%
 ::: {.callout-important}
 ## 📁 Quick Start with Starter Repository
 
-**Step 1:** Fork the starter repository to your github accountat [https://github.com/flyaflya/garbageCanRegressionChallenge.git](https://github.com/flyaflya/garbageCanRegressionChallenge.git)
+**Step 1:** Fork the starter repository to your github account at [https://github.com/flyaflya/garbageCanRegressionChallenge.git](https://github.com/flyaflya/garbageCanRegressionChallenge.git)
 
 **Step 2:** Clone your fork locally using Cursor (or VS Code)
 
@@ -193,6 +194,7 @@ observDF %>%
 ## 💡 Why Use the Starter Repository?
 
 **Benefits:**
+
 - **Pre-loaded data:** All required data (`observDF` with Stress, StressSurvey, Time, Anxiety) is included
 - **Working template:** Basic Quarto structure (`index.qmd`) is ready
 - **No setup errors:** Avoid common data loading issues
@@ -245,6 +247,7 @@ observDF %>%
 - **Professional presentation:** Clean, readable, and engaging
 - **Concise conclusions:** No AI babble or unnecessary technical jargon
 - **Human insights:** Your interpretation of what the regression coefficients actually mean (or don't mean)
+- **Use convention of dependent variable on the vertical axis:** When plotting, put the dependent variable (i.e., Anxiety) on the vertical axis.  Independent variables (i.e., StressSurvey, Stress, and Time) should be on the horizontal axis.
 
 **What we're looking for:** A compelling 4-8 minute read that demonstrates both the power of linear models for interpretation and the critical pitfalls of over-relying on statistical significance in regression analysis.
 :::
