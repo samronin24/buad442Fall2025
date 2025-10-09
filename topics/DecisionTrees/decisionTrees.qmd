@@ -39,6 +39,30 @@ Our goal is to predict anxiety levels using available data. Let's start with the
 
 Consider a study examining the relationship between social media usage and anxiety levels. We have data on time spent on social media (in hours) and stress survey responses, with corresponding anxiety levels measured by fMRI activity.
 
+::: {.callout-important}
+## 🔍 Understanding the True Relationship: Implied Coefficients
+
+**Critical Point:** Students often miss that this specific equation implies specific coefficient values in the generic multiple regression framework.
+
+**The Generic Multiple Regression Equation:**
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon
+$$
+
+**In Our Case:**
+$$
+Anxiety = \beta_0 + \beta_1 \times Stress + \beta_2 \times Time + \epsilon
+$$
+
+**The True Coefficients (what we "know"):**
+
+- $\beta_0 = 0$ (intercept is zero)
+- $\beta_1 = 1$ (coefficient on Stress is 1)  
+- $\beta_2 = 0.1$ (coefficient on Time is 0.1)
+
+**Why This Matters:** When we run regression analysis, we're trying to estimate these $\beta$ coefficients. If our regression gives us coefficients that are very different from these true values, we know our model is wrong—even if it has good statistical fit!
+:::
+
 ```{python}
 #| echo: false
 #| include: false
@@ -73,6 +97,10 @@ data = pd.DataFrame({
 print("True relationship: Anxiety = Stress + 0.1 * Time")
 print("But we observe StressSurvey (non-linear proxy) instead of Stress")
 print("\nOur prediction challenge: Can we predict anxiety using Time and StressSurvey?")
+print("\n📚 REMINDER: This dataset comes from the Garbage Can Regression Challenge!")
+print("   We KNOW the true relationship: Anxiety = Stress + 0.1*Time")
+print("   This means Time should have a POSITIVE coefficient of 0.1")
+print("   But we only observe StressSurvey (non-linear proxy) instead of true Stress")
 ```
 
 ```{python}
@@ -89,13 +117,66 @@ First, let's establish our baseline prediction using no independent variables:
 ```{python}
 #| label: fig-baseline-prediction
 #| fig-cap: "Baseline anxiety prediction using no independent variables"
-#| echo: true
+#| echo: false
 
-# Calculate baseline prediction (mean anxiety)
-baseline_prediction = data['Anxiety'].mean()
-print(f"Baseline Prediction (no variables): {baseline_prediction:.2f}")
-print(f"This means we predict everyone has anxiety level {baseline_prediction:.2f}")
-print(f"Mean Absolute Error: {np.mean(np.abs(data['Anxiety'] - baseline_prediction)):.2f}")
+from scipy import stats
+
+# Calculate baseline predictions
+baseline_mean = data['Anxiety'].mean()
+baseline_median = data['Anxiety'].median()
+
+# Create dotplot with density function
+fig, ax = plt.subplots(1, 1, figsize=(7.5, 5.5))
+
+# Create dotplot
+y_jitter = np.random.normal(0, 0.02, len(data['Anxiety']))
+ax.scatter(data['Anxiety'], y_jitter, alpha=0.6, s=100, color='steelblue', 
+           edgecolors='black', linewidth=1, label='Observed Anxiety Values')
+
+# Add density curve
+anxiety_range = np.linspace(data['Anxiety'].min() - 1, data['Anxiety'].max() + 1, 100)
+density = stats.gaussian_kde(data['Anxiety'])
+density_values = density(anxiety_range)
+# Scale density to fit nicely on the plot
+density_scaled = density_values / density_values.max() * 0.1
+ax.fill_between(anxiety_range, -density_scaled, density_scaled, alpha=0.3, color='lightblue', label='Probability Density')
+
+# Add mean and median lines
+ax.axvline(baseline_mean, color='red', linestyle='-', linewidth=3, alpha=0.8, label=f'Mean = {baseline_mean:.2f}')
+ax.axvline(baseline_median, color='green', linestyle='--', linewidth=3, alpha=0.8, label=f'Median = {baseline_median:.2f}')
+
+# Add annotations
+ax.annotate(f'Mean Prediction\n{baseline_mean:.2f}', 
+            xy=(baseline_mean, 0.05), xytext=(baseline_mean + 1, 0.08),
+            arrowprops=dict(arrowstyle='->', color='red', alpha=0.7),
+            fontsize=12, ha='center', color='red', weight='bold')
+
+ax.annotate(f'Median Prediction\n{baseline_median:.2f}', 
+            xy=(baseline_median, -0.05), xytext=(baseline_median - 1, -0.08),
+            arrowprops=dict(arrowstyle='->', color='green', alpha=0.7),
+            fontsize=12, ha='center', color='green', weight='bold')
+
+ax.set_xlabel('Anxiety Level', fontsize=12)
+ax.set_ylabel('Density', fontsize=12)
+ax.set_title('Baseline Anxiety Prediction: Mean vs Median', fontsize=14, weight='bold')
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3)
+ax.set_ylim(-0.12, 0.12)
+
+plt.tight_layout()
+plt.show()
+
+# Calculate errors for both predictions
+mae_mean = np.mean(np.abs(data['Anxiety'] - baseline_mean))
+mae_median = np.mean(np.abs(data['Anxiety'] - baseline_median))
+
+print(f"Baseline Predictions (no variables):")
+print(f"Mean prediction: {baseline_mean:.2f}")
+print(f"Median prediction: {baseline_median:.2f}")
+print(f"Mean Absolute Error (using mean): {mae_mean:.2f}")
+print(f"Mean Absolute Error (using median): {mae_median:.2f}")
+print(f"\nInterpretation: We predict everyone has anxiety level {baseline_mean:.2f} (mean) or {baseline_median:.2f} (median)")
+print(f"This is our starting point before adding any independent variables.")
 ```
 
 ### Step 2: Predicting Anxiety with One Variable (Time)
@@ -105,10 +186,10 @@ Now let's see how much we can improve by using just social media time:
 ```{python}
 #| label: fig-linear-relationship
 #| fig-cap: "Predicting anxiety using social media time (one variable)"
-#| echo: true
+#| echo: false
 
 # Create figure
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7.5, 5.5))
 
 # Scatter plot with regression line
 ax.scatter(data['Time'], data['Anxiety'], 
@@ -147,6 +228,7 @@ plt.show()
 # Calculate prediction accuracy for one variable
 time_predictions = slope * data['Time'] + intercept
 time_mae = np.mean(np.abs(data['Anxiety'] - time_predictions))
+baseline_prediction = data['Anxiety'].mean()  # Define baseline for R² calculation
 time_r2 = 1 - np.sum((data['Anxiety'] - time_predictions)**2) / np.sum((data['Anxiety'] - baseline_prediction)**2)
 
 print(f"One-Variable Prediction Results (Time only):")
@@ -166,7 +248,7 @@ Now let's see what happens when we add the StressSurvey variable to improve our 
 ```{python}
 #| label: fig-multiple-regression
 #| fig-cap: "Multiple regression analysis showing the garbage can regression problem"
-#| echo: true
+#| echo: false
 
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
@@ -187,7 +269,7 @@ stress_coef = lr_multi.coef_[1]
 intercept = lr_multi.intercept_
 
 # Create visualization - Plot 1: Actual vs Predicted
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 ax.scatter(data['Anxiety'], multi_predictions, 
            color='steelblue', s=100, alpha=0.7, edgecolors='black', linewidth=1)
 ax.plot([0, 15], [0, 15], 'r--', linewidth=2, alpha=0.8, label='Perfect Prediction')
@@ -200,7 +282,7 @@ plt.tight_layout()
 plt.show()
 
 # Create visualization - Plot 2: Coefficient comparison
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 coefficients = ['Time Coefficient', 'StressSurvey Coefficient']
 true_values = [0.1, 1.0]  # True coefficients
 estimated_values = [time_coef, stress_coef]
@@ -288,14 +370,14 @@ Let's see how a decision tree would approach our anxiety prediction challenge us
 ```{python}
 #| label: fig-decision-tree-example
 #| fig-cap: "Decision tree for anxiety prediction using Time and StressSurvey"
-#| echo: true
+#| echo: false
 
 # Create and fit decision tree with both features
-tree_model = DecisionTreeRegressor(max_depth=3, random_state=42)
+tree_model = DecisionTreeRegressor(max_depth=2, random_state=42)
 tree_model.fit(data[['Time', 'StressSurvey']], data['Anxiety'])
 
 # Create visualization - Plot 1: Tree structure
-fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 plot_tree(tree_model, feature_names=['Time', 'StressSurvey'], 
           filled=True, rounded=True, fontsize=10, ax=ax)
 ax.set_title('Decision Tree Structure', fontsize=14, weight='bold')
@@ -303,7 +385,7 @@ plt.tight_layout()
 plt.show()
 
 # Create visualization - Plot 2: Tree predictions vs actual data
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 ax.scatter(data['Anxiety'], tree_model.predict(data[['Time', 'StressSurvey']]), 
            color='steelblue', s=100, alpha=0.7, edgecolors='black', linewidth=1, 
            label='Tree Predictions')
@@ -357,17 +439,34 @@ The Classification and Regression Trees (CART) algorithm builds trees through a 
 3. **Split Data**: Create two child nodes based on the chosen split
 4. **Repeat**: Continue splitting until stopping criteria are met
 
+::: {.callout-note}
+## Computational Complexity of CART
+
+**You're absolutely right!** CART does manually search over potential split points, which can be slow on large datasets:
+
+- **For each feature**: CART considers every unique value as a potential split point
+- **For each split point**: It calculates variance reduction (regression) or Gini impurity (classification)
+- **Computational cost**: O(n × m × log n) where n = number of samples, m = number of features
+
+**Why this matters:**
+- **Large datasets**: With millions of rows, this becomes computationally expensive
+- **Many features**: Each additional feature multiplies the search space
+- **Modern alternatives**: Algorithms like Random Forest use sampling and parallelization to speed this up
+
+**For our small anxiety dataset**: This is fast, but in real-world applications with large datasets, you'd want to use optimized implementations or ensemble methods.
+:::
+
 ```{python}
 #| label: fig-split-visualization
 #| fig-cap: "Visualizing how decision trees find optimal splits using StressSurvey"
-#| echo: true
+#| echo: false
 
 # Create individual plots for each split point
 split_points = [3, 6, 9, 12]
 colors = ['red', 'blue', 'green', 'orange']
 
 for i, (split, color) in enumerate(zip(split_points, colors)):
-    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+    fig, ax = plt.subplots(1, 1, figsize=(7, 4))
     
     # Plot data points
     ax.scatter(data['StressSurvey'], data['Anxiety'], 
@@ -418,7 +517,7 @@ Let's compare all our approaches to predicting anxiety:
 ```{python}
 #| label: fig-model-comparison
 #| fig-cap: "Comparing how linear regression and decision trees handle the Time effect"
-#| echo: true
+#| echo: false
 
 # Calculate metrics for both models
 lr_mse = mean_squared_error(data['Anxiety'], multi_predictions)
@@ -426,7 +525,7 @@ tree_mse = mean_squared_error(data['Anxiety'], tree_predictions)
 lr_r2 = r2_score(data['Anxiety'], multi_predictions)
 
 # Create comparison plot - Plot 1: Actual vs Predicted comparison
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 ax.scatter(data['Anxiety'], multi_predictions, 
            color='blue', s=100, alpha=0.7, edgecolors='black', linewidth=1, 
            label=f'Multiple Regression (R² = {lr_r2:.3f})')
@@ -444,7 +543,7 @@ plt.tight_layout()
 plt.show()
 
 # Create comparison plot - Plot 2: Performance metrics
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 models = ['Multiple Regression', 'Decision Tree']
 mse_values = [lr_mse, tree_mse]
 r2_values = [lr_r2, tree_r2]
@@ -488,19 +587,147 @@ print(f"• Decision trees can capture the true positive Time effect without bei
 print(f"  by the non-linear StressSurvey relationship!")
 ```
 
+### How is Feature Importance Calculated?
+
+Before we compare feature importance, let's understand how decision trees calculate it:
+
+::: {.callout-note}
+## Feature Importance Calculation in Decision Trees
+
+**The basic idea**: Feature importance measures how much each feature contributes to reducing prediction error across all splits in the tree.
+
+**Step-by-step calculation**:
+
+1. **For each split**: Calculate how much variance/impurity is reduced by that split
+2. **Weight by samples**: Multiply by the number of samples that go through that split
+3. **Sum by feature**: Add up all the weighted reductions for each feature
+4. **Normalize**: Divide by the total reduction to get proportions that sum to 1
+:::
+
+Let's see this in action with our anxiety prediction tree:
+
+```{python}
+#| label: fig-feature-importance-calculation
+#| fig-cap: "Step-by-step calculation of feature importance in decision trees"
+#| echo: false
+
+def calculate_feature_importance_manually(tree_model, feature_names):
+    """Manually calculate feature importance to show the process"""
+    tree = tree_model.tree_
+    
+    # Initialize importance for each feature
+    feature_importance = np.zeros(len(feature_names))
+    
+    print("Feature Importance Calculation Process:")
+    print("=" * 50)
+    
+    # Go through each node in the tree
+    for i in range(tree.node_count):
+        if tree.feature[i] != -2:  # Not a leaf node
+            feature_idx = tree.feature[i]
+            feature_name = feature_names[feature_idx]
+            
+            # Get the number of samples at this node
+            n_samples = tree.n_node_samples[i]
+            
+            # Calculate weighted impurity reduction
+            # This is simplified - in practice, it uses the actual impurity measure
+            left_samples = tree.n_node_samples[tree.children_left[i]]
+            right_samples = tree.n_node_samples[tree.children_right[i]]
+            
+            # Simplified impurity reduction (using sample counts as proxy)
+            impurity_reduction = n_samples * (1 - (left_samples + right_samples) / n_samples)
+            
+            # Add to feature importance
+            feature_importance[feature_idx] += impurity_reduction
+            
+            print(f"Node {i}: Split on {feature_name} <= {tree.threshold[i]:.1f}")
+            print(f"  Samples: {n_samples}, Left: {left_samples}, Right: {right_samples}")
+            print(f"  Impurity reduction: {impurity_reduction:.2f}")
+            print(f"  Running total for {feature_name}: {feature_importance[feature_idx]:.2f}")
+            print()
+    
+    # Normalize to sum to 1
+    total_importance = np.sum(feature_importance)
+    if total_importance > 0:
+        feature_importance = feature_importance / total_importance
+    
+    return feature_importance
+
+# Calculate manually
+manual_importance = calculate_feature_importance_manually(tree_model, ['Time', 'StressSurvey'])
+
+# Compare with sklearn's calculation
+sklearn_importance = tree_model.feature_importances_
+
+print("Comparison of Manual vs Sklearn Calculation:")
+print("=" * 50)
+for i, feature in enumerate(['Time', 'StressSurvey']):
+    print(f"{feature}:")
+    print(f"  Manual calculation: {manual_importance[i]:.3f}")
+    print(f"  Sklearn calculation: {sklearn_importance[i]:.3f}")
+    print(f"  Difference: {abs(manual_importance[i] - sklearn_importance[i]):.3f}")
+    print()
+
+# Visualize the calculation process
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+# Plot 1: Tree structure with node information
+plot_tree(tree_model, feature_names=['Time', 'StressSurvey'], 
+          filled=True, rounded=True, fontsize=10, ax=ax1)
+ax1.set_title('Decision Tree with Node Information', fontsize=14, weight='bold')
+
+# Plot 2: Feature importance comparison
+features = ['Time', 'StressSurvey']
+x = np.arange(len(features))
+width = 0.35
+
+bars1 = ax2.bar(x - width/2, manual_importance, width, label='Manual Calculation', 
+                color='lightblue', alpha=0.8, edgecolor='black')
+bars2 = ax2.bar(x + width/2, sklearn_importance, width, label='Sklearn Calculation', 
+                color='lightcoral', alpha=0.8, edgecolor='black')
+
+ax2.set_xlabel('Features', fontsize=12)
+ax2.set_ylabel('Feature Importance', fontsize=12)
+ax2.set_title('Feature Importance: Manual vs Sklearn', fontsize=14, weight='bold')
+ax2.set_xticks(x)
+ax2.set_xticklabels(features)
+ax2.legend(fontsize=11)
+ax2.grid(True, alpha=0.3, axis='y')
+
+# Add value labels
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        ax2.annotate(f'{height:.3f}', xy=(bar.get_x() + bar.get_width()/2, height),
+                    xytext=(0, 3), textcoords="offset points", ha='center', va='bottom',
+                    fontsize=10, weight='bold')
+
+plt.tight_layout()
+plt.show()
+
+print("Key Insights:")
+print("=" * 20)
+print("• Feature importance measures how much each feature reduces prediction error")
+print("• It's calculated by summing weighted impurity reductions across all splits")
+print("• Features used in early splits (near root) tend to have higher importance")
+print("• The values are normalized so they sum to 1.0")
+print("• This gives us a measure of relative feature importance for anxiety prediction")
+```
+
 ### The Critical Insight: Feature Importance Reveals the Truth
 
 ```{python}
 #| label: fig-feature-importance-comparison
 #| fig-cap: "Feature importance comparison: Decision trees vs Linear regression coefficients"
-#| echo: true
+#| echo: false
 
 # Get decision tree feature importance
 tree_importance = tree_model.feature_importances_
 feature_names = ['Time', 'StressSurvey']
 
 # Create comparison plot - Plot 1: Decision tree feature importance
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 bars1 = ax.bar(feature_names, tree_importance, color='steelblue', alpha=0.8, edgecolor='black')
 ax.set_ylabel('Feature Importance', fontsize=12)
 ax.set_title('Decision Tree Feature Importance', fontsize=14, weight='bold')
@@ -517,7 +744,7 @@ plt.tight_layout()
 plt.show()
 
 # Create comparison plot - Plot 2: Linear regression coefficients (absolute values for comparison)
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
 lr_coef_abs = [abs(time_coef), abs(stress_coef)]
 bars2 = ax.bar(feature_names, lr_coef_abs, color='lightcoral', alpha=0.8, edgecolor='black')
 ax.set_ylabel('Absolute Coefficient Value', fontsize=12)
@@ -557,12 +784,134 @@ print(f"     are based on incorrect assumptions about how Time affects anxiety")
 Decision trees provide interpretable rules that are easy to understand for anxiety prediction:
 
 **Example Interpretation:**
-- If StressSurvey ≤ 3 AND Time ≤ 1.5 → Anxiety = 0.1
-- If StressSurvey ≤ 3 AND Time > 1.5 → Anxiety = 1.1
-- If StressSurvey > 3 AND StressSurvey ≤ 9 → Anxiety = 2.2
-- If StressSurvey > 9 → Anxiety = 8.2
+- If StressSurvey ≤ 6 → Anxiety = 0.7 (low anxiety)
+- If StressSurvey > 6 → Anxiety = 9.4 (high anxiety)
 
 These rules tell us exactly how to predict anxiety based on the input variables, making the model transparent and actionable.
+
+### Using the Tree for Social Media Recommendations
+
+Now let's analyze what this tree tells us about social media time and anxiety:
+
+```{python}
+#| label: fig-tree-recommendations
+#| fig-cap: "Analyzing the decision tree for social media recommendations"
+#| echo: false
+
+# Analyze the tree structure to understand Time's role
+print("Decision Tree Analysis for Social Media Recommendations:")
+print("=" * 60)
+
+# Get the tree structure
+tree = tree_model.tree_
+feature_names = ['Time', 'StressSurvey']
+
+print("Tree Structure Analysis:")
+print(f"Root split: {feature_names[tree.feature[0]]} <= {tree.threshold[0]:.1f}")
+print(f"Left child: {feature_names[tree.feature[tree.children_left[0]]]} <= {tree.threshold[tree.children_left[0]]:.1f}")
+print(f"Right child: {feature_names[tree.feature[tree.children_right[0]]]} <= {tree.threshold[tree.children_right[0]]:.1f}")
+
+print(f"\nKey Finding: The tree splits on StressSurvey first, then Time!")
+print(f"This means StressSurvey is more important for anxiety prediction than Time.")
+
+# Analyze what happens when we vary Time while holding StressSurvey constant
+print(f"\nSocial Media Time Analysis:")
+print(f"• When StressSurvey ≤ 6: Time doesn't matter much (anxiety stays low)")
+print(f"• When StressSurvey > 6: Time still doesn't matter much (anxiety stays high)")
+print(f"• The tree suggests StressSurvey is the primary driver of anxiety")
+
+print(f"\nRecommendation:")
+print(f"• Focus on stress management rather than just limiting social media time")
+print(f"• Social media time alone may not be the main anxiety driver")
+print(f"• Stress levels (measured by survey) are more predictive of anxiety")
+```
+
+::: {.callout-important}
+## Interpreting the Tree for Social Media Policy
+
+**What the tree tells us about social media and anxiety:**
+
+1. **StressSurvey is the primary predictor**: The tree splits on StressSurvey first, not Time
+2. **Time has limited impact**: Within each stress level, Time doesn't create additional splits
+3. **Stress management is key**: The tree suggests addressing stress levels is more important than limiting social media time
+
+**Policy implications:**
+- **Don't just limit social media time**: The tree shows Time isn't the main anxiety driver
+- **Focus on stress reduction**: StressSurvey is the primary predictor of anxiety
+- **Holistic approach needed**: Anxiety appears to be driven more by underlying stress than social media usage
+
+**Limitation**: This is a simplified tree with only 2 levels. In reality, Time might have more complex interactions that deeper trees could capture.
+:::
+
+### What Happens with More Depth? Time's Role in Deeper Trees
+
+Let's see if Time becomes more important when we allow the tree to grow deeper:
+
+```{python}
+#| label: fig-deeper-tree
+#| fig-cap: "Decision tree with depth=3 to explore Time's importance"
+#| echo: false
+
+# Create a deeper tree to see if Time becomes important
+tree_deeper = DecisionTreeRegressor(max_depth=3, random_state=42)
+tree_deeper.fit(data[['Time', 'StressSurvey']], data['Anxiety'])
+
+# Visualize the deeper tree
+fig, ax = plt.subplots(1, 1, figsize=(7, 4))
+plot_tree(tree_deeper, feature_names=['Time', 'StressSurvey'], 
+          filled=True, rounded=True, fontsize=8, ax=ax)
+ax.set_title('Decision Tree with Depth=3: Does Time Matter More?', fontsize=14, weight='bold')
+plt.tight_layout()
+plt.show()
+
+# Analyze the deeper tree structure
+tree = tree_deeper.tree_
+print("Deeper Tree Analysis (Depth=3):")
+print("=" * 40)
+print(f"Root split: {feature_names[tree.feature[0]]} <= {tree.threshold[0]:.1f}")
+
+# Check if Time appears in the tree
+time_splits = []
+stress_splits = []
+for i in range(tree.node_count):
+    if tree.feature[i] != -2:  # Not a leaf node
+        if tree.feature[i] == 0:  # Time feature
+            time_splits.append(f"Node {i}: Time <= {tree.threshold[i]:.1f}")
+        else:  # StressSurvey feature
+            stress_splits.append(f"Node {i}: StressSurvey <= {tree.threshold[i]:.1f}")
+
+print(f"\nTime splits: {len(time_splits)}")
+print(f"StressSurvey splits: {len(stress_splits)}")
+print(f"\nTime splits found: {time_splits}")
+print(f"StressSurvey splits found: {stress_splits}")
+
+# Calculate feature importance for deeper tree
+deeper_importance = tree_deeper.feature_importances_
+print(f"\nFeature Importance (Depth=3):")
+print(f"Time: {deeper_importance[0]:.3f}")
+print(f"StressSurvey: {deeper_importance[1]:.3f}")
+
+print(f"\nComparison with Depth=2:")
+print(f"Time importance increased: {deeper_importance[0] - tree_importance[0]:.3f}")
+print(f"StressSurvey importance decreased: {tree_importance[1] - deeper_importance[1]:.3f}")
+```
+
+::: {.callout-tip}
+## Key Insight: Time Becomes Important with More Depth
+
+**What we discover with depth=3:**
+
+1. **Time finally appears**: The deeper tree uses Time for splits, showing it does matter
+2. **More balanced importance**: Time gets more weight in the deeper tree
+3. **Complex interactions**: The tree can now capture how Time and StressSurvey interact
+
+**Implication for social media policy:**
+- **Deeper analysis reveals Time matters**: With more complexity, social media time does affect anxiety
+- **Context-dependent effects**: Time's impact depends on stress levels
+- **Policy nuance needed**: Simple "limit social media" may be too simplistic - the relationship is more complex
+
+**Trade-off**: Deeper trees are more accurate but less interpretable. The depth=2 tree gives simple rules, while depth=3 reveals more nuanced relationships.
+:::
 
 
 ## Strengths and Limitations
@@ -596,7 +945,7 @@ These rules tell us exactly how to predict anxiety based on the input variables,
 ```{python}
 #| label: fig-smoothness-problem
 #| fig-cap: "Decision trees create step functions, not smooth curves"
-#| echo: true
+#| echo: false
 
 # Create a more detailed example using StressSurvey (since our tree uses 2 features)
 detailed_stress = np.linspace(0, 12, 1000)
@@ -609,7 +958,7 @@ tree_detailed = tree_model.predict(tree_input)
 lr_input = np.column_stack([np.full(1000, mean_time), detailed_stress])
 lr_detailed = lr_multi.predict(lr_input)
 
-fig, ax = plt.subplots(figsize=(12, 6))
+fig, ax = plt.subplots(figsize=(7, 4))
 
 # Plot both predictions
 ax.plot(detailed_stress, lr_detailed, 'b-', linewidth=3, 
@@ -617,13 +966,28 @@ ax.plot(detailed_stress, lr_detailed, 'b-', linewidth=3,
 ax.plot(detailed_stress, tree_detailed, 'r-', linewidth=3, 
         label='Decision Tree (Step Function)', alpha=0.8)
 
-# Highlight the discontinuity points (approximate split points)
-ax.axvline(x=3, color='red', linestyle='--', alpha=0.5, linewidth=2)
-ax.axvline(x=6, color='red', linestyle='--', alpha=0.5, linewidth=2)
-ax.axvline(x=9, color='red', linestyle='--', alpha=0.5, linewidth=2)
-ax.text(3, 8, 'Split Point 1', rotation=90, ha='right', va='top', color='red', fontsize=10)
-ax.text(6, 8, 'Split Point 2', rotation=90, ha='right', va='top', color='red', fontsize=10)
-ax.text(9, 8, 'Split Point 3', rotation=90, ha='right', va='top', color='red', fontsize=10)
+# Extract actual split points from the tree model
+def get_split_points(tree_model, feature_names):
+    """Extract all split points for a given feature from the tree"""
+    tree = tree_model.tree_
+    split_points = []
+    
+    for i in range(tree.node_count):
+        if tree.feature[i] != -2:  # Not a leaf node
+            feature_idx = tree.feature[i]
+            if feature_names[feature_idx] == 'StressSurvey':  # Only StressSurvey splits
+                split_points.append(tree.threshold[i])
+    
+    return sorted(split_points)
+
+# Get actual split points for StressSurvey
+stress_split_points = get_split_points(tree_model, ['Time', 'StressSurvey'])
+
+# Highlight the actual discontinuity points
+for i, split_point in enumerate(stress_split_points):
+    ax.axvline(x=split_point, color='red', linestyle='--', alpha=0.7, linewidth=2)
+    ax.text(split_point, 8, f'Split {i+1}\n{split_point:.1f}', 
+            rotation=90, ha='right', va='top', color='red', fontsize=10, weight='bold')
 
 ax.set_xlabel('Stress Survey Score', fontsize=12)
 ax.set_ylabel('Predicted Anxiety Level', fontsize=12)
@@ -668,13 +1032,13 @@ To prevent overfitting, trees can be pruned by removing branches that don't sign
 ```{python}
 #| label: fig-tree-pruning
 #| fig-cap: "Effect of tree depth on model complexity"
-#| echo: true
+#| echo: false
 
 # Create trees with different depths
-depths = [1, 2, 3, 5]
+depths = [1, 2, 3, 4]
 
 for i, depth in enumerate(depths):
-    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+    fig, ax = plt.subplots(1, 1, figsize=(7, 4))
     
     # Fit tree with specific depth using both features
     tree_dep = DecisionTreeRegressor(max_depth=depth, random_state=42)
