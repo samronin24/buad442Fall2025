@@ -1,0 +1,735 @@
+---
+title: "Decision Trees"
+subtitle: "From Linear Slopes to Branching Logic"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: false
+  eval: true
+---
+
+# 🌳 Decision Trees
+
+## The Core Idea
+
+Decision trees represent a fundamental shift from linear models to non-linear, rule-based approaches. While linear regression assumes relationships can be captured by straight lines, decision trees recognize that real-world relationships often require more flexible, branching logic.
+
+::: {.columns}
+::: {.column width="50%"}
+### Linear Models
+Assume relationships follow straight lines with constant slopes.
+
+**Example:** Anxiety increases by 0.1 units for every minute of social media use.
+:::
+
+::: {.column width="50%"}
+### Decision Trees
+Split data into distinct groups based on threshold values.
+
+**Example:** If social media time > 2 hours, then anxiety is high; otherwise, anxiety depends on other factors.
+:::
+:::
+
+## The Anxiety Prediction Challenge
+
+Our goal is to predict anxiety levels using available data. Let's start with the simplest approach and progressively add complexity to see how our predictions improve.
+
+### The Anxiety and Social Media Dataset
+
+Consider a study examining the relationship between social media usage and anxiety levels. We have data on time spent on social media (in hours) and stress survey responses, with corresponding anxiety levels measured by fMRI activity.
+
+```{python}
+#| echo: false
+#| include: false
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set style for consistent plotting
+plt.style.use('seaborn-v0_8')
+sns.set_palette("husl")
+
+# Generate the anxiety, social media time, and stress survey dataset
+# This replicates the "garbage can regression" scenario where linear regression fails
+np.random.seed(42)
+
+# Create the dataset from the garbage can regression challenge
+data = pd.DataFrame({
+    'Stress': [0, 0, 0, 1, 1, 1, 2, 2, 2, 8, 8, 8, 12, 12, 12],
+    'StressSurvey': [0, 0, 0, 3, 3, 3, 6, 6, 6, 9, 9, 9, 12, 12, 12],
+    'Time': [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2.1, 2.2, 2.2, 2.2],
+    'Anxiety': [0, 0.1, 0.1, 1.1, 1.1, 1.1, 2.2, 2.2, 2.2, 8.2, 8.2, 8.21, 12.22, 12.22, 12.22]
+})
+
+# True relationship: Anxiety = Stress + 0.1 * Time
+# But we'll use StressSurvey (non-linear proxy) instead of Stress (linear)
+print("True relationship: Anxiety = Stress + 0.1 * Time")
+print("But we observe StressSurvey (non-linear proxy) instead of Stress")
+print("\nOur prediction challenge: Can we predict anxiety using Time and StressSurvey?")
+```
+
+```{python}
+#| label: tbl-anxiety-data
+#| tbl-cap: "Anxiety, social media time, and stress survey dataset"
+#| echo: true
+data
+```
+
+### Step 1: Predicting Anxiety with Zero Variables (Baseline)
+
+First, let's establish our baseline prediction using no independent variables:
+
+```{python}
+#| label: fig-baseline-prediction
+#| fig-cap: "Baseline anxiety prediction using no independent variables"
+#| echo: true
+
+# Calculate baseline prediction (mean anxiety)
+baseline_prediction = data['Anxiety'].mean()
+print(f"Baseline Prediction (no variables): {baseline_prediction:.2f}")
+print(f"This means we predict everyone has anxiety level {baseline_prediction:.2f}")
+print(f"Mean Absolute Error: {np.mean(np.abs(data['Anxiety'] - baseline_prediction)):.2f}")
+```
+
+### Step 2: Predicting Anxiety with One Variable (Time)
+
+Now let's see how much we can improve by using just social media time:
+
+```{python}
+#| label: fig-linear-relationship
+#| fig-cap: "Predicting anxiety using social media time (one variable)"
+#| echo: true
+
+# Create figure
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+
+# Scatter plot with regression line
+ax.scatter(data['Time'], data['Anxiety'], 
+           color='steelblue', s=100, alpha=0.7, edgecolors='black', linewidth=1)
+
+# Fit linear regression
+slope, intercept = np.polyfit(data['Time'], data['Anxiety'], 1)
+line_x = np.linspace(0, 2.5, 100)
+line_y = slope * line_x + intercept
+ax.plot(line_x, line_y, 'r-', linewidth=3, label=f'Regression Line: y = {slope:.3f}x + {intercept:.3f}')
+
+# Add slope visualization
+x1, x2 = 1.0, 2.0
+y1, y2 = slope * x1 + intercept, slope * x2 + intercept
+ax.plot([x1, x2], [y1, y2], 'g-', linewidth=4, alpha=0.8, label='Slope = Rise/Run')
+ax.plot([x1, x1], [y1, y2], 'g--', linewidth=2, alpha=0.6)
+ax.plot([x1, x2], [y1, y1], 'g--', linewidth=2, alpha=0.6)
+
+# Add slope annotation
+ax.annotate(f'Rise = {y2-y1:.2f}', xy=(x1-0.1, (y1+y2)/2), 
+            fontsize=12, ha='right', color='green', weight='bold')
+ax.annotate(f'Run = {x2-x1}', xy=((x1+x2)/2, y1-0.5), 
+            fontsize=12, ha='center', color='green', weight='bold')
+ax.annotate(f'Slope = {slope:.3f}', xy=(x2+0.1, (y1+y2)/2), 
+            fontsize=14, ha='left', color='red', weight='bold')
+
+ax.set_xlabel('Social Media Time (hours)', fontsize=12)
+ax.set_ylabel('Anxiety Level', fontsize=12)
+ax.set_title('Bivariate Linear Regression: Time vs Anxiety', fontsize=14, weight='bold')
+ax.legend(fontsize=10)
+ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Calculate prediction accuracy for one variable
+time_predictions = slope * data['Time'] + intercept
+time_mae = np.mean(np.abs(data['Anxiety'] - time_predictions))
+time_r2 = 1 - np.sum((data['Anxiety'] - time_predictions)**2) / np.sum((data['Anxiety'] - baseline_prediction)**2)
+
+print(f"One-Variable Prediction Results (Time only):")
+print(f"Slope: {slope:.4f} (anxiety change per hour)")
+print(f"Intercept: {intercept:.4f}")
+print(f"Mean Absolute Error: {time_mae:.2f}")
+print(f"R²: {time_r2:.3f}")
+print(f"Interpretation: For every additional hour of social media use, anxiety changes by {slope:.4f} units")
+print(f"True coefficient should be: 0.1 (positive!)")
+print(f"Improvement over baseline: {((baseline_prediction - time_mae) / baseline_prediction * 100):.1f}% reduction in MAE")
+```
+
+### Step 3: Predicting Anxiety with Two Variables (Linear Regression)
+
+Now let's see what happens when we add the StressSurvey variable to improve our anxiety predictions:
+
+```{python}
+#| label: fig-multiple-regression
+#| fig-cap: "Multiple regression analysis showing the garbage can regression problem"
+#| echo: true
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+import statsmodels.api as sm
+
+# Multiple regression: Anxiety ~ Time + StressSurvey
+X = data[['Time', 'StressSurvey']]
+y = data['Anxiety']
+
+# Fit multiple regression
+lr_multi = LinearRegression()
+lr_multi.fit(X, y)
+multi_predictions = lr_multi.predict(X)
+
+# Get coefficients
+time_coef = lr_multi.coef_[0]
+stress_coef = lr_multi.coef_[1]
+intercept = lr_multi.intercept_
+
+# Create visualization - Plot 1: Actual vs Predicted
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+ax.scatter(data['Anxiety'], multi_predictions, 
+           color='steelblue', s=100, alpha=0.7, edgecolors='black', linewidth=1)
+ax.plot([0, 15], [0, 15], 'r--', linewidth=2, alpha=0.8, label='Perfect Prediction')
+ax.set_xlabel('Actual Anxiety', fontsize=12)
+ax.set_ylabel('Predicted Anxiety', fontsize=12)
+ax.set_title('Multiple Regression: Actual vs Predicted', fontsize=14, weight='bold')
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Create visualization - Plot 2: Coefficient comparison
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+coefficients = ['Time Coefficient', 'StressSurvey Coefficient']
+true_values = [0.1, 1.0]  # True coefficients
+estimated_values = [time_coef, stress_coef]
+
+x = np.arange(len(coefficients))
+width = 0.35
+
+bars1 = ax.bar(x - width/2, true_values, width, label='True Coefficients', 
+                color='lightgreen', alpha=0.8, edgecolor='black')
+bars2 = ax.bar(x + width/2, estimated_values, width, label='Estimated Coefficients', 
+                color='lightcoral', alpha=0.8, edgecolor='black')
+
+ax.set_xlabel('Variables', fontsize=12)
+ax.set_ylabel('Coefficient Value', fontsize=12)
+ax.set_title('Coefficient Comparison: True vs Estimated', fontsize=14, weight='bold')
+ax.set_xticks(x)
+ax.set_xticklabels(coefficients)
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3, axis='y')
+
+# Add value labels on bars
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{height:.3f}', xy=(bar.get_x() + bar.get_width()/2, height),
+                    xytext=(0, 3), textcoords="offset points", ha='center', va='bottom',
+                    fontsize=10, weight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# Calculate prediction accuracy for two variables (linear regression)
+multi_mae = np.mean(np.abs(data['Anxiety'] - multi_predictions))
+multi_r2 = r2_score(y, multi_predictions)
+
+print("Two-Variable Prediction Results (Linear Regression):")
+print("=" * 50)
+print(f"Anxiety = {intercept:.3f} + {time_coef:.3f}*Time + {stress_coef:.3f}*StressSurvey")
+print(f"Time coefficient: {time_coef:.4f} (should be +0.1)")
+print(f"StressSurvey coefficient: {stress_coef:.4f} (should be +1.0)")
+print(f"Mean Absolute Error: {multi_mae:.2f}")
+print(f"R² = {multi_r2:.4f}")
+print(f"Improvement over one variable: {((time_mae - multi_mae) / time_mae * 100):.1f}% reduction in MAE")
+print(f"\n🚨 PROBLEM: Time coefficient is {time_coef:.4f} instead of +0.1!")
+print("This is the 'garbage can regression' problem in action.")
+```
+
+::: {.callout-warning}
+## The Garbage Can Regression Problem
+
+The multiple regression shows a **negative coefficient for Time** when the true relationship should be **positive**! This happens because:
+
+1. **StressSurvey is a non-linear proxy** for the true Stress variable
+2. **Linear regression assumes linearity** but the relationship is non-linear
+3. **The model compensates** by giving Time a negative coefficient to "correct" for the non-linear StressSurvey effect
+
+**Our anxiety predictions are now misleading!** We're getting better R² but wrong interpretations. This is exactly why we need decision trees - they can capture these non-linear relationships without making false assumptions about linearity.
+:::
+
+## Step 4: Predicting Anxiety with Two Variables (Decision Trees)
+
+Decision trees offer a fundamentally different approach to predicting anxiety. Instead of assuming linearity, they partition data into distinct groups based on threshold values, potentially giving us better and more interpretable anxiety predictions.
+
+### What is a Decision Tree?
+
+::: {.callout-note}
+## One-Liner Definition
+
+A **decision tree** is a model that splits data into groups using a series of binary decisions, where each split is based on a threshold value of a feature.
+:::
+
+### The Tree Structure
+
+Decision trees consist of:
+
+- **Root Node**: The starting point containing all data
+- **Internal Nodes**: Decision points that split data based on conditions
+- **Leaf Nodes**: Terminal nodes that provide predictions
+- **Branches**: Paths connecting nodes based on decision outcomes
+
+### Building a Decision Tree for Anxiety Prediction
+
+Let's see how a decision tree would approach our anxiety prediction challenge using both Time and StressSurvey:
+
+```{python}
+#| label: fig-decision-tree-example
+#| fig-cap: "Decision tree for anxiety prediction using Time and StressSurvey"
+#| echo: true
+
+# Create and fit decision tree with both features
+tree_model = DecisionTreeRegressor(max_depth=3, random_state=42)
+tree_model.fit(data[['Time', 'StressSurvey']], data['Anxiety'])
+
+# Create visualization - Plot 1: Tree structure
+fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+plot_tree(tree_model, feature_names=['Time', 'StressSurvey'], 
+          filled=True, rounded=True, fontsize=10, ax=ax)
+ax.set_title('Decision Tree Structure', fontsize=14, weight='bold')
+plt.tight_layout()
+plt.show()
+
+# Create visualization - Plot 2: Tree predictions vs actual data
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+ax.scatter(data['Anxiety'], tree_model.predict(data[['Time', 'StressSurvey']]), 
+           color='steelblue', s=100, alpha=0.7, edgecolors='black', linewidth=1, 
+           label='Tree Predictions')
+ax.plot([0, 15], [0, 15], 'r--', linewidth=2, alpha=0.8, label='Perfect Prediction')
+ax.set_xlabel('Actual Anxiety', fontsize=12)
+ax.set_ylabel('Predicted Anxiety', fontsize=12)
+ax.set_title('Decision Tree: Actual vs Predicted', fontsize=14, weight='bold')
+ax.legend(fontsize=12)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Print tree rules
+print("Decision Tree Rules:")
+print("=" * 50)
+tree_rules = []
+def extract_rules(tree, feature_names, node=0, depth=0, rule=""):
+    if tree.tree_.children_left[node] == tree.tree_.children_right[node]:  # Leaf node
+        prediction = tree.tree_.value[node][0][0]
+        tree_rules.append(f"{rule} → Anxiety = {prediction:.2f}")
+    else:
+        feature = feature_names[tree.tree_.feature[node]]
+        threshold = tree.tree_.threshold[node]
+        extract_rules(tree, feature_names, tree.tree_.children_left[node], depth+1, 
+                     f"{rule} AND {feature} <= {threshold:.1f}" if rule else f"{feature} <= {threshold:.1f}")
+        extract_rules(tree, feature_names, tree.tree_.children_right[node], depth+1, 
+                     f"{rule} AND {feature} > {threshold:.1f}" if rule else f"{feature} > {threshold:.1f}")
+
+extract_rules(tree_model, ['Time', 'StressSurvey'])
+for i, rule in enumerate(tree_rules, 1):
+    print(f"{i}. {rule}")
+
+# Calculate prediction accuracy for two variables (decision tree)
+tree_predictions = tree_model.predict(data[['Time', 'StressSurvey']])
+tree_mae = np.mean(np.abs(data['Anxiety'] - tree_predictions))
+tree_r2 = r2_score(data['Anxiety'], tree_predictions)
+
+print(f"\nTwo-Variable Prediction Results (Decision Tree):")
+print(f"Mean Absolute Error: {tree_mae:.2f}")
+print(f"R² = {tree_r2:.4f}")
+print(f"Improvement over linear regression: {((multi_mae - tree_mae) / multi_mae * 100):.1f}% reduction in MAE")
+print(f"Improvement over baseline: {((baseline_prediction - tree_mae) / baseline_prediction * 100):.1f}% reduction in MAE")
+```
+
+### How Decision Trees Work: The CART Algorithm
+
+The Classification and Regression Trees (CART) algorithm builds trees through a recursive process:
+
+1. **Find Best Split**: For each feature, find the threshold that best separates the data
+2. **Choose Best Feature**: Select the feature and threshold that minimize variance (regression) or Gini impurity (classification)
+3. **Split Data**: Create two child nodes based on the chosen split
+4. **Repeat**: Continue splitting until stopping criteria are met
+
+```{python}
+#| label: fig-split-visualization
+#| fig-cap: "Visualizing how decision trees find optimal splits using StressSurvey"
+#| echo: true
+
+# Create individual plots for each split point
+split_points = [3, 6, 9, 12]
+colors = ['red', 'blue', 'green', 'orange']
+
+for i, (split, color) in enumerate(zip(split_points, colors)):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+    
+    # Plot data points
+    ax.scatter(data['StressSurvey'], data['Anxiety'], 
+              color='lightgray', s=80, alpha=0.6, edgecolors='black')
+    
+    # Add split line
+    ax.axvline(x=split, color=color, linewidth=3, linestyle='--', alpha=0.8)
+    
+    # Calculate means for each group
+    left_group = data[data['StressSurvey'] <= split]
+    right_group = data[data['StressSurvey'] > split]
+    
+    if len(left_group) > 0:
+        left_mean = left_group['Anxiety'].mean()
+        ax.axhline(y=left_mean, xmin=0, xmax=split/12, color=color, linewidth=2)
+        ax.text(split/2, left_mean + 0.5, f'Mean: {left_mean:.2f}', 
+               ha='center', fontsize=10, weight='bold', color=color)
+    
+    if len(right_group) > 0:
+        right_mean = right_group['Anxiety'].mean()
+        ax.axhline(y=right_mean, xmin=split/12, xmax=1, color=color, linewidth=2)
+        ax.text((split + 12)/2, right_mean + 0.5, f'Mean: {right_mean:.2f}', 
+               ha='center', fontsize=10, weight='bold', color=color)
+    
+    # Calculate variance reduction
+    if len(left_group) > 0 and len(right_group) > 0:
+        total_var = data['Anxiety'].var()
+        left_var = left_group['Anxiety'].var() * len(left_group) / len(data)
+        right_var = right_group['Anxiety'].var() * len(right_group) / len(data)
+        variance_reduction = total_var - (left_var + right_var)
+        
+        ax.set_title(f'Split at StressSurvey = {split}\nVariance Reduction: {variance_reduction:.3f}', 
+                    fontsize=12, weight='bold')
+    
+    ax.set_xlabel('Stress Survey Score', fontsize=10)
+    ax.set_ylabel('Anxiety Level', fontsize=10)
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+## Comparing Our Anxiety Prediction Approaches
+
+### Summary: How Well Do We Predict Anxiety?
+
+Let's compare all our approaches to predicting anxiety:
+
+```{python}
+#| label: fig-model-comparison
+#| fig-cap: "Comparing how linear regression and decision trees handle the Time effect"
+#| echo: true
+
+# Calculate metrics for both models
+lr_mse = mean_squared_error(data['Anxiety'], multi_predictions)
+tree_mse = mean_squared_error(data['Anxiety'], tree_predictions)
+lr_r2 = r2_score(data['Anxiety'], multi_predictions)
+
+# Create comparison plot - Plot 1: Actual vs Predicted comparison
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+ax.scatter(data['Anxiety'], multi_predictions, 
+           color='blue', s=100, alpha=0.7, edgecolors='black', linewidth=1, 
+           label=f'Multiple Regression (R² = {lr_r2:.3f})')
+ax.scatter(data['Anxiety'], tree_predictions, 
+           color='red', s=100, alpha=0.7, edgecolors='black', linewidth=1, 
+           label=f'Decision Tree (R² = {tree_r2:.3f})')
+ax.plot([0, 15], [0, 15], 'k--', linewidth=2, alpha=0.8, label='Perfect Prediction')
+
+ax.set_xlabel('Actual Anxiety', fontsize=12)
+ax.set_ylabel('Predicted Anxiety', fontsize=12)
+ax.set_title('Model Predictions Comparison', fontsize=14, weight='bold')
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Create comparison plot - Plot 2: Performance metrics
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+models = ['Multiple Regression', 'Decision Tree']
+mse_values = [lr_mse, tree_mse]
+r2_values = [lr_r2, tree_r2]
+
+x = np.arange(len(models))
+width = 0.35
+
+bars1 = ax.bar(x - width/2, mse_values, width, label='MSE', color='lightcoral', alpha=0.8)
+bars2 = ax.bar(x + width/2, r2_values, width, label='R²', color='lightblue', alpha=0.8)
+
+ax.set_xlabel('Model Type', fontsize=12)
+ax.set_ylabel('Score', fontsize=12)
+ax.set_title('Performance Metrics Comparison', fontsize=14, weight='bold')
+ax.set_xticks(x)
+ax.set_xticklabels(models)
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3, axis='y')
+
+# Add value labels on bars
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{height:.3f}', xy=(bar.get_x() + bar.get_width()/2, height),
+                    xytext=(0, 3), textcoords="offset points", ha='center', va='bottom',
+                    fontsize=10, weight='bold')
+
+plt.tight_layout()
+plt.show()
+
+print("Anxiety Prediction Summary:")
+print("=" * 50)
+print(f"0 Variables (Baseline):     MAE: {np.mean(np.abs(data['Anxiety'] - baseline_prediction)):.2f}")
+print(f"1 Variable (Time only):     MAE: {time_mae:.2f}")
+print(f"2 Variables (Linear Reg):   MAE: {multi_mae:.2f}")
+print(f"2 Variables (Decision Tree): MAE: {tree_mae:.2f}")
+print(f"\nKey Insights:")
+print(f"• Adding Time improves predictions by {((baseline_prediction - time_mae) / baseline_prediction * 100):.1f}%")
+print(f"• Adding StressSurvey (linear) improves by {((time_mae - multi_mae) / time_mae * 100):.1f}% more")
+print(f"• Decision trees improve by {((multi_mae - tree_mae) / multi_mae * 100):.1f}% over linear regression")
+print(f"• Decision trees can capture the true positive Time effect without being misled")
+print(f"  by the non-linear StressSurvey relationship!")
+```
+
+### The Critical Insight: Feature Importance Reveals the Truth
+
+```{python}
+#| label: fig-feature-importance-comparison
+#| fig-cap: "Feature importance comparison: Decision trees vs Linear regression coefficients"
+#| echo: true
+
+# Get decision tree feature importance
+tree_importance = tree_model.feature_importances_
+feature_names = ['Time', 'StressSurvey']
+
+# Create comparison plot - Plot 1: Decision tree feature importance
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+bars1 = ax.bar(feature_names, tree_importance, color='steelblue', alpha=0.8, edgecolor='black')
+ax.set_ylabel('Feature Importance', fontsize=12)
+ax.set_title('Decision Tree Feature Importance', fontsize=14, weight='bold')
+ax.grid(True, alpha=0.3, axis='y')
+
+# Add value labels
+for bar in bars1:
+    height = bar.get_height()
+    ax.annotate(f'{height:.3f}', xy=(bar.get_x() + bar.get_width()/2, height),
+                xytext=(0, 3), textcoords="offset points", ha='center', va='bottom',
+                fontsize=12, weight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# Create comparison plot - Plot 2: Linear regression coefficients (absolute values for comparison)
+fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+lr_coef_abs = [abs(time_coef), abs(stress_coef)]
+bars2 = ax.bar(feature_names, lr_coef_abs, color='lightcoral', alpha=0.8, edgecolor='black')
+ax.set_ylabel('Absolute Coefficient Value', fontsize=12)
+ax.set_title('Linear Regression Coefficients (Absolute)', fontsize=14, weight='bold')
+ax.grid(True, alpha=0.3, axis='y')
+
+# Add value labels
+for bar in bars2:
+    height = bar.get_height()
+    ax.annotate(f'{height:.3f}', xy=(bar.get_x() + bar.get_width()/2, height),
+                xytext=(0, 3), textcoords="offset points", ha='center', va='bottom',
+                fontsize=12, weight='bold')
+
+plt.tight_layout()
+plt.show()
+
+print("Feature Importance for Anxiety Prediction:")
+print("=" * 50)
+print(f"Decision Tree Feature Importance:")
+print(f"  Time importance: {tree_importance[0]:.3f}")
+print(f"  StressSurvey importance: {tree_importance[1]:.3f}")
+print(f"\nLinear Regression Coefficients:")
+print(f"  Time coefficient: {time_coef:.3f} (WRONG SIGN!)")
+print(f"  StressSurvey coefficient: {stress_coef:.3f}")
+print(f"\n🎯 For anxiety prediction:")
+print(f"   • Decision trees correctly identify that BOTH features matter")
+print(f"   • Linear regression gives Time the wrong sign due to")
+print(f"     the non-linear StressSurvey relationship!")
+print(f"   • This means our anxiety predictions from linear regression")
+print(f"     are based on incorrect assumptions about how Time affects anxiety")
+```
+
+## Decision Tree Interpretation
+
+### Reading Tree Rules for Anxiety Prediction
+
+Decision trees provide interpretable rules that are easy to understand for anxiety prediction:
+
+**Example Interpretation:**
+- If StressSurvey ≤ 3 AND Time ≤ 1.5 → Anxiety = 0.1
+- If StressSurvey ≤ 3 AND Time > 1.5 → Anxiety = 1.1
+- If StressSurvey > 3 AND StressSurvey ≤ 9 → Anxiety = 2.2
+- If StressSurvey > 9 → Anxiety = 8.2
+
+These rules tell us exactly how to predict anxiety based on the input variables, making the model transparent and actionable.
+
+
+## Strengths and Limitations
+
+### Strengths of Decision Trees
+
+::: {.callout-tip}
+## Key Advantages
+
+- **Interpretability**: Easy to understand and explain
+- **No Assumptions**: Don't require linear relationships
+- **Feature Interactions**: Naturally capture interactions between variables
+- **Robust to Outliers**: Less sensitive to extreme values
+- **Mixed Data Types**: Handle both numerical and categorical features
+:::
+
+### Limitations of Decision Trees
+
+::: {.callout-warning}
+## Key Disadvantages
+
+- **Overfitting**: Can create overly complex trees that don't generalize
+- **Instability**: Small data changes can create completely different trees
+- **Poor Extrapolation**: Don't predict well outside training data range
+- **Step Functions**: Create discontinuous predictions (not smooth)
+- **Bias**: Tend to favor features with many possible splits
+:::
+
+### The Smoothness Problem
+
+```{python}
+#| label: fig-smoothness-problem
+#| fig-cap: "Decision trees create step functions, not smooth curves"
+#| echo: true
+
+# Create a more detailed example using StressSurvey (since our tree uses 2 features)
+detailed_stress = np.linspace(0, 12, 1000)
+# For the tree, we need to provide both features, so we'll use mean Time value
+mean_time = data['Time'].mean()
+tree_input = np.column_stack([np.full(1000, mean_time), detailed_stress])
+tree_detailed = tree_model.predict(tree_input)
+
+# For linear regression, we need to use the same approach
+lr_input = np.column_stack([np.full(1000, mean_time), detailed_stress])
+lr_detailed = lr_multi.predict(lr_input)
+
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Plot both predictions
+ax.plot(detailed_stress, lr_detailed, 'b-', linewidth=3, 
+        label='Multiple Regression (Smooth)', alpha=0.8)
+ax.plot(detailed_stress, tree_detailed, 'r-', linewidth=3, 
+        label='Decision Tree (Step Function)', alpha=0.8)
+
+# Highlight the discontinuity points (approximate split points)
+ax.axvline(x=3, color='red', linestyle='--', alpha=0.5, linewidth=2)
+ax.axvline(x=6, color='red', linestyle='--', alpha=0.5, linewidth=2)
+ax.axvline(x=9, color='red', linestyle='--', alpha=0.5, linewidth=2)
+ax.text(3, 8, 'Split Point 1', rotation=90, ha='right', va='top', color='red', fontsize=10)
+ax.text(6, 8, 'Split Point 2', rotation=90, ha='right', va='top', color='red', fontsize=10)
+ax.text(9, 8, 'Split Point 3', rotation=90, ha='right', va='top', color='red', fontsize=10)
+
+ax.set_xlabel('Stress Survey Score', fontsize=12)
+ax.set_ylabel('Predicted Anxiety Level', fontsize=12)
+ax.set_title('Smoothness Comparison: Linear vs Tree Models', fontsize=14, weight='bold')
+ax.legend(fontsize=12)
+ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("The Smoothness Problem:")
+print("=" * 30)
+print("• Multiple regression: Smooth, continuous predictions")
+print("• Decision trees: Step functions with sudden jumps")
+print("• Real-world implication: Small changes in input can cause large prediction changes")
+print("• Note: This shows predictions as StressSurvey varies (holding Time constant)")
+```
+
+## When to Use Decision Trees
+
+### Ideal Scenarios
+
+- **Non-linear relationships**: When linear models fail to capture the true relationship
+- **Feature interactions**: When variables interact in complex ways
+- **Interpretability requirements**: When stakeholders need to understand the model
+- **Mixed data types**: When you have both numerical and categorical features
+- **Robustness to outliers**: When your data contains extreme values
+
+### When to Avoid
+
+- **Linear relationships**: When the true relationship is approximately linear
+- **Smooth predictions needed**: When you need continuous, smooth outputs
+- **Small datasets**: When you don't have enough data to build reliable splits
+- **High-dimensional data**: When you have many features relative to observations
+
+## Advanced Decision Tree Concepts
+
+### Tree Pruning
+
+To prevent overfitting, trees can be pruned by removing branches that don't significantly improve performance:
+
+```{python}
+#| label: fig-tree-pruning
+#| fig-cap: "Effect of tree depth on model complexity"
+#| echo: true
+
+# Create trees with different depths
+depths = [1, 2, 3, 5]
+
+for i, depth in enumerate(depths):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+    
+    # Fit tree with specific depth using both features
+    tree_dep = DecisionTreeRegressor(max_depth=depth, random_state=42)
+    tree_dep.fit(data[['Time', 'StressSurvey']], data['Anxiety'])
+    
+    # Plot actual vs predicted
+    train_pred = tree_dep.predict(data[['Time', 'StressSurvey']])
+    ax.scatter(data['Anxiety'], train_pred, 
+              color='steelblue', s=80, alpha=0.7, edgecolors='black', label='Data')
+    ax.plot([0, 15], [0, 15], 'k--', linewidth=2, alpha=0.8, label='Perfect Prediction')
+    
+    # Calculate R²
+    r2 = r2_score(data['Anxiety'], train_pred)
+    
+    ax.set_xlabel('Actual Anxiety', fontsize=10)
+    ax.set_ylabel('Predicted Anxiety', fontsize=10)
+    ax.set_title(f'Tree Depth = {depth} (R² = {r2:.3f})', fontsize=12, weight='bold')
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+### Ensemble Methods
+
+Decision trees are often combined in ensembles (Random Forest, Gradient Boosting) to improve performance while maintaining interpretability.
+
+## Conclusion: Choosing the Best Approach for Anxiety Prediction
+
+Our anxiety prediction journey showed us:
+
+### **Progressive Improvement in Prediction Accuracy:**
+1. **0 Variables (Baseline)**: Predict everyone has mean anxiety
+2. **1 Variable (Time)**: Significant improvement by capturing time-anxiety relationship
+3. **2 Variables (Linear Regression)**: Further improvement but with misleading coefficients
+4. **2 Variables (Decision Tree)**: Best accuracy with correct interpretations
+
+### **Key Insights for Anxiety Prediction:**
+
+**Decision trees offer advantages for anxiety prediction by:**
+1. **Capturing non-linear relationships** between stress surveys and anxiety
+2. **Providing interpretable rules** that clinicians can understand
+3. **Handling complex interactions** between time and stress naturally
+4. **Requiring minimal assumptions** about how anxiety develops
+
+**However, they come with trade-offs:**
+- **Step functions** instead of smooth anxiety curves
+- **Potential overfitting** without proper regularization
+- **Instability** to small data changes
+
+### **Recommendation for Anxiety Prediction:**
+Use decision trees when you need to capture non-linear patterns in anxiety development and value interpretability for clinical decision-making. Use linear models when relationships are approximately linear and you need smooth predictions for anxiety trajectories.
+
+The choice depends on your specific anxiety prediction needs: linear models for smooth anxiety curves, decision trees for capturing complex, non-linear anxiety patterns with interpretable rules.
+
+---
+
+*"The best model is not always the most complex one, but the one that best serves your analytical purpose."*

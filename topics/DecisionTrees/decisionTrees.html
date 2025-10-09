@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Decision Trees</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="decisionTrees_files/libs/clipboard/clipboard.min.js"></script>
+<script src="decisionTrees_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="decisionTrees_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="decisionTrees_files/libs/quarto-html/popper.min.js"></script>
+<script src="decisionTrees_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="decisionTrees_files/libs/quarto-html/anchor.min.js"></script>
+<link href="decisionTrees_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="decisionTrees_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="decisionTrees_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="decisionTrees_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="decisionTrees_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="decisionTrees.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Decision Trees</h1>
+<p class="subtitle lead">From Linear Slopes to Branching Logic</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="decision-trees" class="level1">
+<h1>🌳 Decision Trees</h1>
+<section id="the-core-idea" class="level2">
+<h2 class="anchored" data-anchor-id="the-core-idea">The Core Idea</h2>
+<p>Decision trees represent a fundamental shift from linear models to non-linear, rule-based approaches. While linear regression assumes relationships can be captured by straight lines, decision trees recognize that real-world relationships often require more flexible, branching logic.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<section id="linear-models" class="level3">
+<h3 class="anchored" data-anchor-id="linear-models">Linear Models</h3>
+<p>Assume relationships follow straight lines with constant slopes.</p>
+<p><strong>Example:</strong> Anxiety increases by 0.1 units for every minute of social media use.</p>
+</section>
+</div><div class="column" style="width:50%;">
+<section id="decision-trees-1" class="level3">
+<h3 class="anchored" data-anchor-id="decision-trees-1">Decision Trees</h3>
+<p>Split data into distinct groups based on threshold values.</p>
+<p><strong>Example:</strong> If social media time &gt; 2 hours, then anxiety is high; otherwise, anxiety depends on other factors.</p>
+</section>
+</div>
+</div>
+</section>
+<section id="starting-with-linear-regression-understanding-slope" class="level2">
+<h2 class="anchored" data-anchor-id="starting-with-linear-regression-understanding-slope">Starting with Linear Regression: Understanding Slope</h2>
+<p>Before diving into decision trees, let’s establish a foundation by examining how linear regression interprets relationships through the concept of slope.</p>
+<section id="the-anxiety-and-social-media-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="the-anxiety-and-social-media-dataset">The Anxiety and Social Media Dataset</h3>
+<p>Consider a study examining the relationship between social media usage and anxiety levels. We have data on time spent on social media (in minutes) and corresponding anxiety levels measured by fMRI activity.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-anxiety-data" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-anxiety-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Anxiety, social media time, and stress survey dataset
+</figcaption>
+<div aria-describedby="tbl-anxiety-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Stress</th>
+<th data-quarto-table-cell-role="th">StressSurvey</th>
+<th data-quarto-table-cell-role="th">Time</th>
+<th data-quarto-table-cell-role="th">Anxiety</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0</td>
+<td>0</td>
+<td>0.0</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0</td>
+<td>0</td>
+<td>1.0</td>
+<td>0.10</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0</td>
+<td>0</td>
+<td>1.0</td>
+<td>0.10</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>1</td>
+<td>3</td>
+<td>1.0</td>
+<td>1.10</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>1</td>
+<td>3</td>
+<td>1.0</td>
+<td>1.10</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>1</td>
+<td>3</td>
+<td>1.0</td>
+<td>1.10</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>2</td>
+<td>6</td>
+<td>2.0</td>
+<td>2.20</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>2</td>
+<td>6</td>
+<td>2.0</td>
+<td>2.20</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>2</td>
+<td>6</td>
+<td>2.0</td>
+<td>2.20</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>8</td>
+<td>9</td>
+<td>2.0</td>
+<td>8.20</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>8</td>
+<td>9</td>
+<td>2.0</td>
+<td>8.20</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>8</td>
+<td>9</td>
+<td>2.1</td>
+<td>8.21</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>12</td>
+<td>12</td>
+<td>2.2</td>
+<td>12.22</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>12</td>
+<td>12</td>
+<td>2.2</td>
+<td>12.22</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>12</td>
+<td>12</td>
+<td>2.2</td>
+<td>12.22</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="visualizing-the-bivariate-relationship-time-vs-anxiety" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-the-bivariate-relationship-time-vs-anxiety">Visualizing the Bivariate Relationship: Time vs Anxiety</h3>
+<div id="cell-fig-linear-relationship" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create figure with subplots</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">6</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Left plot: Scatter plot with regression line</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ax1.scatter(data[<span class="st">'Time'</span>], data[<span class="st">'Anxiety'</span>], </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>           color<span class="op">=</span><span class="st">'steelblue'</span>, s<span class="op">=</span><span class="dv">100</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit linear regression</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>slope, intercept <span class="op">=</span> np.polyfit(data[<span class="st">'Time'</span>], data[<span class="st">'Anxiety'</span>], <span class="dv">1</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>line_x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="fl">2.5</span>, <span class="dv">100</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>line_y <span class="op">=</span> slope <span class="op">*</span> line_x <span class="op">+</span> intercept</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ax1.plot(line_x, line_y, <span class="st">'r-'</span>, linewidth<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="ss">f'Regression Line: y = </span><span class="sc">{</span>slope<span class="sc">:.3f}</span><span class="ss">x + </span><span class="sc">{</span>intercept<span class="sc">:.3f}</span><span class="ss">'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add slope visualization</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>x1, x2 <span class="op">=</span> <span class="fl">1.0</span>, <span class="fl">2.0</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>y1, y2 <span class="op">=</span> slope <span class="op">*</span> x1 <span class="op">+</span> intercept, slope <span class="op">*</span> x2 <span class="op">+</span> intercept</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ax1.plot([x1, x2], [y1, y2], <span class="st">'g-'</span>, linewidth<span class="op">=</span><span class="dv">4</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Slope = Rise/Run'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ax1.plot([x1, x1], [y1, y2], <span class="st">'g--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>ax1.plot([x1, x2], [y1, y1], <span class="st">'g--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Add slope annotation</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ax1.annotate(<span class="ss">f'Rise = </span><span class="sc">{</span>y2<span class="op">-</span>y1<span class="sc">:.2f}</span><span class="ss">'</span>, xy<span class="op">=</span>(x1<span class="op">-</span><span class="fl">0.1</span>, (y1<span class="op">+</span>y2)<span class="op">/</span><span class="dv">2</span>), </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'right'</span>, color<span class="op">=</span><span class="st">'green'</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>ax1.annotate(<span class="ss">f'Run = </span><span class="sc">{</span>x2<span class="op">-</span>x1<span class="sc">}</span><span class="ss">'</span>, xy<span class="op">=</span>((x1<span class="op">+</span>x2)<span class="op">/</span><span class="dv">2</span>, y1<span class="op">-</span><span class="fl">0.5</span>), </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            fontsize<span class="op">=</span><span class="dv">12</span>, ha<span class="op">=</span><span class="st">'center'</span>, color<span class="op">=</span><span class="st">'green'</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>ax1.annotate(<span class="ss">f'Slope = </span><span class="sc">{</span>slope<span class="sc">:.3f}</span><span class="ss">'</span>, xy<span class="op">=</span>(x2<span class="op">+</span><span class="fl">0.1</span>, (y1<span class="op">+</span>y2)<span class="op">/</span><span class="dv">2</span>), </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            fontsize<span class="op">=</span><span class="dv">14</span>, ha<span class="op">=</span><span class="st">'left'</span>, color<span class="op">=</span><span class="st">'red'</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Social Media Time (hours)'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Anxiety Level'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Bivariate Linear Regression: Time vs Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>ax1.legend(fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Right plot: Slope interpretation</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>ax2.bar([<span class="st">'Current Time'</span>, <span class="st">'Time + 1 hour'</span>], [slope <span class="op">*</span> <span class="fl">1.0</span> <span class="op">+</span> intercept, slope <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> intercept], </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>[<span class="st">'lightcoral'</span>, <span class="st">'lightblue'</span>], edgecolor<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Predicted Anxiety Level'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Slope Interpretation: 1-hour increase'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Add value annotations on bars</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (x, y) <span class="kw">in</span> <span class="bu">enumerate</span>([(<span class="dv">0</span>, slope <span class="op">*</span> <span class="fl">1.0</span> <span class="op">+</span> intercept), (<span class="dv">1</span>, slope <span class="op">*</span> <span class="fl">2.0</span> <span class="op">+</span> intercept)]):</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    ax2.annotate(<span class="ss">f'</span><span class="sc">{</span>y<span class="sc">:.2f}</span><span class="ss">'</span>, xy<span class="op">=</span>(x, y), ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>, </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>                fontsize<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Bivariate Linear Regression Results (Time only):"</span>)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Slope: </span><span class="sc">{</span>slope<span class="sc">:.4f}</span><span class="ss"> (anxiety change per hour)"</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Intercept: </span><span class="sc">{</span>intercept<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Interpretation: For every additional hour of social media use, anxiety changes by </span><span class="sc">{</span>slope<span class="sc">:.4f}</span><span class="ss"> units"</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"True coefficient should be: 0.1 (positive!)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-linear-relationship" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-linear-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-linear-relationship-output-1.png" width="1430" height="565" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-linear-relationship-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Bivariate linear relationship between social media time and anxiety levels
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bivariate Linear Regression Results (Time only):
+Slope: 5.3406 (anxiety change per hour)
+Intercept: -3.6801
+Interpretation: For every additional hour of social media use, anxiety changes by 5.3406 units
+True coefficient should be: 0.1 (positive!)</code></pre>
+</div>
+</div>
+</section>
+<section id="the-multiple-regression-problem-when-linear-models-fail" class="level3">
+<h3 class="anchored" data-anchor-id="the-multiple-regression-problem-when-linear-models-fail">The Multiple Regression Problem: When Linear Models Fail</h3>
+<p>Now let’s see what happens when we add the StressSurvey variable to control for stress levels:</p>
+<div id="cell-fig-multiple-regression" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple regression: Anxiety ~ Time + StressSurvey</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> data[<span class="st">'Anxiety'</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit multiple regression</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>lr_multi <span class="op">=</span> LinearRegression()</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>lr_multi.fit(X, y)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>multi_predictions <span class="op">=</span> lr_multi.predict(X)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Get coefficients</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>time_coef <span class="op">=</span> lr_multi.coef_[<span class="dv">0</span>]</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>stress_coef <span class="op">=</span> lr_multi.coef_[<span class="dv">1</span>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> lr_multi.intercept_</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create visualization</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Left plot: Actual vs Predicted</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>ax1.scatter(data[<span class="st">'Anxiety'</span>], multi_predictions, </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>           color<span class="op">=</span><span class="st">'steelblue'</span>, s<span class="op">=</span><span class="dv">100</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>ax1.plot([<span class="dv">0</span>, <span class="dv">15</span>], [<span class="dv">0</span>, <span class="dv">15</span>], <span class="st">'r--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Perfect Prediction'</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Actual Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Predicted Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Multiple Regression: Actual vs Predicted'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>ax1.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Right plot: Coefficient comparison</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>coefficients <span class="op">=</span> [<span class="st">'Time Coefficient'</span>, <span class="st">'StressSurvey Coefficient'</span>]</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>true_values <span class="op">=</span> [<span class="fl">0.1</span>, <span class="fl">1.0</span>]  <span class="co"># True coefficients</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>estimated_values <span class="op">=</span> [time_coef, stress_coef]</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(coefficients))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>bars1 <span class="op">=</span> ax2.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, true_values, width, label<span class="op">=</span><span class="st">'True Coefficients'</span>, </span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'lightgreen'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>bars2 <span class="op">=</span> ax2.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, estimated_values, width, label<span class="op">=</span><span class="st">'Estimated Coefficients'</span>, </span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'lightcoral'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>ax2.set_xlabel(<span class="st">'Variables'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Coefficient Value'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Coefficient Comparison: True vs Estimated'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>ax2.set_xticks(x)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>ax2.set_xticklabels(coefficients)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>ax2.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Add value labels on bars</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bars <span class="kw">in</span> [bars1, bars2]:</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> bar <span class="kw">in</span> bars:</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> bar.get_height()</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>        ax2.annotate(<span class="ss">f'</span><span class="sc">{</span>height<span class="sc">:.3f}</span><span class="ss">'</span>, xy<span class="op">=</span>(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, height),</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>                    xytext<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">3</span>), textcoords<span class="op">=</span><span class="st">"offset points"</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>                    fontsize<span class="op">=</span><span class="dv">10</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Multiple Regression Results:"</span>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span> <span class="op">*</span> <span class="dv">40</span>)</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Anxiety = </span><span class="sc">{</span>intercept<span class="sc">:.3f}</span><span class="ss"> + </span><span class="sc">{</span>time_coef<span class="sc">:.3f}</span><span class="ss">*Time + </span><span class="sc">{</span>stress_coef<span class="sc">:.3f}</span><span class="ss">*StressSurvey"</span>)</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Time coefficient: </span><span class="sc">{</span>time_coef<span class="sc">:.4f}</span><span class="ss"> (should be +0.1)"</span>)</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"StressSurvey coefficient: </span><span class="sc">{</span>stress_coef<span class="sc">:.4f}</span><span class="ss"> (should be +1.0)"</span>)</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R² = </span><span class="sc">{</span>r2_score(y, multi_predictions)<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">🚨 PROBLEM: Time coefficient is </span><span class="sc">{</span>time_coef<span class="sc">:.4f}</span><span class="ss"> instead of +0.1!"</span>)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"This is the 'garbage can regression' problem in action."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-multiple-regression" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-multiple-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-multiple-regression-output-1.png" width="1526" height="565" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multiple-regression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Multiple regression analysis showing the garbage can regression problem
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Multiple Regression Results:
+========================================
+Anxiety = 0.589 + -2.780*Time + 1.427*StressSurvey
+Time coefficient: -2.7799 (should be +0.1)
+StressSurvey coefficient: 1.4269 (should be +1.0)
+R² = 0.9350
+
+🚨 PROBLEM: Time coefficient is -2.7799 instead of +0.1!
+This is the 'garbage can regression' problem in action.</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The Garbage Can Regression Problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The multiple regression shows a <strong>negative coefficient for Time</strong> when the true relationship should be <strong>positive</strong>! This happens because:</p>
+<ol type="1">
+<li><strong>StressSurvey is a non-linear proxy</strong> for the true Stress variable</li>
+<li><strong>Linear regression assumes linearity</strong> but the relationship is non-linear</li>
+<li><strong>The model compensates</strong> by giving Time a negative coefficient to “correct” for the non-linear StressSurvey effect</li>
+</ol>
+<p>This is exactly why we need decision trees - they can capture these non-linear relationships without making false assumptions about linearity.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="decision-trees-a-non-linear-alternative" class="level2">
+<h2 class="anchored" data-anchor-id="decision-trees-a-non-linear-alternative">Decision Trees: A Non-Linear Alternative</h2>
+<p>Decision trees offer a fundamentally different approach to modeling relationships. Instead of assuming linearity, they partition data into distinct groups based on threshold values.</p>
+<section id="what-is-a-decision-tree" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-decision-tree">What is a Decision Tree?</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+One-Liner Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <strong>decision tree</strong> is a model that splits data into groups using a series of binary decisions, where each split is based on a threshold value of a feature.</p>
+</div>
+</div>
+</section>
+<section id="the-tree-structure" class="level3">
+<h3 class="anchored" data-anchor-id="the-tree-structure">The Tree Structure</h3>
+<p>Decision trees consist of:</p>
+<ul>
+<li><strong>Root Node</strong>: The starting point containing all data</li>
+<li><strong>Internal Nodes</strong>: Decision points that split data based on conditions</li>
+<li><strong>Leaf Nodes</strong>: Terminal nodes that provide predictions</li>
+<li><strong>Branches</strong>: Paths connecting nodes based on decision outcomes</li>
+</ul>
+</section>
+<section id="building-a-decision-tree-for-anxiety-data" class="level3">
+<h3 class="anchored" data-anchor-id="building-a-decision-tree-for-anxiety-data">Building a Decision Tree for Anxiety Data</h3>
+<p>Let’s see how a decision tree would approach our anxiety data using both Time and StressSurvey:</p>
+<div id="cell-fig-decision-tree-example" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and fit decision tree with both features</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tree_model <span class="op">=</span> DecisionTreeRegressor(max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>tree_model.fit(data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]], data[<span class="st">'Anxiety'</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create visualization</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">8</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Left plot: Tree structure</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plot_tree(tree_model, feature_names<span class="op">=</span>[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>], </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>          filled<span class="op">=</span><span class="va">True</span>, rounded<span class="op">=</span><span class="va">True</span>, fontsize<span class="op">=</span><span class="dv">10</span>, ax<span class="op">=</span>ax1)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Decision Tree Structure'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Right plot: Tree predictions vs actual data</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ax2.scatter(data[<span class="st">'Anxiety'</span>], tree_model.predict(data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]]), </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>           color<span class="op">=</span><span class="st">'steelblue'</span>, s<span class="op">=</span><span class="dv">100</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="st">'Tree Predictions'</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>ax2.plot([<span class="dv">0</span>, <span class="dv">15</span>], [<span class="dv">0</span>, <span class="dv">15</span>], <span class="st">'r--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Perfect Prediction'</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>ax2.set_xlabel(<span class="st">'Actual Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Predicted Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Decision Tree: Actual vs Predicted'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>ax2.legend(fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Print tree rules</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Decision Tree Rules:"</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span> <span class="op">*</span> <span class="dv">50</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>tree_rules <span class="op">=</span> []</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_rules(tree, feature_names, node<span class="op">=</span><span class="dv">0</span>, depth<span class="op">=</span><span class="dv">0</span>, rule<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tree.tree_.children_left[node] <span class="op">==</span> tree.tree_.children_right[node]:  <span class="co"># Leaf node</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        prediction <span class="op">=</span> tree.tree_.value[node][<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        tree_rules.append(<span class="ss">f"</span><span class="sc">{</span>rule<span class="sc">}</span><span class="ss"> → Anxiety = </span><span class="sc">{</span>prediction<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        feature <span class="op">=</span> feature_names[tree.tree_.feature[node]]</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        threshold <span class="op">=</span> tree.tree_.threshold[node]</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        extract_rules(tree, feature_names, tree.tree_.children_left[node], depth<span class="op">+</span><span class="dv">1</span>, </span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"</span><span class="sc">{</span>rule<span class="sc">}</span><span class="ss"> AND </span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss"> &lt;= </span><span class="sc">{</span>threshold<span class="sc">:.1f}</span><span class="ss">"</span> <span class="cf">if</span> rule <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss"> &lt;= </span><span class="sc">{</span>threshold<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        extract_rules(tree, feature_names, tree.tree_.children_right[node], depth<span class="op">+</span><span class="dv">1</span>, </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>                     <span class="ss">f"</span><span class="sc">{</span>rule<span class="sc">}</span><span class="ss"> AND </span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss"> &gt; </span><span class="sc">{</span>threshold<span class="sc">:.1f}</span><span class="ss">"</span> <span class="cf">if</span> rule <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss"> &gt; </span><span class="sc">{</span>threshold<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>extract_rules(tree_model, [<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>])</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, rule <span class="kw">in</span> <span class="bu">enumerate</span>(tree_rules, <span class="dv">1</span>):</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>rule<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R² for comparison</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>tree_predictions <span class="op">=</span> tree_model.predict(data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]])</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>tree_r2 <span class="op">=</span> r2_score(data[<span class="st">'Anxiety'</span>], tree_predictions)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Decision Tree R² = </span><span class="sc">{</span>tree_r2<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-decision-tree-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decision-tree-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-decision-tree-example-output-1.png" width="1910" height="757" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decision-tree-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Decision tree for anxiety prediction using Time and StressSurvey
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Decision Tree Rules:
+==================================================
+1. StressSurvey &lt;= 7.5 AND StressSurvey &lt;= 4.5 AND StressSurvey &lt;= 1.5 → Anxiety = 0.07
+2. StressSurvey &lt;= 7.5 AND StressSurvey &lt;= 4.5 AND StressSurvey &gt; 1.5 → Anxiety = 1.10
+3. StressSurvey &lt;= 7.5 AND StressSurvey &gt; 4.5 → Anxiety = 2.20
+4. StressSurvey &gt; 7.5 AND Time &lt;= 2.1 AND Time &lt;= 2.0 → Anxiety = 8.20
+5. StressSurvey &gt; 7.5 AND Time &lt;= 2.1 AND Time &gt; 2.0 → Anxiety = 8.21
+6. StressSurvey &gt; 7.5 AND Time &gt; 2.1 → Anxiety = 12.22
+
+Decision Tree R² = 1.0000</code></pre>
+</div>
+</div>
+</section>
+<section id="how-decision-trees-work-the-cart-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="how-decision-trees-work-the-cart-algorithm">How Decision Trees Work: The CART Algorithm</h3>
+<p>The Classification and Regression Trees (CART) algorithm builds trees through a recursive process:</p>
+<ol type="1">
+<li><strong>Find Best Split</strong>: For each feature, find the threshold that best separates the data</li>
+<li><strong>Choose Best Feature</strong>: Select the feature and threshold that minimize variance (regression) or Gini impurity (classification)</li>
+<li><strong>Split Data</strong>: Create two child nodes based on the chosen split</li>
+<li><strong>Repeat</strong>: Continue splitting until stopping criteria are met</li>
+</ol>
+<div id="cell-fig-split-visualization" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a simple example to show splitting process using StressSurvey</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">12</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.ravel()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate different split points for StressSurvey</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>split_points <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">12</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'red'</span>, <span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'orange'</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (split, color) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(split_points, colors)):</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[i]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot data points</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    ax.scatter(data[<span class="st">'StressSurvey'</span>], data[<span class="st">'Anxiety'</span>], </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span><span class="st">'lightgray'</span>, s<span class="op">=</span><span class="dv">80</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add split line</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    ax.axvline(x<span class="op">=</span>split, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">3</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate means for each group</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    left_group <span class="op">=</span> data[data[<span class="st">'StressSurvey'</span>] <span class="op">&lt;=</span> split]</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    right_group <span class="op">=</span> data[data[<span class="st">'StressSurvey'</span>] <span class="op">&gt;</span> split]</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(left_group) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        left_mean <span class="op">=</span> left_group[<span class="st">'Anxiety'</span>].mean()</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        ax.axhline(y<span class="op">=</span>left_mean, xmin<span class="op">=</span><span class="dv">0</span>, xmax<span class="op">=</span>split<span class="op">/</span><span class="dv">12</span>, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        ax.text(split<span class="op">/</span><span class="dv">2</span>, left_mean <span class="op">+</span> <span class="fl">0.5</span>, <span class="ss">f'Mean: </span><span class="sc">{</span>left_mean<span class="sc">:.2f}</span><span class="ss">'</span>, </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>               ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>, weight<span class="op">=</span><span class="st">'bold'</span>, color<span class="op">=</span>color)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(right_group) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        right_mean <span class="op">=</span> right_group[<span class="st">'Anxiety'</span>].mean()</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        ax.axhline(y<span class="op">=</span>right_mean, xmin<span class="op">=</span>split<span class="op">/</span><span class="dv">12</span>, xmax<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        ax.text((split <span class="op">+</span> <span class="dv">12</span>)<span class="op">/</span><span class="dv">2</span>, right_mean <span class="op">+</span> <span class="fl">0.5</span>, <span class="ss">f'Mean: </span><span class="sc">{</span>right_mean<span class="sc">:.2f}</span><span class="ss">'</span>, </span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>               ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>, weight<span class="op">=</span><span class="st">'bold'</span>, color<span class="op">=</span>color)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate variance reduction</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(left_group) <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> <span class="bu">len</span>(right_group) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        total_var <span class="op">=</span> data[<span class="st">'Anxiety'</span>].var()</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>        left_var <span class="op">=</span> left_group[<span class="st">'Anxiety'</span>].var() <span class="op">*</span> <span class="bu">len</span>(left_group) <span class="op">/</span> <span class="bu">len</span>(data)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        right_var <span class="op">=</span> right_group[<span class="st">'Anxiety'</span>].var() <span class="op">*</span> <span class="bu">len</span>(right_group) <span class="op">/</span> <span class="bu">len</span>(data)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>        variance_reduction <span class="op">=</span> total_var <span class="op">-</span> (left_var <span class="op">+</span> right_var)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        ax.set_title(<span class="ss">f'Split at StressSurvey = </span><span class="sc">{</span>split<span class="sc">}</span><span class="ch">\n</span><span class="ss">Variance Reduction: </span><span class="sc">{</span>variance_reduction<span class="sc">:.3f}</span><span class="ss">'</span>, </span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>                    fontsize<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Stress Survey Score'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Anxiety Level'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Decision Tree Splitting Process: Finding Optimal Thresholds'</span>, </span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>             fontsize<span class="op">=</span><span class="dv">16</span>, weight<span class="op">=</span><span class="st">'bold'</span>, y<span class="op">=</span><span class="fl">0.98</span>)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-split-visualization" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-split-visualization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-split-visualization-output-1.png" width="1430" height="1133" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-split-visualization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Visualizing how decision trees find optimal splits using StressSurvey
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="comparing-linear-regression-vs-decision-trees" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-linear-regression-vs-decision-trees">Comparing Linear Regression vs Decision Trees</h2>
+<section id="the-key-difference-capturing-true-relationships" class="level3">
+<h3 class="anchored" data-anchor-id="the-key-difference-capturing-true-relationships">The Key Difference: Capturing True Relationships</h3>
+<div id="cell-fig-model-comparison" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate metrics for both models</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>lr_mse <span class="op">=</span> mean_squared_error(data[<span class="st">'Anxiety'</span>], multi_predictions)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>tree_mse <span class="op">=</span> mean_squared_error(data[<span class="st">'Anxiety'</span>], tree_predictions)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>lr_r2 <span class="op">=</span> r2_score(data[<span class="st">'Anxiety'</span>], multi_predictions)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison plot</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Left plot: Actual vs Predicted comparison</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax1.scatter(data[<span class="st">'Anxiety'</span>], multi_predictions, </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>           color<span class="op">=</span><span class="st">'blue'</span>, s<span class="op">=</span><span class="dv">100</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f'Multiple Regression (R² = </span><span class="sc">{</span>lr_r2<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ax1.scatter(data[<span class="st">'Anxiety'</span>], tree_predictions, </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>           color<span class="op">=</span><span class="st">'red'</span>, s<span class="op">=</span><span class="dv">100</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f'Decision Tree (R² = </span><span class="sc">{</span>tree_r2<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ax1.plot([<span class="dv">0</span>, <span class="dv">15</span>], [<span class="dv">0</span>, <span class="dv">15</span>], <span class="st">'k--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Perfect Prediction'</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Actual Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Predicted Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Model Predictions Comparison'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>ax1.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Right plot: Performance metrics</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> [<span class="st">'Multiple Regression'</span>, <span class="st">'Decision Tree'</span>]</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>mse_values <span class="op">=</span> [lr_mse, tree_mse]</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>r2_values <span class="op">=</span> [lr_r2, tree_r2]</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(models))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>bars1 <span class="op">=</span> ax2.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, mse_values, width, label<span class="op">=</span><span class="st">'MSE'</span>, color<span class="op">=</span><span class="st">'lightcoral'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>bars2 <span class="op">=</span> ax2.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, r2_values, width, label<span class="op">=</span><span class="st">'R²'</span>, color<span class="op">=</span><span class="st">'lightblue'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>ax2.set_xlabel(<span class="st">'Model Type'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Score'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Performance Metrics Comparison'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>ax2.set_xticks(x)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>ax2.set_xticklabels(models)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>ax2.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Add value labels on bars</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bars <span class="kw">in</span> [bars1, bars2]:</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> bar <span class="kw">in</span> bars:</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> bar.get_height()</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        ax2.annotate(<span class="ss">f'</span><span class="sc">{</span>height<span class="sc">:.3f}</span><span class="ss">'</span>, xy<span class="op">=</span>(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, height),</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>                    xytext<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">3</span>), textcoords<span class="op">=</span><span class="st">"offset points"</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>,</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>                    fontsize<span class="op">=</span><span class="dv">10</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Model Comparison Summary:"</span>)</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span> <span class="op">*</span> <span class="dv">40</span>)</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Multiple Regression - MSE: </span><span class="sc">{</span>lr_mse<span class="sc">:.4f}</span><span class="ss">, R²: </span><span class="sc">{</span>lr_r2<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Decision Tree       - MSE: </span><span class="sc">{</span>tree_mse<span class="sc">:.4f}</span><span class="ss">, R²: </span><span class="sc">{</span>tree_r2<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Key Insight: Both models have similar R², but decision trees"</span>)</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"can capture the true positive Time effect without being misled"</span>)</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"by the non-linear StressSurvey relationship!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-model-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-model-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-model-comparison-output-1.png" width="1526" height="565" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Comparing how linear regression and decision trees handle the Time effect
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model Comparison Summary:
+========================================
+Multiple Regression - MSE: 1.4232, R²: 0.9350
+Decision Tree       - MSE: 0.0004, R²: 1.0000
+
+Key Insight: Both models have similar R², but decision trees
+can capture the true positive Time effect without being misled
+by the non-linear StressSurvey relationship!</code></pre>
+</div>
+</div>
+</section>
+<section id="the-critical-insight-feature-importance-reveals-the-truth" class="level3">
+<h3 class="anchored" data-anchor-id="the-critical-insight-feature-importance-reveals-the-truth">The Critical Insight: Feature Importance Reveals the Truth</h3>
+<div id="cell-fig-feature-importance-comparison" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get decision tree feature importance</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>tree_importance <span class="op">=</span> tree_model.feature_importances_</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> [<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create comparison plot</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Left plot: Decision tree feature importance</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>bars1 <span class="op">=</span> ax1.bar(feature_names, tree_importance, color<span class="op">=</span><span class="st">'steelblue'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Feature Importance'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Decision Tree Feature Importance'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add value labels</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bar <span class="kw">in</span> bars1:</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> bar.get_height()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    ax1.annotate(<span class="ss">f'</span><span class="sc">{</span>height<span class="sc">:.3f}</span><span class="ss">'</span>, xy<span class="op">=</span>(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, height),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                xytext<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">3</span>), textcoords<span class="op">=</span><span class="st">"offset points"</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                fontsize<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Right plot: Linear regression coefficients (absolute values for comparison)</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>lr_coef_abs <span class="op">=</span> [<span class="bu">abs</span>(time_coef), <span class="bu">abs</span>(stress_coef)]</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>bars2 <span class="op">=</span> ax2.bar(feature_names, lr_coef_abs, color<span class="op">=</span><span class="st">'lightcoral'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">'Absolute Coefficient Value'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Linear Regression Coefficients (Absolute)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">'y'</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Add value labels</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bar <span class="kw">in</span> bars2:</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> bar.get_height()</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    ax2.annotate(<span class="ss">f'</span><span class="sc">{</span>height<span class="sc">:.3f}</span><span class="ss">'</span>, xy<span class="op">=</span>(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, height),</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                xytext<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">3</span>), textcoords<span class="op">=</span><span class="st">"offset points"</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>                fontsize<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Feature Importance Analysis:"</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span> <span class="op">*</span> <span class="dv">40</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Decision Tree:"</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  Time importance: </span><span class="sc">{</span>tree_importance[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  StressSurvey importance: </span><span class="sc">{</span>tree_importance[<span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Linear Regression:"</span>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  Time coefficient: </span><span class="sc">{</span>time_coef<span class="sc">:.3f}</span><span class="ss"> (WRONG SIGN!)"</span>)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  StressSurvey coefficient: </span><span class="sc">{</span>stress_coef<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">🎯 Decision trees correctly identify that BOTH features matter,"</span>)</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   while linear regression gives Time the wrong sign due to"</span>)</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   the non-linear StressSurvey relationship!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-feature-importance-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-feature-importance-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-feature-importance-comparison-output-1.png" width="1526" height="566" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-feature-importance-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Feature importance comparison: Decision trees vs Linear regression coefficients
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Feature Importance Analysis:
+========================================
+Decision Tree:
+  Time importance: 0.074
+  StressSurvey importance: 0.926
+
+Linear Regression:
+  Time coefficient: -2.780 (WRONG SIGN!)
+  StressSurvey coefficient: 1.427
+
+🎯 Decision trees correctly identify that BOTH features matter,
+   while linear regression gives Time the wrong sign due to
+   the non-linear StressSurvey relationship!</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="decision-tree-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="decision-tree-interpretation">Decision Tree Interpretation</h2>
+<section id="reading-tree-rules" class="level3">
+<h3 class="anchored" data-anchor-id="reading-tree-rules">Reading Tree Rules</h3>
+<p>Decision trees provide interpretable rules that are easy to understand:</p>
+<p><strong>Example Interpretation:</strong> - If time ≤ 120 minutes → Anxiety = 2.1 - If time &gt; 120 minutes AND time ≤ 240 minutes → Anxiety = 4.8<br>
+- If time &gt; 240 minutes → Anxiety = 7.2</p>
+</section>
+</section>
+<section id="strengths-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="strengths-and-limitations">Strengths and Limitations</h2>
+<section id="strengths-of-decision-trees" class="level3">
+<h3 class="anchored" data-anchor-id="strengths-of-decision-trees">Strengths of Decision Trees</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Advantages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Interpretability</strong>: Easy to understand and explain</li>
+<li><strong>No Assumptions</strong>: Don’t require linear relationships</li>
+<li><strong>Feature Interactions</strong>: Naturally capture interactions between variables</li>
+<li><strong>Robust to Outliers</strong>: Less sensitive to extreme values</li>
+<li><strong>Mixed Data Types</strong>: Handle both numerical and categorical features</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="limitations-of-decision-trees" class="level3">
+<h3 class="anchored" data-anchor-id="limitations-of-decision-trees">Limitations of Decision Trees</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Disadvantages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Overfitting</strong>: Can create overly complex trees that don’t generalize</li>
+<li><strong>Instability</strong>: Small data changes can create completely different trees</li>
+<li><strong>Poor Extrapolation</strong>: Don’t predict well outside training data range</li>
+<li><strong>Step Functions</strong>: Create discontinuous predictions (not smooth)</li>
+<li><strong>Bias</strong>: Tend to favor features with many possible splits</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="the-smoothness-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-smoothness-problem">The Smoothness Problem</h3>
+<div id="cell-fig-smoothness-problem" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a more detailed example using StressSurvey (since our tree uses 2 features)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>detailed_stress <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">1000</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># For the tree, we need to provide both features, so we'll use mean Time value</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>mean_time <span class="op">=</span> data[<span class="st">'Time'</span>].mean()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>tree_input <span class="op">=</span> np.column_stack([np.full(<span class="dv">1000</span>, mean_time), detailed_stress])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>tree_detailed <span class="op">=</span> tree_model.predict(tree_input)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># For linear regression, we need to use the same approach</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>lr_input <span class="op">=</span> np.column_stack([np.full(<span class="dv">1000</span>, mean_time), detailed_stress])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>lr_detailed <span class="op">=</span> lr_multi.predict(lr_input)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot both predictions</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>ax.plot(detailed_stress, lr_detailed, <span class="st">'b-'</span>, linewidth<span class="op">=</span><span class="dv">3</span>, </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">'Multiple Regression (Smooth)'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>ax.plot(detailed_stress, tree_detailed, <span class="st">'r-'</span>, linewidth<span class="op">=</span><span class="dv">3</span>, </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">'Decision Tree (Step Function)'</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Highlight the discontinuity points (approximate split points)</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="dv">6</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="dv">9</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="dv">3</span>, <span class="dv">8</span>, <span class="st">'Split Point 1'</span>, rotation<span class="op">=</span><span class="dv">90</span>, ha<span class="op">=</span><span class="st">'right'</span>, va<span class="op">=</span><span class="st">'top'</span>, color<span class="op">=</span><span class="st">'red'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="dv">6</span>, <span class="dv">8</span>, <span class="st">'Split Point 2'</span>, rotation<span class="op">=</span><span class="dv">90</span>, ha<span class="op">=</span><span class="st">'right'</span>, va<span class="op">=</span><span class="st">'top'</span>, color<span class="op">=</span><span class="st">'red'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="dv">9</span>, <span class="dv">8</span>, <span class="st">'Split Point 3'</span>, rotation<span class="op">=</span><span class="dv">90</span>, ha<span class="op">=</span><span class="st">'right'</span>, va<span class="op">=</span><span class="st">'top'</span>, color<span class="op">=</span><span class="st">'red'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Stress Survey Score'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Predicted Anxiety Level'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Smoothness Comparison: Linear vs Tree Models'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The Smoothness Problem:"</span>)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"• Multiple regression: Smooth, continuous predictions"</span>)</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"• Decision trees: Step functions with sudden jumps"</span>)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"• Real-world implication: Small changes in input can cause large prediction changes"</span>)</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"• Note: This shows predictions as StressSurvey varies (holding Time constant)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-smoothness-problem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-smoothness-problem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-smoothness-problem-output-1.png" width="1142" height="565" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-smoothness-problem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Decision trees create step functions, not smooth curves
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The Smoothness Problem:
+==============================
+• Multiple regression: Smooth, continuous predictions
+• Decision trees: Step functions with sudden jumps
+• Real-world implication: Small changes in input can cause large prediction changes
+• Note: This shows predictions as StressSurvey varies (holding Time constant)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="when-to-use-decision-trees" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-decision-trees">When to Use Decision Trees</h2>
+<section id="ideal-scenarios" class="level3">
+<h3 class="anchored" data-anchor-id="ideal-scenarios">Ideal Scenarios</h3>
+<ul>
+<li><strong>Non-linear relationships</strong>: When linear models fail to capture the true relationship</li>
+<li><strong>Feature interactions</strong>: When variables interact in complex ways</li>
+<li><strong>Interpretability requirements</strong>: When stakeholders need to understand the model</li>
+<li><strong>Mixed data types</strong>: When you have both numerical and categorical features</li>
+<li><strong>Robustness to outliers</strong>: When your data contains extreme values</li>
+</ul>
+</section>
+<section id="when-to-avoid" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-avoid">When to Avoid</h3>
+<ul>
+<li><strong>Linear relationships</strong>: When the true relationship is approximately linear</li>
+<li><strong>Smooth predictions needed</strong>: When you need continuous, smooth outputs</li>
+<li><strong>Small datasets</strong>: When you don’t have enough data to build reliable splits</li>
+<li><strong>High-dimensional data</strong>: When you have many features relative to observations</li>
+</ul>
+</section>
+</section>
+<section id="advanced-decision-tree-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-decision-tree-concepts">Advanced Decision Tree Concepts</h2>
+<section id="tree-pruning" class="level3">
+<h3 class="anchored" data-anchor-id="tree-pruning">Tree Pruning</h3>
+<p>To prevent overfitting, trees can be pruned by removing branches that don’t significantly improve performance:</p>
+<div id="cell-fig-tree-pruning" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create trees with different depths</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>depths <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">12</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.ravel()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, depth <span class="kw">in</span> <span class="bu">enumerate</span>(depths):</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[i]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fit tree with specific depth using both features</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    tree_dep <span class="op">=</span> DecisionTreeRegressor(max_depth<span class="op">=</span>depth, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    tree_dep.fit(data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]], data[<span class="st">'Anxiety'</span>])</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot actual vs predicted</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    train_pred <span class="op">=</span> tree_dep.predict(data[[<span class="st">'Time'</span>, <span class="st">'StressSurvey'</span>]])</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    ax.scatter(data[<span class="st">'Anxiety'</span>], train_pred, </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span><span class="st">'steelblue'</span>, s<span class="op">=</span><span class="dv">80</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolors<span class="op">=</span><span class="st">'black'</span>, label<span class="op">=</span><span class="st">'Data'</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    ax.plot([<span class="dv">0</span>, <span class="dv">15</span>], [<span class="dv">0</span>, <span class="dv">15</span>], <span class="st">'k--'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">'Perfect Prediction'</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate R²</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> r2_score(data[<span class="st">'Anxiety'</span>], train_pred)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">'Actual Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Predicted Anxiety'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f'Tree Depth = </span><span class="sc">{</span>depth<span class="sc">}</span><span class="ss"> (R² = </span><span class="sc">{</span>r2<span class="sc">:.3f}</span><span class="ss">)'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    ax.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">'Tree Pruning: Effect of Maximum Depth on Model Complexity'</span>, </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>             fontsize<span class="op">=</span><span class="dv">16</span>, weight<span class="op">=</span><span class="st">'bold'</span>, y<span class="op">=</span><span class="fl">0.98</span>)</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-tree-pruning" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tree-pruning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="decisionTrees_files/figure-html/fig-tree-pruning-output-1.png" width="1526" height="1133" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tree-pruning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Effect of tree depth on model complexity
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ensemble-methods" class="level3">
+<h3 class="anchored" data-anchor-id="ensemble-methods">Ensemble Methods</h3>
+<p>Decision trees are often combined in ensembles (Random Forest, Gradient Boosting) to improve performance while maintaining interpretability.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Decision trees offer a powerful alternative to linear models by:</p>
+<ol type="1">
+<li><strong>Capturing non-linear relationships</strong> through recursive splitting</li>
+<li><strong>Providing interpretable rules</strong> that are easy to understand</li>
+<li><strong>Handling complex interactions</strong> between features naturally</li>
+<li><strong>Requiring minimal assumptions</strong> about data distribution</li>
+</ol>
+<p>However, they come with trade-offs:</p>
+<ul>
+<li><strong>Step functions</strong> instead of smooth curves</li>
+<li><strong>Potential overfitting</strong> without proper regularization</li>
+<li><strong>Instability</strong> to small data changes</li>
+</ul>
+<p>The choice between linear regression and decision trees depends on your specific needs: use linear models when relationships are approximately linear and you need smooth predictions, and use decision trees when you need to capture non-linear patterns and value interpretability.</p>
+<hr>
+<p><em>“The best model is not always the most complex one, but the one that best serves your analytical purpose.”</em></p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
