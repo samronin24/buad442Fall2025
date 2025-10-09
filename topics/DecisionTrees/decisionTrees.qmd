@@ -66,6 +66,56 @@ $$
 ```{python}
 #| echo: false
 #| include: false
+#| results: hide
+import matplotlib.pyplot as plt
+import pandas as pd
+from functools import partial, partialmethod
+import daft   ### %pip install -U git+https://github.com/daft-dev/daft.git
+from numpy.random import default_rng
+import numpy as np
+
+class dag(daft.PGM):
+    def __init__(self, *args, **kwargs):
+        daft.PGM.__init__(self, *args, **kwargs)
+    
+    obsNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3, fontsize = 9, plot_params = {'facecolor': 'cadetblue'})
+    decNode = partialmethod(daft.PGM.add_node, aspect = 2.2, fontsize = 9, shape = "rectangle", plot_params = {'facecolor': 'thistle'})
+    detNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3, fontsize = 8.5, alternate = True, plot_params = {'facecolor': 'aliceblue'})
+    latNode = partialmethod(daft.PGM.add_node, scale = 1.0, aspect = 3.45, fontsize = 8.5, plot_params = {'facecolor': 'aliceblue'})
+    detNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.25, fontsize = 9, alternate = True, plot_params = {'facecolor': 'aliceblue'})
+    latNodeBig = partialmethod(daft.PGM.add_node, scale = 1.2, aspect = 2.2, fontsize = 9, plot_params = {'facecolor': 'aliceblue'})
+    
+pgm = dag(dpi = 100, alternate_style="outer")
+pgm.latNode("y","Anxiety Level\n"+r"$y \sim Normal(\mu,\sigma)$",1,1)
+pgm.detNode("mu","Expected Anxiety\n"+r"$\mu = \beta_0 + \beta_1 \times Stress + \beta_2 \times Time$",1,2, scale = 1.2, aspect = 5)
+pgm.obsNode("stress","Baseline Stress\n"+r"$Stress$",-0,3, aspect = 3, scale = 1.2)
+pgm.obsNode("time","Social Media Time\n"+r"$Time$",2,3, aspect = 3, scale = 1.2)
+pgm.latNode("beta0","Intercept\n"+r"$\beta_0 = 0$", -2, 2)
+pgm.latNode("beta1","Stress Coefficient\n"+r"$\beta_1 = 1$", -2, 3)
+pgm.latNode("beta2","Time Coefficient\n"+r"$\beta_2 = 0.1$", 4, 3)
+pgm.latNode("sigma","Anxiety Std.Dev\n"+r"$\sigma = 0$", 4, 2)
+pgm.add_edge("mu","y")
+pgm.add_edge("stress","mu")
+pgm.add_edge("time","mu")
+pgm.add_edge("beta0","mu")
+pgm.add_edge("beta1","mu")
+pgm.add_edge("beta2","mu")
+pgm.add_edge("sigma","y")
+pgm.add_plate([-1, 0.2, 4, 3.25], label = "Observation:\n" + r"$i = 1, 2, \ldots, 15$", 
+              label_offset = (2,2), rect_params = dict({"fill": False, "linestyle": "dashed", "edgecolor": "black"}))
+```
+
+```{python}
+#| echo: false
+#| label: fig-trueRelationshipDag
+#| fig-cap: "True generative DAG model for anxiety prediction showing the correct relationship: Anxiety = Stress + 0.1 × Time"
+#| out-width: 85%
+pgm.show()
+```
+
+```{python}
+#| echo: false
+#| include: false
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
