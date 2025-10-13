@@ -79,7 +79,12 @@ Let's assume we want to predict house prices using a decision tree with maximum 
 # Load required libraries
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(rpart))
-suppressPackageStartupMessages(library(rpart.plot))
+
+# Try to load rpart.plot, install if not available
+if (!require(rpart.plot, quietly = TRUE)) {
+  install.packages("rpart.plot", repos = "https://cran.rstudio.com/")
+  library(rpart.plot)
+}
 
 # Load the Sales Price dataset
 # Note: This loads the data from the buad442Fall2025 repository
@@ -116,12 +121,18 @@ summary(sales_data)
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.tree import DecisionTreeRegressor, plot_tree
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import warnings
 warnings.filterwarnings('ignore')
+
+# Try to import seaborn, but don't fail if it's not available
+try:
+    import seaborn as sns
+    sns.set_style("whitegrid")
+except ImportError:
+    print("Note: seaborn not available, using matplotlib defaults")
 
 # Load the Sales Price dataset
 # Note: This loads the data from the buad442Fall2025 repository
@@ -173,4 +184,469 @@ The Sales Price dataset contains real estate data with multiple variables descri
 - `GarageCars`: Size of garage in car capacity
 - `avgAreaIncome`: Average area income
 - `zipCode`: Zip code of the property
+
+## Decision Tree Model Building
+
+Now we'll build a decision tree model to predict house sale prices. We'll treat all predictor variables as numerical (including zipCode) to demonstrate how this affects feature importance interpretation.
+
+### Data Preparation and Model Training
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: prepare-data-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Select key variables for the model
+# We'll treat zipCode as numerical (which is problematic for interpretation)
+model_data <- sales_data %>%
+  select(SalePrice, LotArea, YearBuilt, GrLivArea, FullBath, HalfBath, 
+         BedroomAbvGr, TotRmsAbvGrd, GarageCars, avgAreaIncome, zipCode) %>%
+  na.omit()  # Remove any missing values
+
+# Check for missing values
+cat("Missing values check:\n")
+sapply(model_data, function(x) sum(is.na(x)))
+
+# Split the data into training and testing sets (80/20 split)
+set.seed(123)  # For reproducibility
+train_indices <- sample(1:nrow(model_data), 0.8 * nrow(model_data))
+train_data <- model_data[train_indices, ]
+test_data <- model_data[-train_indices, ]
+
+cat("\nTraining set size:", nrow(train_data), "\n")
+cat("Testing set size:", nrow(test_data), "\n")
+```
+
+```{r}
+#| label: build-tree-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Build decision tree with maximum depth of 3
+# Using rpart for regression tree
+tree_model <- rpart(SalePrice ~ ., 
+                    data = train_data,
+                    method = "anova",
+                    control = rpart.control(maxdepth = 3, 
+                                          minsplit = 20, 
+                                          minbucket = 10))
+
+# Display model summary
+cat("Decision Tree Model Summary:\n")
+print(tree_model)
+
+# Model complexity parameters
+cat("\nModel complexity parameters:\n")
+cat("Number of splits:", length(unique(tree_model$where)), "\n")
+cat("Number of terminal nodes:", sum(tree_model$frame$var == "<leaf>"), "\n")
+```
+
+### Python
+
+```{python}
+#| label: prepare-data-python
+#| echo: true
+
+# Select key variables for the model
+# We'll treat zipCode as numerical (which is problematic for interpretation)
+model_vars = ['SalePrice', 'LotArea', 'YearBuilt', 'GrLivArea', 'FullBath', 
+              'HalfBath', 'BedroomAbvGr', 'TotRmsAbvGrd', 'GarageCars', 
+              'avgAreaIncome', 'zipCode']
+
+model_data = sales_data[model_vars].dropna()
+
+# Check for missing values
+print("Missing values check:")
+print(model_data.isnull().sum())
+
+# Split the data into training and testing sets (80/20 split)
+from sklearn.model_selection import train_test_split
+
+X = model_data.drop('SalePrice', axis=1)
+y = model_data['SalePrice']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
+
+print(f"\nTraining set size: {X_train.shape[0]}")
+print(f"Testing set size: {X_test.shape[0]}")
+print(f"Number of features: {X_train.shape[1]}")
+```
+
+```{python}
+#| label: build-tree-python
+#| echo: true
+
+# Build decision tree with maximum depth of 3
+tree_model = DecisionTreeRegressor(max_depth=3, 
+                                  min_samples_split=20, 
+                                  min_samples_leaf=10, 
+                                  random_state=123)
+
+# Fit the model
+tree_model.fit(X_train, y_train)
+
+# Display model summary
+print("Decision Tree Model Summary:")
+print(f"Number of features: {tree_model.n_features_in_}")
+print(f"Number of leaves: {tree_model.get_n_leaves()}")
+print(f"Tree depth: {tree_model.get_depth()}")
+print(f"Number of nodes: {tree_model.tree_.node_count}")
+```
+
+:::
+
+### Tree Visualization
+
+Let's visualize our decision tree to understand how it makes predictions and which variables it considers most important.
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: visualize-tree-r
+#| echo: true
+#| message: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 8
+
+# Create a more detailed tree plot
+par(mfrow = c(1, 1))
+
+# Try rpart.plot first, fallback to plot if not available
+if (require(rpart.plot, quietly = TRUE)) {
+  rpart.plot(tree_model, 
+             type = 2,  # Show split labels
+             extra = 101,  # Show number of observations and percentage
+             fallen.leaves = TRUE,  # Position leaf nodes at bottom
+             digits = 0,  # Round numbers
+             cex = 0.8,  # Text size
+             main = "Decision Tree for House Price Prediction\n(Treating zipCode as Numerical)")
+} else {
+  # Fallback to basic plot
+  plot(tree_model, uniform = TRUE, main = "Decision Tree for House Price Prediction\n(Treating zipCode as Numerical)")
+  text(tree_model, use.n = TRUE, all = TRUE, cex = 0.8)
+}
+```
+
+```{r}
+#| label: tree-text-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Print the tree structure in text format
+cat("Tree Structure (Text Format):\n")
+print(tree_model)
+```
+
+### Python
+
+```{python}
+#| label: visualize-tree-python
+#| echo: true
+#| fig-width: 12
+#| fig-height: 8
+
+# Create tree visualization
+plt.figure(figsize=(12, 8))
+plot_tree(tree_model, 
+          feature_names=X_train.columns,
+          filled=True, 
+          rounded=True,
+          fontsize=10,
+          max_depth=3)
+plt.title("Decision Tree for House Price Prediction\n(Treating zipCode as Numerical)")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: tree-text-python
+#| echo: true
+
+# Print tree structure in text format
+from sklearn.tree import export_text
+
+tree_rules = export_text(tree_model, feature_names=list(X_train.columns))
+print("Tree Structure (Text Format):")
+print(tree_rules)
+```
+
+:::
+
+### Model Performance Evaluation
+
+Let's evaluate how well our decision tree performs on both training and testing data.
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: model-evaluation-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Make predictions
+train_pred <- predict(tree_model, train_data)
+test_pred <- predict(tree_model, test_data)
+
+# Calculate performance metrics
+train_rmse <- sqrt(mean((train_data$SalePrice - train_pred)^2))
+test_rmse <- sqrt(mean((test_data$SalePrice - test_pred)^2))
+
+train_r2 <- 1 - sum((train_data$SalePrice - train_pred)^2) / 
+            sum((train_data$SalePrice - mean(train_data$SalePrice))^2)
+test_r2 <- 1 - sum((test_data$SalePrice - test_pred)^2) / 
+           sum((test_data$SalePrice - mean(test_data$SalePrice))^2)
+
+# Display performance metrics
+cat("Model Performance Metrics:\n")
+cat("Training RMSE: $", round(train_rmse, 2), "\n")
+cat("Testing RMSE: $", round(test_rmse, 2), "\n")
+cat("Training R²: ", round(train_r2, 4), "\n")
+cat("Testing R²: ", round(test_r2, 4), "\n")
+
+# Calculate mean absolute error
+train_mae <- mean(abs(train_data$SalePrice - train_pred))
+test_mae <- mean(abs(test_data$SalePrice - test_pred))
+
+cat("Training MAE: $", round(train_mae, 2), "\n")
+cat("Testing MAE: $", round(test_mae, 2), "\n")
+```
+
+```{r}
+#| label: prediction-plot-r
+#| echo: true
+#| message: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 5
+
+# Create prediction vs actual plots
+par(mfrow = c(1, 2))
+
+# Training data
+plot(train_data$SalePrice, train_pred, 
+     main = "Training Data: Actual vs Predicted",
+     xlab = "Actual Sale Price ($)", 
+     ylab = "Predicted Sale Price ($)",
+     pch = 16, col = "blue", alpha = 0.6)
+abline(0, 1, col = "red", lwd = 2)
+
+# Testing data
+plot(test_data$SalePrice, test_pred, 
+     main = "Testing Data: Actual vs Predicted",
+     xlab = "Actual Sale Price ($)", 
+     ylab = "Predicted Sale Price ($)",
+     pch = 16, col = "green", alpha = 0.6)
+abline(0, 1, col = "red", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+### Python
+
+```{python}
+#| label: model-evaluation-python
+#| echo: true
+
+# Make predictions
+train_pred = tree_model.predict(X_train)
+test_pred = tree_model.predict(X_test)
+
+# Calculate performance metrics
+train_rmse = np.sqrt(mean_squared_error(y_train, train_pred))
+test_rmse = np.sqrt(mean_squared_error(y_test, test_pred))
+
+train_r2 = r2_score(y_train, train_pred)
+test_r2 = r2_score(y_test, test_pred)
+
+# Display performance metrics
+print("Model Performance Metrics:")
+print(f"Training RMSE: ${train_rmse:,.2f}")
+print(f"Testing RMSE: ${test_rmse:,.2f}")
+print(f"Training R²: {train_r2:.4f}")
+print(f"Testing R²: {test_r2:.4f}")
+
+# Calculate mean absolute error
+from sklearn.metrics import mean_absolute_error
+
+train_mae = mean_absolute_error(y_train, train_pred)
+test_mae = mean_absolute_error(y_test, test_pred)
+
+print(f"Training MAE: ${train_mae:,.2f}")
+print(f"Testing MAE: ${test_mae:,.2f}")
+```
+
+```{python}
+#| label: prediction-plot-python
+#| echo: true
+#| fig-width: 12
+#| fig-height: 5
+
+# Create prediction vs actual plots
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Training data
+ax1.scatter(y_train, train_pred, alpha=0.6, color='blue')
+ax1.plot([y_train.min(), y_train.max()], [y_train.min(), y_train.max()], 'r--', lw=2)
+ax1.set_xlabel('Actual Sale Price ($)')
+ax1.set_ylabel('Predicted Sale Price ($)')
+ax1.set_title('Training Data: Actual vs Predicted')
+ax1.grid(True, alpha=0.3)
+
+# Testing data
+ax2.scatter(y_test, test_pred, alpha=0.6, color='green')
+ax2.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+ax2.set_xlabel('Actual Sale Price ($)')
+ax2.set_ylabel('Predicted Sale Price ($)')
+ax2.set_title('Testing Data: Actual vs Predicted')
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
+## Feature Importance Analysis
+
+Now let's examine which features the decision tree considers most important. This is where we'll see the impact of treating zipCode as a numerical variable.
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: feature-importance-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Extract feature importance
+importance_df <- data.frame(
+  Feature = names(tree_model$variable.importance),
+  Importance = as.numeric(tree_model$variable.importance)
+) %>%
+  arrange(desc(Importance)) %>%
+  mutate(Importance_Percent = round(Importance / sum(Importance) * 100, 2))
+
+# Display feature importance
+cat("Feature Importance Rankings:\n")
+print(importance_df)
+
+# Create a bar plot of feature importance
+library(ggplot2)
+
+ggplot(importance_df, aes(x = reorder(Feature, Importance), y = Importance)) +
+  geom_col(fill = "steelblue", alpha = 0.7) +
+  coord_flip() +
+  labs(title = "Feature Importance in Decision Tree Model",
+       subtitle = "Variables ranked by their contribution to reducing impurity",
+       x = "Features",
+       y = "Importance Score") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+```{r}
+#| label: importance-analysis-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Analyze the top features
+cat("Top 3 Most Important Features:\n")
+top_features <- head(importance_df, 3)
+for(i in 1:nrow(top_features)) {
+  cat(i, ". ", top_features$Feature[i], 
+      " (", top_features$Importance_Percent[i], "% of total importance)\n", sep = "")
+}
+
+cat("\nKey Observations:\n")
+cat("- zipCode appears as feature #", which(importance_df$Feature == "zipCode"), 
+    " with ", importance_df$Importance_Percent[importance_df$Feature == "zipCode"], 
+    "% importance\n", sep = "")
+cat("- This is problematic because zipCode is being treated as a numerical variable\n")
+cat("- The tree might split on 'zipCode > 50012.5' which has no meaningful interpretation\n")
+```
+
+### Python
+
+```{python}
+#| label: feature-importance-python
+#| echo: true
+
+# Extract feature importance
+importance_df = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': tree_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+importance_df['Importance_Percent'] = (importance_df['Importance'] * 100).round(2)
+
+# Display feature importance
+print("Feature Importance Rankings:")
+print(importance_df)
+
+# Create a bar plot of feature importance
+plt.figure(figsize=(10, 6))
+plt.barh(range(len(importance_df)), importance_df['Importance'], 
+         color='steelblue', alpha=0.7)
+plt.yticks(range(len(importance_df)), importance_df['Feature'])
+plt.xlabel('Importance Score')
+plt.title('Feature Importance in Decision Tree Model\nVariables ranked by their contribution to reducing impurity')
+plt.gca().invert_yaxis()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: importance-analysis-python
+#| echo: true
+
+# Analyze the top features
+print("Top 3 Most Important Features:")
+top_features = importance_df.head(3)
+for i, (_, row) in enumerate(top_features.iterrows(), 1):
+    print(f"{i}. {row['Feature']} ({row['Importance_Percent']}% of total importance)")
+
+zipcode_rank = importance_df[importance_df['Feature'] == 'zipCode'].index[0] + 1
+zipcode_importance = importance_df[importance_df['Feature'] == 'zipCode']['Importance_Percent'].iloc[0]
+
+print(f"\nKey Observations:")
+print(f"- zipCode appears as feature #{zipcode_rank} with {zipcode_importance}% importance")
+print("- This is problematic because zipCode is being treated as a numerical variable")
+print("- The tree might split on 'zipCode > 50012.5' which has no meaningful interpretation")
+```
+
+:::
+
+### Critical Analysis: The Problem with Numerical Encoding
+
+::: {.callout-warning}
+## ⚠️ The Encoding Problem Revealed
+
+**What we just observed:** Our decision tree treated `zipCode` as a numerical variable, allowing it to make splits like "zipCode > 50012.5". This creates several problems:
+
+1. **Meaningless Splits:** A zip code of 50013 is not "greater than" 50012 in any meaningful way for house prices
+2. **False Importance:** The algorithm might assign high importance to zipCode simply because it can create many splits
+3. **Misleading Interpretations:** We might conclude that zipCode is very important when it's really just an artifact of poor encoding
+
+**The Real Issue:** Zip codes are categorical variables that represent discrete geographic areas. The numerical values (50010, 50011, 50012, etc.) have no inherent order or magnitude relationship to house prices.
+:::
+
+**Next Steps:** In the following sections, we'll demonstrate how proper categorical encoding changes both the tree structure and feature importance rankings, revealing the true importance of each variable for predicting house prices.
 
