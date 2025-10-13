@@ -13,19 +13,24 @@ execute:
 
 ## Challenge Overview
 
+---
+title: "Decision Tree Challenge"
+subtitle: "Feature Importance and Categorical Variable Encoding"
+format:
+  html: default
+  pdf: default
+execute:
+  echo: true
+  eval: true
+---
+
+# 🌳 Decision Tree Challenge - Feature Importance and Variable Encoding
+
+## Challenge Overview
+
 **Your Mission:** Create a comprehensive Quarto document that demonstrates how decision trees measure feature importance, analyzes the critical differences between categorical and numerical variable encoding, and presents compelling evidence of why proper data preprocessing matters for interpretable machine learning. Then render the document to HTML and deploy it via GitHub Pages using the starter repository workflow.
 
-::: {.callout-warning}
-## ⚠️ AI Partnership Required
-
-This challenge pushes boundaries intentionally. You'll tackle problems that normally require weeks of study, but with Cursor AI as your partner (and your brain keeping it honest), you can accomplish more than you thought possible.
-
-**The new reality:** The four stages of competence are Ignorance → Awareness → Learning → Mastery. AI lets us produce Mastery-level work while operating primarily in the Awareness stage. I focus on awareness training, you leverage AI for execution, and together we create outputs that used to require years of dedicated study.
-:::
-
 ## The Decision Tree Problem 🎯
-
-> "The most important thing in communication is hearing what isn't said." - Peter Drucker
 
 **The Core Problem:** Decision trees are often praised for their interpretability and ability to handle both numerical and categorical variables. But what happens when we encode categorical variables as numbers? How does this affect our understanding of feature importance?
 
@@ -36,16 +41,16 @@ This challenge pushes boundaries intentionally. You'll tackle problems that norm
 
 **The problem:** When we encode categorical variables as numerical values (like 1, 2, 3, 4...), decision trees treat them as if they have a meaningful numerical order. This can completely distort our understanding of feature importance.
 
-**Why this matters:** If a categorical variable like "Neighborhood Quality" (Poor, Fair, Good, Excellent) is encoded as (1, 2, 3, 4), the tree might split on "Neighborhood Quality > 2.5" instead of recognizing that this is really a categorical choice between discrete categories.
+**Why this matters:** If a categorical variable like "Zip Code" (50010, 50011, 50012, 50013) is treated as a numerical variable, the tree might split on "Zip Code > 50012.5" instead of recognizing that this is really a categorical choice between discrete geographic areas where the order of numerical values has no meaningful interpretation.
 
 **The connection:** Proper encoding preserves the true nature of categorical variables and gives us accurate feature importance rankings.
 :::
 
-**The Real-World Context:** In real estate, we know that neighborhood quality, house style, and other categorical factors are crucial for predicting home prices. But if we encode these as numbers, we might get misleading insights about which features actually matter most.
-
 **The Devastating Reality:** Even sophisticated machine learning models can give us completely wrong insights about feature importance if we don't properly encode our variables. A categorical variable that should be among the most important might appear irrelevant, while a numerical variable might appear artificially important.
 
-Your challenge is to explore the Ames Housing dataset and show how this happens:
+## Mistaken Feature Importance: The Example of Zip Code
+
+Here we load a dataset that has a categorical variable "Zip Code" and a numerical variable "Sale Price" along with a bunch of other truly numerical variables.  In this section, we will explore how the decision tree treats the "Zip Code" when it is mistakenly considered a numerical variable.
 
 $$
 \begin{aligned}
@@ -57,11 +62,7 @@ $$
 \end{aligned}
 $$
 
-Let's assume we want to predict house prices and understand which features matter most. The key question is: **How does encoding categorical variables as numbers affect our understanding of feature importance?**
-
-## The Ames Housing Dataset 🏠
-
-The Ames Housing dataset contains detailed information about residential properties sold in Ames, Iowa from 2006 to 2010. This dataset is perfect for our analysis because it contains both categorical variables (like neighborhood, house style, quality ratings) and numerical variables (like square footage, year built, number of bedrooms).
+Let's assume we want to predict house prices using a decision tree with maximum depth of 3.
 
 ### Data Loading and Initial Exploration
 
@@ -152,7 +153,6 @@ print(sales_data.info())
 print("\nSummary statistics for key variables:")
 sales_data.describe(include='all')
 ```
-
 :::
 
 ### Dataset Description
@@ -174,34 +174,3 @@ The Sales Price dataset contains real estate data with multiple variables descri
 - `avgAreaIncome`: Average area income
 - `zipCode`: Zip code of the property
 
-::: {.callout-note}
-## 📝 Dataset Overview
-
-**The Challenge:** This dataset is ideal for demonstrating decision tree concepts and feature importance analysis because it contains both numerical and categorical variables that can be used to predict house prices.
-
-**The Key Question:** How do different encoding methods affect our understanding of feature importance in decision trees?
-:::
-
-## Challenge Requirements 📋
-
-*[Challenge requirements will be added here]*
-
-## Getting Started 🚀
-
-*[Getting started instructions will be added here]*
-
-## Grading Rubric 🎓
-
-*[Grading rubric will be added here]*
-
-## Technical Implementation 💡
-
-*[Technical implementation details will be added here]*
-
-## Submission Checklist ✅
-
-*[Submission checklist will be added here]*
-
-## Essential Decision Tree Concepts 🎯
-
-*[Essential concepts will be added here]*
