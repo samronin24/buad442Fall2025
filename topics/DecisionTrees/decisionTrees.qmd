@@ -511,12 +511,34 @@ The Classification and Regression Trees (CART) algorithm builds trees through a 
 #| fig-cap: "Visualizing how decision trees find optimal splits using StressSurvey"
 #| echo: false
 
+# First, show the baseline (no split) - overall mean and total variance
+fig, ax = plt.subplots(1, 1, figsize=(7, 5))
+ax.scatter(data['StressSurvey'], data['Anxiety'], 
+          color='lightgray', s=80, alpha=0.6, edgecolors='black')
+
+# Calculate overall mean and variance
+overall_mean = data['Anxiety'].mean()
+overall_var = data['Anxiety'].var()
+
+# Add overall mean line
+ax.axhline(y=overall_mean, color='black', linewidth=3, linestyle='-', alpha=0.8)
+ax.text(6, overall_mean + 0.5, f'Overall Mean: {overall_mean:.2f}', 
+       ha='center', fontsize=12, weight='bold', color='black')
+
+ax.set_title(f'No Split - Baseline\nTotal Variance: {overall_var:.3f}', 
+            fontsize=12, weight='bold')
+ax.set_xlabel('Stress Survey Score', fontsize=10)
+ax.set_ylabel('Anxiety Level', fontsize=10)
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
 # Create individual plots for each split point
 split_points = [3, 6, 9, 12]
 colors = ['red', 'blue', 'green', 'orange']
 
 for i, (split, color) in enumerate(zip(split_points, colors)):
-    fig, ax = plt.subplots(1, 1, figsize=(7, 4))
+    fig, ax = plt.subplots(1, 1, figsize=(7, 5))
     
     # Plot data points
     ax.scatter(data['StressSurvey'], data['Anxiety'], 
@@ -1391,6 +1413,42 @@ print("6. The calculation matches sklearn's implementation exactly")
 - Feature_B gets lower importance because it's used in a later split
 - The calculation is mathematically precise and reproducible
 :::
+
+---
+
+## Example Visuals for Presentation
+
+```{python}
+#| label: fig-presentation-baseline
+#| fig-cap: "Predicting Anxiety Based on 15 Observations"
+#| echo: false
+
+# Create traditional dotplot with density function (all positive values)
+fig, ax = plt.subplots(1, 1, figsize=(7.5, 5.5))
+
+# Create dotplot with jitter above x-axis
+y_jitter = np.random.normal(0.05, 0.01, len(data['Anxiety']))  # Small positive jitter
+ax.scatter(data['Anxiety'], y_jitter, alpha=0.6, s=100, color='steelblue', 
+           edgecolors='black', linewidth=1, label='Observed Anxiety Values')
+
+# Add density curve (all positive)
+anxiety_range = np.linspace(data['Anxiety'].min() - 1, data['Anxiety'].max() + 1, 100)
+density = stats.gaussian_kde(data['Anxiety'])
+density_values = density(anxiety_range)
+# Scale density to fit nicely on the plot (all positive)
+density_scaled = density_values / density_values.max() * 0.15
+ax.fill_between(anxiety_range, 0, density_scaled, alpha=0.3, color='lightblue', label='Probability Density')
+
+ax.set_xlabel('Anxiety Level', fontsize=12)
+ax.set_ylabel('Density', fontsize=12)
+ax.set_title('Predicting Anxiety Based on 15 Observations', fontsize=14, weight='bold')
+ax.legend(fontsize=11)
+ax.grid(True, alpha=0.3)
+ax.set_ylim(0, 0.2)  # All positive values
+
+plt.tight_layout()
+plt.show()
+```
 
 ---
 
