@@ -52,18 +52,6 @@ execute:
 
 Here we load a dataset that has a categorical variable "Zip Code" and a numerical variable "Sale Price" along with a bunch of other truly numerical variables.  In this section, we will explore how the decision tree treats the "Zip Code" when it is mistakenly considered a numerical variable.
 
-$$
-\begin{aligned}
-\text{Price} &\equiv \text{House Sale Price (our target variable)}\\
-\text{Neighborhood} &\equiv \text{Categorical: Ames neighborhood}\\
-\text{House Style} &\equiv \text{Categorical: Style of dwelling}\\
-\text{Year Built} &\equiv \text{Numerical: Year house was constructed}\\
-\text{Square Feet} &\equiv \text{Numerical: Total square footage}
-\end{aligned}
-$$
-
-Let's assume we want to predict house prices using a decision tree with maximum depth of 3.
-
 ### Data Loading and Initial Exploration
 
 ::: {.panel-tabset}
@@ -182,7 +170,6 @@ The Sales Price dataset contains real estate data with multiple variables descri
 - `BedroomAbvGr`: Number of bedrooms above grade
 - `TotRmsAbvGrd`: Total rooms above grade
 - `GarageCars`: Size of garage in car capacity
-- `avgAreaIncome`: Average area income
 - `zipCode`: Zip code of the property
 
 ## Decision Tree Model Building
@@ -205,7 +192,7 @@ Now we'll build a decision tree model to predict house sale prices. We'll treat 
 # We'll treat zipCode as numerical (which is problematic for interpretation)
 model_data <- sales_data %>%
   select(SalePrice, LotArea, YearBuilt, GrLivArea, FullBath, HalfBath, 
-         BedroomAbvGr, TotRmsAbvGrd, GarageCars, avgAreaIncome, zipCode) %>%
+         BedroomAbvGr, TotRmsAbvGrd, GarageCars, zipCode) %>%
   na.omit()  # Remove any missing values
 
 # Check for missing values
@@ -256,8 +243,7 @@ cat("Number of terminal nodes:", sum(tree_model$frame$var == "<leaf>"), "\n")
 # Select key variables for the model
 # We'll treat zipCode as numerical (which is problematic for interpretation)
 model_vars = ['SalePrice', 'LotArea', 'YearBuilt', 'GrLivArea', 'FullBath', 
-              'HalfBath', 'BedroomAbvGr', 'TotRmsAbvGrd', 'GarageCars', 
-              'avgAreaIncome', 'zipCode']
+              'HalfBath', 'BedroomAbvGr', 'TotRmsAbvGrd', 'GarageCars', 'zipCode']
 
 model_data = sales_data[model_vars].dropna()
 
