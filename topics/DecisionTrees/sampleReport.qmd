@@ -256,11 +256,11 @@ plt.show()
 ::: {.callout-warning}
 ## ⚠️ The Problem Revealed
 
-**What we observed:** Our decision tree treated `zipCode` as a numerical variable, allowing splits like "zipCode > 50012.5". This creates several problems:
+**What we observed:** Our decision tree treated `zipCode` as a numerical variable, allowing splits like "zipCode < 50012.5". This creates several problems:
 
 1. **Meaningless Splits:** A zip code of 50013 is not "greater than" 50012 in any meaningful way for house prices
 2. **False Importance:** The algorithm assigns importance to zipCode based on numerical splits rather than categorical distinctions
-3. **Misleading Interpretations:** We might conclude zipCode is important when it's really just an artifact of poor encoding
+3. **Misleading Interpretations:** We might conclude zipCode is important or not it's really just poor encoding
 
 **The Real Issue:** Zip codes are categorical variables representing discrete geographic areas. The numerical values have no inherent order or magnitude relationship to house prices.
 :::
@@ -316,6 +316,558 @@ print(f"Testing RMSE: ${test_rmse:,.2f} | R²: {test_r2:.3f}")
 ```
 
 :::
+
+## Proper Categorical Encoding: The Solution
+
+Now let's repeat the analysis with zipCode properly encoded as categorical variables to see the difference.
+
+**R Approach:** Convert zipCode to a factor (categorical variable)  
+**Python Approach:** One-hot encode zipCode (create dummy variables for each zip code)
+
+### Categorical Encoding Analysis
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: categorical-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Convert zipCode to factor (categorical)
+model_data_cat <- model_data %>%
+  mutate(zipCode = as.factor(zipCode))
+
+# Split data
+set.seed(123)
+train_indices_cat <- sample(1:nrow(model_data_cat), 0.8 * nrow(model_data_cat))
+train_data_cat <- model_data_cat[train_indices_cat, ]
+test_data_cat <- model_data_cat[-train_indices_cat, ]
+
+# Build decision tree with categorical zipCode
+tree_model_cat <- rpart(SalePrice ~ ., 
+                        data = train_data_cat,
+                        method = "anova",
+                        control = rpart.control(maxdepth = 3, 
+                                              minsplit = 20, 
+                                              minbucket = 10))
+
+cat("Categorical Tree - Terminal nodes:", sum(tree_model_cat$frame$var == "<leaf>"), "\n")
+
+# Feature importance with categorical zipCode
+importance_cat <- data.frame(
+  Feature = names(tree_model_cat$variable.importance),
+  Importance = as.numeric(tree_model_cat$variable.importance)
+) %>%
+  arrange(desc(Importance)) %>%
+  mutate(Importance_Percent = round(Importance / sum(Importance) * 100, 2))
+
+cat("\nFeature Importance (zipCode as Categorical):\n")
+print(importance_cat)
+
+# Check if zipCode appears in tree
+zipcode_in_tree <- "zipCode" %in% names(tree_model_cat$variable.importance)
+cat("\nzipCode appears in tree:", zipcode_in_tree, "\n")
+if(zipcode_in_tree) {
+  zipcode_rank_cat <- which(importance_cat$Feature == "zipCode")
+  cat("zipCode importance rank:", zipcode_rank_cat, "\n")
+}
+```
+
+### Python
+
+```{python}
+#| label: categorical-python
+#| echo: true
+
+# One-hot encode zipCode
+import pandas as pd
+
+# Create one-hot encoded zipCode
+zipcode_encoded = pd.get_dummies(model_data['zipCode'], prefix='zipCode')
+model_data_cat = pd.concat([model_data.drop('zipCode', axis=1), zipcode_encoded], axis=1)
+
+# Split data
+X_cat = model_data_cat.drop('SalePrice', axis=1)
+y_cat = model_data_cat['SalePrice']
+X_train_cat, X_test_cat, y_train_cat, y_test_cat = train_test_split(X_cat, y_cat, test_size=0.2, random_state=123)
+
+# Build decision tree with one-hot encoded zipCode
+tree_model_cat = DecisionTreeRegressor(max_depth=3, 
+                                      min_samples_split=20, 
+                                      min_samples_leaf=10, 
+                                      random_state=123)
+tree_model_cat.fit(X_train_cat, y_train_cat)
+
+print(f"Categorical Tree - Terminal nodes: {tree_model_cat.get_n_leaves()}")
+
+# Feature importance with one-hot encoded zipCode
+importance_cat_df = pd.DataFrame({
+    'Feature': X_train_cat.columns,
+    'Importance': tree_model_cat.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+importance_cat_df['Importance_Percent'] = (importance_cat_df['Importance'] * 100).round(2)
+
+print("\nFeature Importance (zipCode One-Hot Encoded):")
+print(importance_cat_df)
+
+# Check zipCode features
+zipcode_features = [col for col in X_train_cat.columns if col.startswith('zipCode')]
+zipcode_importance = importance_cat_df[importance_cat_df['Feature'].isin(zipcode_features)]['Importance'].sum()
+total_importance = importance_cat_df['Importance'].sum()
+zipcode_percent = (zipcode_importance / total_importance * 100).round(2)
+
+print(f"\nTotal zipCode importance: {zipcode_percent}%")
+print(f"Number of zipCode features: {len(zipcode_features)}")
+```
+
+:::
+
+### Comparison: Numerical vs Categorical zipCode
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: comparison-r
+#| echo: true
+#| message: false
+#| warning: false
+
+cat("COMPARISON: Numerical vs Categorical zipCode\n")
+cat("==========================================\n")
+
+# Numerical zipCode results
+numerical_zipcode_rank <- which(importance_df$Feature == "zipCode")
+numerical_zipcode_importance <- importance_df$Importance_Percent[importance_df$Feature == "zipCode"]
+
+# Categorical zipCode results
+categorical_zipcode_rank <- ifelse("zipCode" %in% names(tree_model_cat$variable.importance), 
+                                  which(importance_cat$Feature == "zipCode"), "Not in top features")
+categorical_zipcode_importance <- ifelse("zipCode" %in% names(tree_model_cat$variable.importance),
+                                        importance_cat$Importance_Percent[importance_cat$Feature == "zipCode"], 0)
+
+cat("Numerical zipCode:\n")
+cat("  - Rank:", numerical_zipcode_rank, "\n")
+cat("  - Importance:", numerical_zipcode_importance, "%\n\n")
+
+cat("Categorical zipCode:\n")
+cat("  - Rank:", categorical_zipcode_rank, "\n")
+cat("  - Importance:", categorical_zipcode_importance, "%\n\n")
+
+cat("Key Insight: Proper categorical encoding changes how zipCode is treated!\n")
+```
+
+### Python
+
+```{python}
+#| label: comparison-python
+#| echo: true
+
+print("COMPARISON: Numerical vs Categorical zipCode")
+print("==========================================")
+
+# Numerical zipCode results
+numerical_zipcode_rank = importance_df[importance_df['Feature'] == 'zipCode'].index[0] + 1
+numerical_zipcode_importance = importance_df[importance_df['Feature'] == 'zipCode']['Importance_Percent'].iloc[0]
+
+# Categorical zipCode results (sum of all zipCode features)
+zipcode_features = [col for col in X_train_cat.columns if col.startswith('zipCode')]
+zipcode_importance_sum = importance_cat_df[importance_cat_df['Feature'].isin(zipcode_features)]['Importance'].sum()
+zipcode_importance_percent = (zipcode_importance_sum * 100).round(2)
+
+print("Numerical zipCode:")
+print(f"  - Rank: {numerical_zipcode_rank}")
+print(f"  - Importance: {numerical_zipcode_importance}%")
+print()
+
+print("Categorical zipCode (one-hot encoded):")
+print(f"  - Total Importance: {zipcode_importance_percent}%")
+print(f"  - Number of zipCode features: {len(zipcode_features)}")
+print()
+
+print("Key Insight: Proper categorical encoding changes how zipCode is treated!")
+```
+
+:::
+
+### The Dramatic Difference
+
+**What We Discovered:**
+
+1. **Numerical zipCode:** Treated as a single variable with artificial numerical order
+2. **Categorical zipCode:** Treated as discrete categories, allowing the tree to make meaningful geographic distinctions  
+3. **Feature Importance:** Completely different rankings and interpretations
+
+**The Bottom Line:** Proper encoding reveals the true nature of categorical variables and provides interpretable, meaningful splits that make business sense.
+
+## Deep Dive: One-Hot Encoding Problem & Target-Based Ranking
+
+**The Issue:** One-hot encoding creates sparse features (many zipCode_50010, zipCode_50011, etc.) that decision trees often ignore due to insufficient samples per category.
+
+**Solution:** Target-based ranking - rank zip codes by their average house price, creating an ordinal variable that preserves geographic price patterns.
+
+### Target-Based Ranking Analysis
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: target-ranking-r
+#| echo: true
+#| message: false
+#| warning: false
+
+# Create target-based ranking (this is how R factors work internally)
+zipcode_ranking <- model_data %>%
+  group_by(zipCode) %>%
+  summarise(avg_price = mean(SalePrice), .groups = 'drop') %>%
+  arrange(avg_price) %>%
+  mutate(zipcode_rank = row_number())
+
+# Merge ranking back to data
+model_data_ranked <- model_data %>%
+  left_join(zipcode_ranking, by = "zipCode") %>%
+  select(-zipCode, -avg_price)  # Remove original zipCode
+
+# Build tree with ranked zipCode
+tree_model_ranked <- rpart(SalePrice ~ ., 
+                          data = model_data_ranked,
+                          method = "anova",
+                          control = rpart.control(maxdepth = 3, 
+                                                minsplit = 20, 
+                                                minbucket = 10))
+
+# Feature importance with ranked zipCode
+importance_ranked <- data.frame(
+  Feature = names(tree_model_ranked$variable.importance),
+  Importance = as.numeric(tree_model_ranked$variable.importance)
+) %>%
+  arrange(desc(Importance)) %>%
+  mutate(Importance_Percent = round(Importance / sum(Importance) * 100, 2))
+
+cat("Feature Importance (zipCode Ranked by Price):\n")
+print(importance_ranked)
+
+# Show zip code ranking
+cat("\nZip Code Ranking (by average price):\n")
+print(zipcode_ranking)
+```
+
+### Python
+
+```{python}
+#| label: target-ranking-python
+#| echo: true
+
+# Create target-based ranking
+zipcode_ranking = model_data.groupby('zipCode')['SalePrice'].mean().sort_values().reset_index()
+zipcode_ranking['zipcode_rank'] = range(1, len(zipcode_ranking) + 1)
+
+# Merge ranking back to data
+model_data_ranked = model_data.merge(zipcode_ranking[['zipCode', 'zipcode_rank']], on='zipCode')
+model_data_ranked = model_data_ranked.drop('zipCode', axis=1)
+
+# Build tree with ranked zipCode
+X_ranked = model_data_ranked.drop('SalePrice', axis=1)
+y_ranked = model_data_ranked['SalePrice']
+X_train_ranked, X_test_ranked, y_train_ranked, y_test_ranked = train_test_split(X_ranked, y_ranked, test_size=0.2, random_state=123)
+
+tree_model_ranked = DecisionTreeRegressor(max_depth=3, 
+                                         min_samples_split=20, 
+                                         min_samples_leaf=10, 
+                                         random_state=123)
+tree_model_ranked.fit(X_train_ranked, y_train_ranked)
+
+# Feature importance with ranked zipCode
+importance_ranked_df = pd.DataFrame({
+    'Feature': X_train_ranked.columns,
+    'Importance': tree_model_ranked.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+importance_ranked_df['Importance_Percent'] = (importance_ranked_df['Importance'] * 100).round(2)
+
+print("Feature Importance (zipCode Ranked by Price):")
+print(importance_ranked_df)
+
+# Show zip code ranking
+print("\nZip Code Ranking (by average price):")
+print(zipcode_ranking)
+```
+
+:::
+
+### Encoding Comparison Summary
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| label: encoding-comparison-r
+#| echo: true
+#| message: false
+#| warning: false
+
+cat("ENCODING COMPARISON SUMMARY\n")
+cat("==========================\n")
+
+# Get zipcode importance for each method
+numerical_imp <- importance_df$Importance_Percent[importance_df$Feature == "zipCode"]
+categorical_imp <- ifelse("zipCode" %in% names(tree_model_cat$variable.importance),
+                         importance_cat$Importance_Percent[importance_cat$Feature == "zipCode"], 0)
+ranked_imp <- importance_ranked$Importance_Percent[importance_ranked$Feature == "zipcode_rank"]
+
+cat("1. Numerical zipCode:", numerical_imp, "%\n")
+cat("2. Categorical zipCode:", categorical_imp, "%\n") 
+cat("3. Ranked zipCode:", ranked_imp, "%\n\n")
+
+cat("Key Insight: Target-based ranking preserves geographic price patterns\n")
+cat("while avoiding the sparsity problem of one-hot encoding.\n")
+```
+
+### Python
+
+```{python}
+#| label: encoding-comparison-python
+#| echo: true
+
+print("ENCODING COMPARISON SUMMARY")
+print("==========================")
+
+# Get zipcode importance for each method
+numerical_imp = importance_df[importance_df['Feature'] == 'zipCode']['Importance_Percent'].iloc[0]
+onehot_imp = zipcode_percent  # from previous analysis
+ranked_imp = importance_ranked_df[importance_ranked_df['Feature'] == 'zipcode_rank']['Importance_Percent'].iloc[0]
+
+print(f"1. Numerical zipCode: {numerical_imp}%")
+print(f"2. One-hot zipCode: {onehot_imp}%")
+print(f"3. Ranked zipCode: {ranked_imp}%")
+print()
+
+print("Key Insight: Target-based ranking preserves geographic price patterns")
+print("while avoiding the sparsity problem of one-hot encoding.")
+```
+
+:::
+
+**The Solution:** Target-based ranking creates an ordinal variable that:
+- Preserves geographic price relationships
+- Avoids sparsity issues of one-hot encoding  
+- Allows meaningful splits like "zipcode_rank > 3" (higher-priced areas)
+- Can be mapped back to actual zip codes for interpretation
+
+This approach mimics how R factors work internally and provides the best of both worlds: meaningful geographic patterns without sparsity problems.
+
+## Statistical Concerns: Target-Based Ranking Controversy
+
+**The Problem:** Target-based ranking uses the target variable (SalePrice) to create the independent variable (zipcode_rank), which is a form of **data leakage**.
+
+### Why Statisticians Object:
+
+1. **Data Leakage:** Using target information to create features violates the independence assumption
+2. **Overfitting Risk:** The model sees target information during training, inflating performance
+3. **Circular Logic:** "We predict house prices using house prices" - the feature contains target information
+4. **Generalization Issues:** May not work well on new data where zip code price patterns differ
+
+### Alternative Approaches:
+
+**1. Domain Knowledge Ranking:**
+```r
+# Rank by external factors (not target-dependent)
+zipcode_ranking <- model_data %>%
+  mutate(zipcode_rank = case_when(
+    zipCode %in% c(50010, 50011) ~ 1,  # Low-income areas
+    zipCode %in% c(50012, 50013) ~ 2,  # Medium-income areas  
+    zipCode %in% c(50014, 50015) ~ 3   # High-income areas
+  ))
+```
+
+**2. Separate Train/Validation Split:**
+```r
+# Use only training data to create rankings
+train_zipcode_ranking <- train_data %>%
+  group_by(zipCode) %>%
+  summarise(avg_price = mean(SalePrice), .groups = 'drop') %>%
+  arrange(avg_price) %>%
+  mutate(zipcode_rank = row_number())
+```
+
+**3. Cross-Validation Approach:**
+- Create rankings within each CV fold
+- Prevents leakage between training and validation sets
+
+### The Statistical Verdict:
+
+**Target-based ranking is generally discouraged** because it:
+- Violates fundamental statistical principles
+- Creates overly optimistic performance estimates
+- May not generalize to new data
+- Is considered "cheating" in predictive modeling
+
+**Better Practice:** Use domain knowledge, external data, or proper train/validation splits to create meaningful categorical encodings without data leakage.
+
+### Important Clarification: R Factors vs Target-Based Ranking
+
+**Key Distinction:** R's `as.factor()` does NOT use target information - it's fundamentally different from our target-based ranking example.
+
+**How R Factors Actually Work:**
+```r
+# R factor creation - NO target information used
+model_data_cat <- model_data %>%
+  mutate(zipCode = as.factor(zipCode))  # Just converts to categorical levels
+```
+
+**What R Factors Do:**
+- Convert numerical values to discrete categorical levels
+- Create internal mapping (50010 → level 1, 50011 → level 2, etc.)
+- Allow decision tree to make categorical splits (zipCode == "50010" vs zipCode == "50011")
+- **No target variable information is used in factor creation**
+
+**What Our Target-Based Ranking Did:**
+```r
+# This WAS data leakage - used target information
+zipcode_ranking <- model_data %>%
+  group_by(zipCode) %>%
+  summarise(avg_price = mean(SalePrice), .groups = 'drop')  # ← Used SalePrice!
+```
+
+**The Verdict:**
+- **R factors:** Statistically legitimate - no data leakage
+- **Target-based ranking:** Data leakage - uses target information
+- **One-hot encoding:** Statistically legitimate - no data leakage (just sparse)
+
+**Why R Factors Work Well:**
+- Decision trees can make meaningful categorical splits
+- No target information used in encoding
+- Preserves categorical nature without artificial numerical order
+- Statistically sound approach
+
+**The Real Issue:** The sparsity problem with one-hot encoding is a practical limitation, not a statistical violation. R factors avoid this by allowing the tree to group categories naturally during the splitting process.
+
+### How R Handles Categorical Variables During Tree Building
+
+**Yes, R has sophisticated intermediate steps for categorical variables:**
+
+**1. Category Grouping Algorithm:**
+```r
+# R internally considers all possible groupings of categorical levels
+# For zipCode with levels: 50010, 50011, 50012, 50013, 50014
+# R evaluates splits like:
+# - {50010, 50011} vs {50012, 50013, 50014}
+# - {50010, 50012} vs {50011, 50013, 50014}
+# - {50010, 50011, 50012} vs {50013, 50014}
+# - etc.
+```
+
+**2. Optimal Grouping Selection:**
+- R tests all possible ways to split categorical levels into two groups
+- Chooses the grouping that maximizes information gain (variance reduction)
+- This happens **during tree building**, not during data preprocessing
+
+**3. Why This Works Better Than One-Hot:**
+- **One-hot encoding:** Creates separate binary variables, tree can only split on individual categories
+- **R factors:** Tree can group multiple categories together in a single split
+- **Result:** More flexible and meaningful splits
+
+**Example of R's Intermediate Process:**
+```r
+# R internally evaluates splits like:
+# Split 1: zipCode in {50010, 50011} → predict $150K
+#          zipCode in {50012, 50013, 50014} → predict $200K
+# 
+# Split 2: zipCode in {50010, 50012} → predict $160K  
+#          zipCode in {50011, 50013, 50014} → predict $190K
+#
+# R chooses the split that best reduces prediction error
+```
+
+**The Key Insight:** R's algorithm is designed to handle categorical variables intelligently by finding optimal groupings during tree construction, while one-hot encoding forces the tree to work with individual binary variables that may be too sparse to be useful.
+
+### Computational Reality: How R Avoids the Combinatorial Nightmare
+
+**You're absolutely right!** For k categories, there are 2^(k-1) - 1 possible binary splits, which grows exponentially.
+
+**R's Smart Approach:**
+```r
+# Instead of evaluating ALL possible groupings, R uses heuristics:
+
+# 1. Sort categories by mean target value
+zipcode_means <- c(50010=150000, 50011=160000, 50012=180000, 50013=200000, 50014=220000)
+
+# 2. Only consider "adjacent" splits in the sorted order
+# Split 1: {50010} vs {50011, 50012, 50013, 50014}
+# Split 2: {50010, 50011} vs {50012, 50013, 50014}  
+# Split 3: {50010, 50011, 50012} vs {50013, 50014}
+# Split 4: {50010, 50011, 50012, 50013} vs {50014}
+
+# This reduces from 2^(k-1) - 1 = 15 splits to just k-1 = 4 splits!
+```
+
+**Why This Works:**
+- **Optimal splits are usually "adjacent"** when categories are sorted by target value
+- **Dramatically reduces computation** from exponential to linear
+- **Still finds meaningful groupings** without the combinatorial explosion
+
+**The Algorithm:**
+1. Sort categories by mean target value
+2. Evaluate only k-1 "adjacent" splits
+3. Choose the split with maximum information gain
+4. **Result:** Near-optimal performance with linear complexity
+
+**For 20 zip codes:**
+- **Naive approach:** 2^19 - 1 = 524,287 possible splits
+- **R's approach:** Only 19 splits to evaluate
+- **Performance:** Nearly identical results, 27,000x faster!
+
+This is why R can handle categorical variables efficiently while still finding meaningful groupings.
+
+### Critical Clarification: Data Leakage vs. Tree Building Algorithm
+
+**You're absolutely right to question this!** The distinction is subtle but crucial:
+
+**Our Target-Based Ranking (Data Leakage):**
+```r
+# We used target information BEFORE tree building
+zipcode_ranking <- model_data %>%
+  group_by(zipCode) %>%
+  summarise(avg_price = mean(SalePrice), .groups = 'drop')  # ← Used SalePrice!
+# Then we used this ranking to create features BEFORE training
+```
+
+**R's Tree Building Algorithm (NOT Data Leakage):**
+```r
+# R uses target information DURING tree building, not before
+# The algorithm looks at target values to find optimal splits
+# This is part of the tree construction process itself
+```
+
+**The Key Difference:**
+
+1. **Data Leakage (Bad):** Using target information to create features BEFORE model training
+2. **Tree Algorithm (Good):** Using target information DURING the tree building process to find optimal splits
+
+**Why R's Approach is NOT Data Leakage:**
+- **Tree algorithms inherently use target information** to find the best splits
+- This is the **core mechanism** of how decision trees work
+- **All decision tree algorithms** (R, Python, etc.) do this during tree construction
+- The target information is used **within the algorithm**, not to preprocess features
+
+**The Real Issue with Our Target-Based Ranking:**
+- We used target information **outside** the tree building process
+- We created new features **before** training that contained target information
+- This is **feature engineering with data leakage**, not tree building
+
+**Analogy:**
+- **Data Leakage:** Like giving a student the answer key before the exam
+- **Tree Algorithm:** Like a teacher using student answers to grade the exam (this is how grading works!)
+
+**Bottom Line:** R's use of target information during tree building is the **normal, expected behavior** of decision tree algorithms. Our target-based ranking was problematic because we used target information for **feature engineering**, not tree building.
 
 ## Conclusion
 
